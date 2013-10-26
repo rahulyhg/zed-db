@@ -1,0 +1,420 @@
+'use strict';
+
+var apiSrc = 'http://db.4zzzfm.org.au/api/v1';
+
+var app = app || angular.module('zeddbApp', ['ngResource', 'ui', 'ui.bootstrap', '$strap.directives', 'ngGrid', 'ngGrid.services', 'ui.select2', 'ajoslin.promise-tracker']) 
+    .config(function ($routeProvider, $locationProvider) {
+    $routeProvider
+        .when('/releases/:id', {
+        templateUrl: 'views/releasedetails.html',
+        controller: 'ReleaseDetailCtrl',
+	resolve: {
+          release : function(ReleaseService, $route, $q) {
+            var deferred = $q.defer();
+
+            deferred.resolve(ReleaseService.get({id: $route.current.params.id}));
+
+            return deferred.promise;
+          }
+        }
+    })
+        .when('/releases', {
+        templateUrl: 'views/release.html',
+        controller: 'ReleaseCtrl'
+    })
+        .when('/releases/new/release', {
+        templateUrl: 'views/releasedetails.html',
+        controller: 'ReleaseDetailCtrl',
+        resolve: { release: function() { return {}; }}
+    })
+        .when('/subscribers/', {
+        templateUrl: 'views/subscriber.html',
+        controller: 'SubscriberCtrl'
+    })
+    .when('/subscribers/:id', {
+        templateUrl: 'views/subdetails.html',
+        controller: 'SubdetailsCtrl',
+        
+    })
+        .when('/subscribers/new/subscriber', {
+        templateUrl: 'views/subdetails.html',
+        controller: 'SubdetailsCtrl',
+        resolve: { subscriber: function() { return {}; }}
+    })
+        .when('/contacts/', {
+        templateUrl: 'views/contact.html',
+        controller: 'ContactCtrl',
+        
+    })
+    .when('/contacts/:id', {
+        templateUrl: 'views/contactdetails.html',
+        controller: 'ContactdetailsCtrl',
+        resolve: {
+          contact : function(ContactService, $route) {
+            return ContactService.get({id: $route.current.params.id});
+          }
+        }
+    })
+    .when('/contacts/new/contact', {
+        templateUrl: 'views/contactdetails.html',
+        controller: 'ContactdetailsCtrl',
+        resolve: { contact: function() { return {}; }} 
+    })
+
+    
+    // management
+    .when('/contact/manage', {
+        templateUrl: 'views/contactmgmt.html',
+        controller: 'ContactmgmtCtrl'
+    })
+    .when('/subscriber/manage', {
+        templateUrl: 'views/subscribermgmt.html',
+        controller: 'SubscribermgmtCtrl'  
+    })
+    .when('/release/manage', {
+        templateUrl: 'views/releasemgmt.html',
+        controller: 'ReleasemgmtCtrl'  
+    })
+
+    // reports
+    .when('/contact/report', {
+        templateUrl: 'views/contactreport.html',
+        controller: 'ContactreportCtrl'
+    })
+    .when('/subscriber/report', {
+        templateUrl: 'views/subreport.html',
+        controller: 'SubscriberreportCtrl'
+    })
+    .when('/music/report', {
+        templateUrl: 'views/releasereport.html',
+        controller: 'ReleasereportCtrl'
+    })
+
+    // print
+    .when('/subscriber/report/post/outstanding', {
+        templateUrl: 'views/subscriberposttemplate.html',
+        controller: 'SubscriberpostCtrl',
+        resolve: {
+          subscriber : function() {
+            return ;
+          }
+        }
+    })
+
+    .when('/subscriber/report/receipt/:id', {
+        templateUrl: 'views/subpostind.html',
+        controller: 'SubscriberpostCtrl',
+        resolve: {
+          subscriber : function(SubService, $route) {
+            return SubService.get({id: $route.current.params.id});
+          }
+        }
+    })
+
+    .when('/print', {
+        templateUrl: 'views/genericprinttemplate.html',
+        controller: 'GenericprintCtrl'
+    })
+
+    .otherwise({
+        redirectTo: '/'
+    });
+
+    $locationProvider
+        .html5Mode(false);
+
+   
+    //RestangularProvider.setListTypeIsArray(false);
+})
+//end config
+
+
+//services
+
+
+app.factory('GenresService', function ($resource) {
+    return $resource(apiSrc + '/genres/:id', {
+            id: '@genre_id'
+        }, {
+            update: {
+                method: 'PUT'
+            }
+        })
+})
+
+app.factory('ThemesService', function ($resource) {
+    return $resource(apiSrc + '/themes/:id', {
+            id: '@theme_id'
+        }, {
+            update: {
+                method: 'PUT'
+            }
+        })
+})
+
+app.factory('DepartmentsService', function ($resource) {
+    return $resource(apiSrc + '/departments/:id', {id: '@department_no'}, {
+            update: {
+                method: 'PUT'
+            }
+        })
+})
+
+app.factory('InterestsService', function ($resource) {
+    return $resource(apiSrc + '/interests/:id', {
+            id: '@interest_no'
+        }, {
+            update: {
+                method: 'PUT'
+            }
+        })
+})
+
+app.factory('SkillsService', function ($resource) {
+    return $resource(apiSrc + '/skills/:id', {
+            id: '@subtypeid'
+        }, {
+            update: {
+                method: 'PUT'
+            }
+        })
+})
+
+app.factory('ProgramsService', function ($resource) {
+    return $resource(apiSrc + '/programs/:id', {
+            id: '@programid'
+        }, {
+            update: {
+                method: 'PUT'
+            }
+        })
+})
+
+app.factory('SubtypesService', function ($resource) {
+    return $resource(apiSrc + '/subtypes/:id', {
+            id: '@subtypeid'
+        }, {
+            update: {
+                method: 'PUT'
+            }
+        })
+})
+app.factory('PrizesService', function ($resource) {
+    return $resource(apiSrc + '/prizes/:id', {
+            id: '@radiothonprizeid'
+        }, {
+            update: {
+                method: 'PUT'
+            }
+        })
+})
+
+
+app.factory('ReleaseService', ['$resource', '$http', '$rootScope', function ($resource) {
+        return $resource(apiSrc + '/releases/:id', {
+            id: '@id'
+        }, {
+            update: {
+                method: 'PUT'
+            }
+        });
+    }])
+
+app.factory('SubService', ['$resource', '$http', '$rootScope', function ($resource) {
+        return $resource(apiSrc + '/subscribers/:id', {
+            id: '@subnumber'
+        }, {
+            update: {
+                method: 'PUT'
+            }
+        })
+    }])
+
+app.factory('ContactService', function ($resource) {
+        return $resource(apiSrc + '/contacts/:id', {
+            id: '@contact_no'
+        }, {
+            update: {
+                method: 'PUT'
+            }
+        })
+    })
+
+app.factory('ContactReportService', function ($resource) {
+        return $resource(apiSrc + '/contact/report/')
+    })
+
+app.factory('SubReportService', function ($resource) {
+        return $resource(apiSrc + '/subscriber/report/')
+    })
+
+app.factory('PledgeService', function ($resource) {
+       return $resource(apiSrc + '/pledge/:subno', {
+            subno: '@subnumber'
+        }, {
+            update: {
+                method: 'PUT'
+            }
+        })
+    })
+
+app.factory('OnlineSubsService', function ($resource) {
+       return $resource(apiSrc + '/subform/:id', {
+            id: '@id'
+        }, {
+            update: {
+                method: 'PUT'
+            }
+        })
+    })
+
+app.factory('PrizetypesService', function ($resource) {
+       return $resource(apiSrc + '/prizetypes/:id', {
+            id: '@id'
+        }, {
+            update: {
+                method: 'PUT'
+            }
+        })
+    })
+
+app.factory('SubsBandService', function ($resource) {
+    return $resource(apiSrc + '/subscribers/band/:subbandname', {
+        name: '@subbandname'
+    }, {
+        update: {
+            method: 'PUT'
+        }
+    })
+})
+
+app.factory('BandService', function ($resource) {
+    return $resource(apiSrc + '/band/:subid', {
+        name: '@subid'
+    }, {
+        update: {
+            method: 'PUT'
+        }
+    })
+})
+
+
+// override the default input to update on blur
+app.directive('ngBlur', function () {
+    return function (scope, elem, attrs) {
+        elem.bind('blur', function () {
+            scope.$apply(attrs.ngBlur);
+        });
+    };
+})
+
+app.directive('ngUppercaseInput', function () {
+    return {
+
+        require: 'ngModel',
+        link: function (scope, element, attrs, modelCtrl) {
+            var capitalize = function ($viewValue) {
+                if ($viewValue) {
+                    var capitalized = $viewValue.toUpperCase();
+                    if (capitalized !== $viewValue) {
+                        modelCtrl.$setViewValue(capitalized);
+                        modelCtrl.$render();
+                    }
+                    return capitalized;
+                }
+
+            }
+            modelCtrl.$parsers.push(capitalize);
+            capitalize(scope[attrs.ngModel]); // capitalize initial value
+        }
+    };
+})
+
+
+
+app.directive('ngOnBlur', function($parse){
+         return {
+
+        require: 'ngModel',
+        link:  function(scope, elm, attrs){       
+                var onBlurFunction = $parse(attrs['ngOnBlur']);
+                elm.bind("blur", function(event) {
+                    scope.$apply(function() {
+                        onBlurFunction(scope, { $event: event });
+                    })});
+        }   
+        }
+})
+
+
+app.directive('ngModelOnblur', function($parse) {
+    return {
+        restrict: 'A',
+        require: 'ngModel',
+        link: function(scope, elm, attrs, ngModelCtrl) {
+            if (attrs.type === 'radio' || attrs.type === 'checkbox') return;
+            
+            elm.unbind('input').unbind('keydown').unbind('change');
+            var onBlurFunction = $parse(attrs['ngModelOnblur']);
+            elm.bind('blur', function() {
+                scope.$apply(function() {
+                    onBlurFunction(scope, { $event: event });
+                });         
+            });
+        }
+    };
+})
+
+app.filter('prizefilter', function() {
+  return function(arr, type, subtype) {
+
+    if(!('contains' in String.prototype))
+        String.prototype.contains = function(str, startIndex) { return -1 !== String.prototype.indexOf.call(this, str, startIndex); };
+    var newArr=[];
+    angular.forEach(arr, function(value, key){
+            
+	if (type === 'Silver') {
+                    if (value['prizetype'].prizetypename.contains('Silver')) {
+                        this.push(value);
+                    }
+                } else {
+                    if (value['prizetype'].prizetypename.contains('Community') && ((subtype == 'Community Group') || (subtype == 'Business') || (subtype == 'Artworker'))) {
+                        this.push(value);
+                    }
+                   if (value['prizetype'].prizetypename.contains('Pet') && (subtype == 'Pet')) {
+                        this.push(value);
+                    }
+                    if (value['prizetype'].prizetypename.contains('Inter') && ((subtype == 'Interstate') || (subtype == 'International'))) {
+                        this.push(value);
+                    }
+		    if ((value['prizetype'].prizetypename.contains('individual') && (subtype == 'Concession' || subtype == 'Full' || subtype == 'Passionate' || subtype == 'Under 18')) || (value['prizetype'].prizetypename.contains('musician') && (subtype == 'Solo Musician' || subtype == 'Band'))) {
+                            this.push(value);
+                    }
+		}
+        
+        
+    }, newArr);
+    
+    return newArr;
+    }
+
+})
+
+
+.filter('byprize', function () {
+    return function (prizes, subtypeid) {
+        var out = [];
+        angular.forEach(prizes, function (value, key) {
+            if (value.subtypes) {
+            value.subtypes.forEach(function(v) {
+              if (v.subtypeid === subtypeid) {
+                out.push(value);
+            }
+            });
+          }
+        }, out);
+        return out;
+    };
+});
+
+

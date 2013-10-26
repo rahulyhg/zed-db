@@ -1,0 +1,18 @@
+{
+    "require": {
+        "slim/slim": "2.*",
+        "illuminate/support": "1.*",
+        "illuminate/container": "1.*",
+        "illuminate/events": "1.*",
+        "illuminate/database": "1.*",
+	"dhorrigan/capsule": "*",
+        "slim/extras": "*",
+        "twig/twig": "*",
+	"hautelook/phpass": "dev-master"
+	},
+	"autoload": {
+        "classmap": [
+            "app/models"
+        ]
+    }
+}

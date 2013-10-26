@@ -1,0 +1,32 @@
+
+<div class="container-fluid">
+
+    <h2>Manage</h2>
+    <div class="row-fluid">  
+        <div class="span12">
+            
+  <tabset>
+    <tab heading="Categories">
+        <input type="text" ng-model="$parent.department_nm"  placeholder="New Category"/>
+        <button type="submit" class="btn btn-primary" ng-click="addCategory()">Add Category</button>
+        <div class="gridStyle" ng-grid="gridCategoryOptions"></div>       
+    </tab>
+    
+    <tab heading="Subcategories">
+        <input type="text" ng-model="$parent.interest_nm"  placeholder="New Subcategory"/>
+        <button type="submit" class="btn btn-primary" ng-click="addSubcategory()">Add Subcategory</button>
+        <div class="gridStyle" ng-grid="gridSubcategoryOptions"></div>
+    </tab>
+  </tabset>
+            
+    
+            
+            
+     
+            
+        </div>
+    </div> <!-- end row  -->    
+    
+     
+            
+</div>   

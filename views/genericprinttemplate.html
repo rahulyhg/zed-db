@@ -1,0 +1,65 @@
+<style type="text/css">
+	body {
+	  -webkit-print-color-adjust:exact;
+	  width:100%;
+	}
+	
+	tr {
+		vertical-align: top;
+		line-height: 14px;
+		margin-top: 8px;
+	}
+	.tbl_blk {
+		color: #fff;
+		background-color: #000;
+		background-image: (images/1x1.gif)
+	}
+	.navbar {
+		display: none;
+	}
+	.hd_r {
+		border-radius: 10px;
+		background-color: #000;
+		color: #fff;
+		font-size: 9px;
+		padding-left: 10px;
+		background-image: (app/images/1x1.gif)
+	}
+
+	@media print {
+		table {
+			width:100%;
+		}
+        .hd_r {
+                border-radius: 10px;
+                background-color: #000 !important;
+                color: #fff;
+                font-size: 9px;
+                padding-left: 10px;
+                -webkit-print-color-adjust: exact;
+        }
+        .hideb {
+        	display: none;
+        	padding-bottom:40px;
+        }
+}
+</style>
+
+
+<div class="hideb"><a href="#/subscriber/report" class="btn">Back</a> <button ng-click="onPrint();" class="btn">Print</button></div>
+<div> 
+	<table style="width:100%;valign:top;border-collapse:separate;border-spacing:0 5px;" cellpadding="5px">
+		<tr style="text-align:left;">
+			<th>First Name</th><th>Last Name</th>
+			<th>Sub Number</th><th>Address</th>
+			<th>Subtype</th><th>Expiry</th><th>Email</th>
+		</tr>
+		<tr ng-repeat="sub in printBuffer"><td>{{sub.subfirstname}}</td><td>{{sub.sublastname}}</td><td>{{sub.subnumber}}</td>
+		<td>{{sub.subaddress1}}<br/>{{sub.subaddress2}}<br/>{{sub.suburb.suburb}}<br/>{{sub.suburb.state}} {{sub.suburb.postcode}}</td>
+		<td>{{sub.subscription.subtypecode}}</td>
+		<td>{{sub.expirydate}}</td><td>{{sub.subemail}}</td></tr>
+		<tr><td colspan="3">&nbsp;</td></tr>
+	</table>
+
+
+ </div>

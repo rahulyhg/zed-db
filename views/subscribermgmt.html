@@ -1,0 +1,72 @@
+
+<script type="text/ng-template" id="/mdl.html">
+<div style="padding:10px;">
+    <h3>Possible matches found:</h3>
+    <ul class="unstyled" ng-repeat="l in logc">
+        <li><a ng-click="hide();gotoSub(l);">{{l}}</a></li>
+    </ul>
+    <p>We&#39;ve found these subs with the same name, click the link to check their details. If you click &#39;Add Sub&#39; this user will be added as a new subscriber. Click &#39;Cancel&#39; to go back.</p>
+    <div class="modal-footer">
+        <button type="button" class="btn" ng-click="hide()">Cancel</button>
+        <button class="btn btn-primary btn-danger" ng-click="mergeSub(logc[0]);hide()">Merge Subs</button> 
+        <button class="btn btn-primary btn-danger" ng-click="confirmSub();hide()">Add Sub</button> 
+    </div>
+</div>
+</script>
+
+
+<div class="container-fluid">
+
+    <h2>Manage</h2>
+    <div class="row-fluid">  
+        <div class="span12 form-horizontal">
+            
+          <tabset>
+            <tab heading="Skills">
+                <input type="text" ng-model="$parent.skilldescription"  placeholder="New Skill"/>
+                <button type="submit" class="btn btn-primary" ng-click="addSkill()">Add Skill</button>
+                <div class="gridStyle" ng-grid="gridSubskillOptions"></div>       
+            </tab>
+            <tab heading="Subtypes">
+                <input type="text" ng-model="$parent.subtypecode"  placeholder="New Sub Type"/>
+                <input type="text" ng-model="$parent.subtypedescription"  placeholder="Description"/>
+                <input type="text" ng-model="$parent.subtypevalue" class="input-small" placeholder="Value"/>
+                <button type="submit" class="btn btn-primary" ng-click="addSubtype()">Add Sub Type</button>
+                <div class="gridStyle" ng-grid="gridSubtypeOptions"></div>
+            </tab>
+            <tab heading="Programs">
+                <input type="text" ng-model="$parent.programname"  placeholder="New Program"/>
+                <select ng-model="$parent.programdate" class="span3" ng-options="d for d in days"><option></option></select>
+                <input type="text" ng-model="$parent.programtime" placeholder="Hour" />
+                <button type="submit" class="btn btn-primary" ng-click="addProgram()">Add Program</button>
+                <div class="gridStyle" ng-grid="gridProgramOptions"></div>
+            </tab>
+            <tab heading="Prizes">
+                <input type="text" ng-model="$parent.radiothonprize"  placeholder="New Prize" />
+                <input type="text" ng-model="$parent.radiothonprizedescription"  placeholder="Description"/>
+                <input type="text" ng-model="$parent.radiothonprizeyear" class="input-small" placeholder="Year"/>
+                <select class="input-medium" ng-model="$parent.prize_subtypeid" ng-options="s.subtypeid as s.subtypecode for s in subtypes"></select>
+                <button type="submit" class="btn btn-primary" ng-click="addPrize()">Add Prize</button>
+                <div class="gridStyle" ng-grid="gridPrizeOptions"></div>
+            </tab>
+            <tab heading="Formsite Subscriptions">
+                <div class="gridStyle" ng-grid="gridOnlineSubsOptions"></div>
+            </tab>
+          </tabset>
+            
+            
+     
+            
+        </div>
+    </div> <!-- end row  -->    
+    
+     
+            
+</div>   
+<style type="text/css">
+    .gridStyle {
+    border: 1px solid #d4d4d4;
+    width: 100%;
+    height: 400px;
+  }
+</style>
