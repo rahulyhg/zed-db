@@ -1,7 +1,7 @@
 'use strict';
 
 
-app.controller('ReleaseDetailCtrl', function ($rootScope, $scope, $route, $http, $routeParams, ReleaseService, GenresService, ThemesService, SubsBandService, $dialog, $location, release, $anchorScroll) {
+app.controller('ReleaseDetailCtrl', function ($rootScope, $scope, $route, $http, $routeParams, ReleaseService, GenresService, ThemesService, SubsBandService, $dialog, $location, release, $anchorScroll, limitToFilter) {
 
   
     //set vars for constants 
@@ -29,8 +29,13 @@ app.controller('ReleaseDetailCtrl', function ($rootScope, $scope, $route, $http,
           });
     };
 
-
-    $scope.saveRelease = function () {
+    $scope.labels = function (label) {
+        return $http.get(apiSrc + '/labelsuggest/' + label).then(function (response) {
+            return limitToFilter(response.data, 15);
+        });
+    };
+    
+	$scope.saveRelease = function () {
 
 
         if ($routeParams.id) {

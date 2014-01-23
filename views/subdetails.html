@@ -1,5 +1,5 @@
 <div ng-show="subTracker.active()">
-    <img src="images/spinner_48.gif" />
+    <img src="/images/spinner_48.gif" />
 </div>
 
 <form class="form-horizontal" name="subForm">
@@ -9,13 +9,13 @@
     <div class="row brown-border-bottom">
         <ul class="inline" style="font-size:24px;margin-bottom:40px;font-weight:bold;">
             <li>{{sub.subfirstname}} {{sub.sublastname}}</li>                
-            <li><h5><a href="#/subscribers">Back to search</a></h5></li>
+            <li><h5><a href="/subscribers">Back to search</a></h5></li>
         </ul>
         <ul class="inline">
             <li><strong>ID:</strong> {{sub.subnumber}}</li>
             <li><strong>Created:</strong> {{sub.created_at | date}}</li>
             <li><strong>Last Updated:</strong> {{sub.updated_at | date:'medium'}}</li>   
-            <li><a href="#/subscriber/report/receipt/{{sub.subnumber}}" class="btn btn-primary" style="line-height:15px;">Print Receipt</a></li>                  
+            <li><a href="/subscriber/report/receipt/{{sub.subnumber}}" class="btn btn-primary" style="line-height:15px;">Print Receipt</a></li>                  
         </ul>
  
    
@@ -40,7 +40,7 @@
                     <div style="padding:10px;margin-top:10px;" class="alert alert-error" ng-show="subsuggest.length != 0">
                         <strong>Hey! A subscriber by this name already exists. Please check if they are the same.</strong>
                         <ul class="unstyled" style="margin-top:10px;">                    
-                            <li ng-repeat="subc in subsuggest"><a href="#/subscribers/{{subc.subnumber}}">{{subc.subfirstname}} {{subc.sublastname}} - {{subc.subnumber}}</a></li>
+                            <li ng-repeat="subc in subsuggest"><a href="/subscribers/{{subc.subnumber}}">{{subc.subfirstname}} {{subc.sublastname}} - {{subc.subnumber}}</a></li>
                         </ul>
                     </div>    
                 </div>
@@ -80,7 +80,7 @@
                 <div class="control-group controls-row" style="padding:10px 0;"> 
                      <span style="float:left;margin-left:25px;"><label class="checkbox inline"><input type="checkbox" ng-model="sub.fl_volunteer">Volunteer?</label>
                     <label class="checkbox inline"><input type="checkbox" ng-model="sub.fl_announcer">Announcer?</label>
-                    <!-- <label class="checkbox inline"><input type="checkbox" ng-model="sub.posted">Posted?</label> -->
+                    <label class="checkbox inline"><input type="hidden" ng-model="sub.posted">
                     </span>
                 </div>
             </div> <!-- end music/album section -->
@@ -289,7 +289,7 @@
                 <div class="control-group">
                     <label class="control-label">Receipt #</label>
                     <div class="controls">
-                        <input type="text" class="input-small uneditable-input" ng-model="sub.receiptnumber" disabled="true">
+                        <input type="text" class="input-medium uneditable-input" ng-model="sub.receiptnumber" disabled="true">
                 <button class="btn btn-primary btn-mini" ng-click="generateReceiptS();">Create Receipt Number</button>    
 		</div>
                 </div>

@@ -1,0 +1,27 @@
+
+<div class="container-fluid">
+
+  <h2>Users</h2>
+  <div class="row-fluid">
+    <div class="span12">
+      <input type="text" ng-model="userform.username"  placeholder="Username"/>
+      <select ng-model="userform.role_id" class="input-small" ng-options="r.id as r.rolename for r in roles">
+          <option></option>
+      </select>
+      <input type="password" ng-model="userform.password" placeholder="Password"/>
+      <button type="submit" class="btn btn-primary" ng-click="addUser()">Add User</button>
+    </div>
+  </div>
+  <div class="row-fluid">
+    <div class="span12">
+      <div class="gridStyle" ng-grid="gridUsers"></div>
+    </div>
+  </div> <!-- end row  -->
+</div>
+
+
+<form action="">
+  <input type="text" name="test">
+  <input type="submit">
+</form>
+

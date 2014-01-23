@@ -1,20 +1,23 @@
 'use strict';
 
-var apiSrc = 'https://db.4zzzfm.org.au/api/v1';
+//var apiSrc = 'http://newdb.4zzzfm.org.au/api/v1';
+var apiSrc = '/app/api/v1';
 
 var app = app || angular.module('zeddbApp', ['ngResource', 'ngSanitize', 'ui', 'ui.bootstrap', '$strap.directives', 'ngGrid', 'ngGrid.services', 'ui.select2', 'ajoslin.promise-tracker']) 
     .config(function ($httpProvider, $routeProvider, $locationProvider) {
 
-        var access = routingConfig.accessLevels;
+    $locationProvider.html5Mode(true);
+    var access = routingConfig.accessLevels;
+    var viewsDir = '/views';
 
     $routeProvider
         .when('/login', {
-        templateUrl: 'views/login.html',
+        templateUrl: viewsDir + '/login.html',
         controller: 'LoginCtrl',
         access: access.public
     })
         .when('/releases/:id', {
-        templateUrl: 'views/releasedetails.html',
+        templateUrl: viewsDir + '/releasedetails.html',
         controller: 'ReleaseDetailCtrl',
         resolve: {
           release : function(ReleaseService, $route, $q) {
@@ -37,45 +40,45 @@ var app = app || angular.module('zeddbApp', ['ngResource', 'ngSanitize', 'ui', '
         
     })
         .when('/releases', {
-        templateUrl: 'views/release.html',
+        templateUrl: viewsDir + '/release.html',
         controller: 'ReleaseCtrl',
         access: access.user
     })
         .when('/releases/new/release/:artist', {
-        templateUrl: 'views/releasedetails.html',
+        templateUrl: viewsDir + '/releasedetails.html',
         controller: 'ReleaseDetailCtrl',
         resolve: { release: function(ReleaseService, $route, $q) { return {}; }},
         access: access.user
     })
         .when('/releases/new/release', {
-        templateUrl: 'views/releasedetails.html',
+        templateUrl: viewsDir + '/releasedetails.html',
         controller: 'ReleaseDetailCtrl',
         resolve: { release: function(ReleaseService, $route, $q) { return {}; }},
         access: access.user
     })
         .when('/subscribers', {
-        templateUrl: 'views/subscriber.html',
+        templateUrl: viewsDir + '/subscriber.html',
         controller: 'SubscriberCtrl',
         access: access.user
     })
     .when('/subscribers/:id', {
-        templateUrl: 'views/subdetails.html',
+        templateUrl: viewsDir + '/subdetails.html',
         controller: 'SubdetailsCtrl',
         access: access.user
     })
         .when('/subscribers/new/subscriber', {
-        templateUrl: 'views/subdetails.html',
+        templateUrl: viewsDir + '/subdetails.html',
         controller: 'SubdetailsCtrl',
         resolve: { subscriber: function() { return {}; }},
         access: access.user
     })
         .when('/contacts', {
-        templateUrl: 'views/contact.html',
+        templateUrl: viewsDir + '/contact.html',
         controller: 'ContactCtrl',
 	access: access.user
     })
     .when('/contacts/:id', {
-        templateUrl: 'views/contactdetails.html',
+        templateUrl: viewsDir + '/contactdetails.html',
         controller: 'ContactdetailsCtrl',
         resolve: {
           contact : function(ContactService, $route, $q) {
@@ -89,7 +92,7 @@ var app = app || angular.module('zeddbApp', ['ngResource', 'ngSanitize', 'ui', '
 	access: access.user
     })
     .when('/contacts/new/contact', {
-        templateUrl: 'views/contactdetails.html',
+        templateUrl: viewsDir + '/contactdetails.html',
         controller: 'ContactdetailsCtrl',
         resolve: { contact: function() { return {}; }},
         access: access.user
@@ -98,42 +101,47 @@ var app = app || angular.module('zeddbApp', ['ngResource', 'ngSanitize', 'ui', '
     
     // management
     .when('/contact/manage', {
-        templateUrl: 'views/contactmgmt.html',
+        templateUrl: viewsDir + '/contactmgmt.html',
         controller: 'ContactmgmtCtrl',
         access: access.admin
         // push access array to auth service for chaking against user role
     })
     .when('/subscriber/manage', {
-        templateUrl: 'views/subscribermgmt.html',
+        templateUrl: viewsDir + '/subscribermgmt.html',
         controller: 'SubscribermgmtCtrl',
         access: access.admin 
     })
     .when('/release/manage', {
-        templateUrl: 'views/releasemgmt.html',
+        templateUrl: viewsDir + '/releasemgmt.html',
         controller: 'ReleasemgmtCtrl',
+        access: access.admin
+    })
+    .when('/user/manage', {
+        templateUrl: viewsDir + '/user.html',
+        controller: 'UserCtrl',
         access: access.admin
     })
 
     // reports
     .when('/contact/report', {
-        templateUrl: 'views/contactreport.html',
+        templateUrl: viewsDir + '/contactreport.html',
         controller: 'ContactreportCtrl',
         access: access.user
     })
     .when('/subscriber/report', {
-        templateUrl: 'views/subreport.html',
+        templateUrl: viewsDir + '/subreport.html',
         controller: 'SubscriberreportCtrl',
         access: access.user
     })
     .when('/music/report', {
-        templateUrl: 'views/releasereport.html',
+        templateUrl: viewsDir + '/releasereport.html',
         controller: 'ReleasereportCtrl',
         access: access.user
     })
 
     // print
     .when('/subscriber/report/post/outstanding', {
-        templateUrl: 'views/subscriberposttemplate.html',
+        templateUrl: viewsDir + '/subscriberposttemplate.html',
         controller: 'SubscriberpostCtrl',
         resolve: {
           subscriber : function() {
@@ -144,30 +152,29 @@ var app = app || angular.module('zeddbApp', ['ngResource', 'ngSanitize', 'ui', '
     })
 
     .when('/subscriber/report/receipt/:id', {
-        templateUrl: 'views/subpostind.html',
+        templateUrl: viewsDir + '/subpostind.html',
         controller: 'SubscriberpostCtrl',
         access: access.user
     })
 
     .when('/print', {
-        templateUrl: 'views/genericprinttemplate.html',
+        templateUrl: viewsDir + '/genericprinttemplate.html',
         controller: 'GenericprintCtrl',
         access: access.user
     })
     .when('/logout', {
-        templateUrl: 'views/logout.html',
+        templateUrl: viewsDir + '/logout.html',
         controller: 'LogoutCtrl',
         access: access.user
     })
     .when('/', {
-        templateUrl: 'views/home.html',
+        templateUrl: viewsDir + '/home.html',
         access: access.user
     })
     .otherwise({
         redirectTo: '/login' 
     });
 
-    $locationProvider.html5Mode(false);
 
 })
 
@@ -203,13 +210,15 @@ app.factory('SessionService', function() {
 });
 
 app.factory('AuthenticationService', function ($http, $sanitize, $location, $rootScope, SessionService, FlashService) {
-
     // set user and accesslevels roles
     var accessLevels = routingConfig.accessLevels
         , userRoles = routingConfig.userRoles;
         var cTemp = SessionService.get('user');
         var currentUser = { username: '', role: userRoles.public };
-        if (cTemp) currentUser = JSON.parse(cTemp);
+        if (cTemp) { 
+		currentUser = JSON.parse(cTemp);
+		$rootScope.user = JSON.parse(cTemp);
+	}
         //var currentUser = (SessionService.get('user')) ? JSON.parse(SessionService.get('user')) : { username: '', role: userRoles.public };
      
 
@@ -277,7 +286,15 @@ app.factory('AuthenticationService', function ($http, $sanitize, $location, $roo
     
 })
 
-
+app.factory('RolesService', function ($resource) {
+    return $resource(apiSrc + '/roles/:id', {
+            id: '@id'
+        }, {
+            update: {
+                method: 'PUT'
+            }
+        })
+})
 
 
 app.factory('GenresService', function ($resource) {
@@ -376,6 +393,16 @@ app.factory('SubService', ['$resource', '$http', '$rootScope', function ($resour
                 method: 'PUT'
             }
         })
+    }])
+
+app.factory('UserService', ['$resource', '$http', '$rootScope', function ($resource) {
+        return $resource(apiSrc + '/users/:id', {
+            id: '@id'
+        }, {
+            update: {
+                method: 'PUT'
+            }
+        });
     }])
 
 app.factory('ContactService', function ($resource) {
@@ -478,6 +505,13 @@ app.directive('ngUppercaseInput', function () {
     };
 })
 
+app.directive('selectOnClick', function () {
+    return function (scope, element, attrs) {
+        element.bind('click', function () {
+            this.select();
+        });
+    };
+});
 
 
 app.directive('ngOnBlur', function($parse){
@@ -580,7 +614,9 @@ app.filter('prizefilter', function() {
 
             $scope.user = AuthenticationService.user;
             
+
             $scope.$watch('user', function(user) {
+
                 if(user.role)
                     userRole = user.role;
                 updateCSS();

@@ -14,15 +14,16 @@
                 <!--<![endif]-->
                 
                 <head>
-                    <meta charset="utf-8">
+                    <base href="/"></base>
+		    <meta charset="utf-8">
                     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
                     <title>4ZZZ DB</title>
                     <meta name="description" content="4ZZZ Music Library">
                     <meta name="viewport" content="width=device-width">
                     <!-- build:css styles/main.css -->
-                    <link rel="stylesheet" href="components/angular-strap/vendor/bootstrap-datepicker.css">
+                    <link rel="stylesheet" href="bower_components/angular-strap/vendor/bootstrap-datepicker.css">
                     <link rel="stylesheet" href="styles/bootstrap-combined.min.css">
-                    <link rel="stylesheet" href="components/select2/select2.css"> 
+                    <link rel="stylesheet" href="bower_components/select2/select2.css"> 
                     <link rel="stylesheet" type="text/css" href="styles/ng-grid.css" />
                     <!--  <link href="//ivaynberg.github.com/select2/select2-master/select2.css" rel="stylesheet">-->
 			<link rel="stylesheet" href="styles/5d7fdc45.main.css">                    
@@ -40,59 +41,62 @@
                     <div class="navbar navbar-fixed-top navbar-inverse"> 
                         <div class="navbar-inner">
                             <div class="container">
-                                <a class="brand" href="#">
+                                <a class="brand" href="/">
                                     <img src="images/zed_logo.png" style="height:25px;" />
-                                    ALPHA  
+                                    ALPHA
                                 </a>
-                                <ul class="nav">
+                                <ul class="nav" ng-cloak ng-show="user">
                                     <li>
-                                        <a href="#/releases">Music</a>
+                                        <a href="/releases">Music</a>
                                     </li>
                                     <li>
-                                        <a href="#/subscribers">Subscribers</a>
+                                        <a href="/subscribers">Subscribers</a>
                                     </li>
                                     <li>
-                                        <a href="#/contacts">Contacts</a>
+                                        <a href="/contacts">Contacts</a>
                                     </li>
                                     <li class="dropdown">
-                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Reports
+                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" ng-show="user.role.id == 1">Reports
                                             <b class="caret"></b>
                                         </a>
                                         <ul class="dropdown-menu">
                                             <li>
-                                                <a href="#/subscriber/report">Subscribers</a>
+                                                <a href="/subscriber/report">Subscribers</a>
                                             </li>
                                             <li>
-                                                <a href="#/contact/report">Contacts</a>
+                                                <a href="/contact/report">Contacts</a>
                                             </li>
                                             
                                             <li>
-                                                <a href="#/music/report">Music Library</a>
+                                                <a href="/music/report">Music Library</a>
                                             </li>
                                         </ul>
                                     </li>
-                                     <li class="dropdown">
+                                     <li class="dropdown" ng-show="user.role.id == 1">
                                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                             Manage
                                             <b class="caret"></b>
                                         </a>
                                         <ul class="dropdown-menu">
                                             <li>
-                                                <a href="#/subscriber/manage">Subscribers</a>
+                                                <a href="/subscriber/manage">Subscribers</a>
                                             </li>
                                             <li>
-                                                <a href="#/contact/manage">Contacts</a>
+                                                <a href="/contact/manage">Contacts</a>
                                             </li>
                                             <li>
-                                                <a href="#/release/manage">Music Library</a>
+                                                <a href="/release/manage">Music Library</a>
+                                            </li>
+					    <li>
+                                                <a href="/user/manage">Users</a>
                                             </li>
                                         </ul>
                                     </li>
-                                    <li ng-show="user.username">
+                                    <li>
                                         <p style="color:#999;padding:10px;">Logged in as {{user.username}}</p>
                                     </li>
-                                    <li ng-show="user">
-                                        <a href="#/logout">Logout</a>
+                                     <li> 
+					<a href="/logout">Logout</a>
                                     </li>
                                 </ul>
                             </div>
@@ -103,6 +107,9 @@
                     <div class="container-fluid" style="padding-top:20px;">
                     <div class="alert alert-error" ng-cloak ng-show="flash">{{ flash }}</div>
                         <!-- Angular Container -->
+<!--<div class="alert alert-error text-center">
+<h2>The Zed DB is currently undergoing maintenance. Do not use!</h2>
+</div>-->
                         <div ng-view></div>
                     </div>
 
@@ -126,14 +133,14 @@
                     <!--<script src="scripts/lib/ui-bootstrap-tpls-0.4.0.js"></script>-->
                     <!-- <script src="scripts/lib/ui-bootstrap-tpls-0.5.0.js"></script>-->
                    <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.5.0/ui-bootstrap-tpls.min.js"></script>
-                    <script src="components/angular-strap/vendor/bootstrap-datepicker.js"></script>
+                    <script src="bower_components/angular-strap/vendor/bootstrap-datepicker.js"></script>
                     
-                    <!--<script src="components/angular-ui-bootstrap/src/typeahead/typeahead.js"></script>-->
+                    <!--<script src="bower_components/angular-ui-bootstrap/src/typeahead/typeahead.js"></script>-->
                     
-                    <script src="components/angular-ui-select2/src/select2.js"></script>
+                    <script src="bower_components/angular-ui-select2/src/select2.js"></script>
                     <script src="scripts/lib/ng-grid.debug.js"></script>
                     <script src="scripts/lib/ng-grid-csv-export.js"></script>
-                    <script src="components/promise-tracker/promise-tracker.min.js"></script>
+                    <script src="bower_components/angular-promise-tracker/promise-tracker.min.js"></script>
 
                      <!--<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
                      <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.js"></script> 
@@ -141,7 +148,7 @@
                     <!--<script src="//ivaynberg.github.com/select2/select2-3.2/select2.js"></script>
                      <script src="scripts/lib/select2.js"></script>
                     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.1.4/angular.js"></script>
-                    <script src="components/angular/angular.js"></script>
+                    <script src="bower_components/angular/angular.js"></script>
                     <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui/0.4.0/angular-ui.min.js"></script>
                     
                    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.1.4/angular-resource.js"></script>
@@ -153,12 +160,12 @@
                      <script src="scripts/lib/angular-cookies.js"></script> 
                     <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore.js"></script>
                     
-                <script src="components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
-                    <script src="components/angular-ui-bootstrap/src/typeahead/typeahead.js"></script>
+                <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+                    <script src="bower_components/angular-ui-bootstrap/src/typeahead/typeahead.js"></script>
                     <script src="//cdnjs.cloudflare.com/ajax/libs/angular-strap/0.7.2/angular-strap.min.js"></script>-->
                     <!-- <script src="scripts/lib/angular-strap.min.js"></script>-->
                    <!-- <script src="components/angular-strap/vendor/bootstrap-datepicker.js"></script>
-                   <script src="components/angular-ui-select2/src/select2.js"></script>
+                   <script src="bower_components/angular-ui-select2/src/select2.js"></script>
                    <script src="scripts/lib/ng-grid.debug.js"></script>
                     <script src="https://raw.github.com/angular-ui/ui-select2/bb236030fde077f27a5accf8a023ae327597def0/src/select2.js"></script> -->
                    
@@ -186,6 +193,7 @@
                     <script src="scripts/controllers/contactdetails.js"></script>
                     <script src="scripts/controllers/contactreport.js"></script>
                     <script src="scripts/controllers/contactmgmt.js"></script>
+		    <script src="scripts/controllers/user.js"></script>
 
                     <script src="scripts/controllers/genericprint.js"></script>
                     <!-- endbuild -->

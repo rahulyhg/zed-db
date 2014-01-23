@@ -1,11 +1,11 @@
 'use strict';
 
 app.controller('SubscriberreportCtrl', function ($rootScope, $scope, $http, $timeout, $filter, $location, promiseTracker, $routeParams, SubReportService, SkillsService, SubService, SubtypesService, ProgramsService, PrizesService, limitToFilter) {
-        
+
 
         $scope.rTracker = promiseTracker('rTracker');
-        if ($rootScope.printBuffer) { 
-            $scope.subs = $rootScope.printBuffer; 
+        if ($rootScope.printBuffer) {
+            $scope.subs = $rootScope.printBuffer;
             $scope.subscriberSearchFormData = $rootScope.formBuffer;
             delete $rootScope.printBuffer;
             delete $rootScope.formBuffer;
@@ -17,19 +17,19 @@ app.controller('SubscriberreportCtrl', function ($rootScope, $scope, $http, $tim
         $scope.skills = SkillsService.query();
         $scope.subtypes = SubtypesService.query();
         $scope.programs = ProgramsService.query();
-	$scope.prizes = PrizesService.query();
+	   $scope.prizes = PrizesService.query();
         $scope.subscriberSearchFormData.programid = [];
         $scope.subscriberSearchFormData.skillid = [];
 
         $scope.suburbsuggest = function (suburbName) {
             return $http.get(apiSrc + '/suburbsuggest/' + suburbName).then(function (response) {
                 return limitToFilter(response.data, 15);
-                
+
             });
         };
 
-        $scope.gridSubOptions = { 
-            data: 'subs', 
+        $scope.gridSubOptions = {
+            data: 'subs',
             enableCellSelection: false,
             enableRowSelection: false,
             enableCellEdit: false,
@@ -44,8 +44,8 @@ app.controller('SubscriberreportCtrl', function ($rootScope, $scope, $http, $tim
                 {field: 'posted', displayName:'Posted?',  cellTemplate:'<div class="ngSelectionCell"><input tabindex="-1" class="ngSelectionCheckbox" type="checkbox" ng-model="row.entity[col.field]" ng-change="updatePosted(col, row)" ng-checked="row.entity[col.field]" /></div>', sortable:false, width:50},
                 {field: 'subscription.subtypecode', displayName: 'Sub Type'},
 
-	//hidden columns for csv
-                
+	           //hidden columns for csv
+
                 {field: 'subaddress1', visible: false},
                 {field: 'subaddress2', visible: false},
                 {field: 'suburb.suburb', visible: false},
@@ -77,8 +77,8 @@ app.controller('SubscriberreportCtrl', function ($rootScope, $scope, $http, $tim
         };
 
 
-         $scope.gridPledgeOptions = { 
-            data: 'pledges', 
+         $scope.gridPledgeOptions = {
+            data: 'pledges',
             enableCellSelection: false,
             enableRowSelection: false,
             enableCellEdit: false,
@@ -92,7 +92,7 @@ app.controller('SubscriberreportCtrl', function ($rootScope, $scope, $http, $tim
 
                 {field: 'subscriber.subnumber', displayName: 'Sub No', cellTemplate: '<div class="ngCellText" ng-class="col.colIndex()"><span ng-cell-text><a href="#/subscribers/{{COL_FIELD}}">{{COL_FIELD}}</a></span></div>'},
                 {field: 'pledgeid', displayName: 'ID'},
-		{field: 'subscriber.sublastname', displayName: 'Last Name'},
+                {field: 'subscriber.sublastname', displayName: 'Last Name'},
                 {field: 'subscriber.subfirstname', displayName: 'First Name'},
                 {field: 'subscriber.subemail', displayName: 'Email'},
                 {field: 'subscriber.submobile', displayName: 'Phone'},
@@ -104,8 +104,8 @@ app.controller('SubscriberreportCtrl', function ($rootScope, $scope, $http, $tim
             plugins: [new ngGridCsvExportPlugin()]
         };
 
-        $scope.gridSubCount = { 
-            data: 'counts', 
+        $scope.gridSubCount = {
+            data: 'counts',
             enableCellSelection: false,
             enableRowSelection: false,
             enableCellEdit: false,
@@ -120,12 +120,12 @@ app.controller('SubscriberreportCtrl', function ($rootScope, $scope, $http, $tim
 
         $scope.sumSubRows = function(cur) {
             var tot = 0;
-      
-              angular.forEach(cur.children, function(a) {
+
+            angular.forEach(cur.children, function(a) {
                 tot = tot + parseInt(a.entity.subscriber.subscription.subtypevalue);
             });
               return tot;
-              
+
         };
 
         $scope.expiresToday = function () {
@@ -147,7 +147,7 @@ app.controller('SubscriberreportCtrl', function ($rootScope, $scope, $http, $tim
                 var subtt = 0
                 var totals = _.pluck(response.data, 'subtypecount');
                 $scope.subsSum = _.reduce(totals, function(memo, num){ return memo + parseInt(num); }, 0);
-                
+
             });
         };
 
@@ -170,43 +170,43 @@ app.controller('SubscriberreportCtrl', function ($rootScope, $scope, $http, $tim
         $scope.pledgeOut = function () {
             $scope.clearForm();
             $http.get(apiSrc + '/subscribers/pledgenew/', {tracker:'rTracker'}).then(function (response) {
-		var wsub = _.filter(response.data, function(d){ 
-                        if (d.subscriber) {
-                            return d;
-                        }
-                });
-                $scope.pledges = wsub;
-		var text ='';
+            var wsub = _.filter(response.data, function(d){
+                    if (d.subscriber) {
+                        return d;
+                    }
+            });
+            $scope.pledges = wsub;
+            var text ='';
             angular.forEach(wsub, function(d){
                 if(d.subscriber.subemail != null && d.subscriber.subemail != '') {  text = text +  d.subscriber.subemail + ', '; }
             });
-            $scope.emails = text.substring(0, text.length - 2);          
+            $scope.emails = text.substring(0, text.length - 2);
 
-  
+
 	  });
         };
 
         $scope.unPosted = function() {
             $scope.clearForm();
             $http.get(apiSrc + '/subscribers/notposted/', {tracker:'rTracker'}).then(function (response) {
-                $scope.subs = response.data;      
+                $scope.subs = response.data;
                 $scope.emails = $scope.emailList(response.data);
 
             });
-            
+
         }
 
         $scope.getEmailList = function() {
             $scope.clearForm();
-            $http.get(apiSrc + '/subscriber/emaillist/', {tracker:'rTracker'}).then(function (response) {   
+            $http.get(apiSrc + '/subscriber/emaillist/', {tracker:'rTracker'}).then(function (response) {
                 $scope.emails = $scope.emailListn(response.data);
-            });   
+            });
         }
 
 	$scope.emailListn = function(data) {
             var text ='';
             angular.forEach(data, function(d){
-                
+
                 if(d.subemail != null && d.subemail != '') {  text = text +  d.subemail + '\n '; }
             });
 
@@ -216,8 +216,8 @@ app.controller('SubscriberreportCtrl', function ($rootScope, $scope, $http, $tim
 
         $scope.updatePosted = function(col, row){
             $scope.sub = SubService.get({id: row.entity.subnumber});
-            if (row.entity.posted == false) {row.entity.posted = 0; }
-            
+            if (row.entity.posted === false) {row.entity.posted = 0; }
+
             $scope.sub.posted = row.entity.posted;
             $scope.sub.$update({id: row.entity.subnumber},
                 function success(response) {
@@ -229,54 +229,54 @@ app.controller('SubscriberreportCtrl', function ($rootScope, $scope, $http, $tim
         $scope.emailList = function(data) {
             var text ='';
             angular.forEach(data, function(d){
-                
+
                 if(d.subemail != null && d.subemail != '') {  text = text +  d.subemail + ', '; }
             });
 
             text = text.substring(0, text.length - 2);
             return text;
           }
-                
+
         $scope.search = function() {
-          
+
                 if ($scope.subscriberSearchForm.$dirty === true) {
-                    
+
                     $http.post(apiSrc + '/subscriber/report/', $scope.subscriberSearchFormData, {tracker:'rTracker', headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
                         .then(function(response) {
 
                             $scope.subs  = response.data;
-                            $scope.emails = $scope.emailList(response.data);       
+                            $scope.emails = $scope.emailList(response.data);
                         });
-                    
+
 
             } else {
-                console.log('no search!');        
+                console.log('no search!');
             }
         };
-        
-        
+
+
          $scope.clearForm = function() {
             $scope.subs = {};
             $scope.subscriberSearchFormData = {};
             $scope.subscriberSearchForm.$setPristine();
-        
+
         };
-        
+
         $scope.onSuburbChange = function ($item, $model, $label) {
-            
+
           //item = suburb object, model = val (id), label = name
-            
+
             $scope.subscriberSearchFormData.postcode = $item.postcode;
 
         };
 
         $scope.goToPost = function () {
-         
+
             $location.path('#/subscriber/report/post/outstanding');
         };
 
          $scope.goToPrint = function () {
-     
+
             $rootScope.printBuffer = $scope.subs;
             $rootScope.formBuffer = $scope.subscriberSearchFormData;
             $location.path('print');
@@ -286,7 +286,7 @@ $scope.getSubsByPrize = function($radiothonprizeid) {
         $http.get(apiSrc + '/subscribers/reports/pledge/' + $radiothonprizeid, {tracker:'rTracker'}).then(function (response) {
             var subs = _.pluck(response.data, 'subscriber');
 
-            var truesubs = _.filter(subs, function(s){ 
+            var truesubs = _.filter(subs, function(s){
                 if (s !== null) {
                     return s;
                 }
@@ -301,7 +301,7 @@ $scope.getSubsByPrize = function($radiothonprizeid) {
          $http.get(apiSrc + '/subscribers/reports/pledge/' + $radiothonprizeid, {tracker:'rTracker'}).then(function (response) {
             var subs = _.pluck(response.data, 'subscriber');
 
-            var truesubs = _.filter(subs, function(s){ 
+            var truesubs = _.filter(subs, function(s){
                 if (s !== null) {
                     return s;
                 }
@@ -309,6 +309,12 @@ $scope.getSubsByPrize = function($radiothonprizeid) {
             var r = Math.floor(Math.random()*(truesubs.length-0+1)+0);
             $scope.draw = truesubs[r];
         });
+    }
+
+    $scope.helpfs = function() {
+        $http.post(apiSrc + '/helpfs/', {'id': 58239}).then(function(response){
+            console.log(response.data)
+        })
     }
 
 //experimantal - kendo chart
@@ -329,7 +335,7 @@ $scope.getSubsByPrize = function($radiothonprizeid) {
                 },
                 series: [{
                     field: "subtypecount",
-                    
+
                 }],
                 categoryAxis: {
                     field: "subtype",
@@ -340,9 +346,9 @@ $scope.getSubsByPrize = function($radiothonprizeid) {
                         visible: false
                     }
                 }
-    
+
   });
 
-      
+
     });
 

@@ -1,93 +1,102 @@
-<div class="row-fluid">
 <div class="row-fluid brown-border-bottom">
-<h3 class="pad-bot">Music Library</h3>
-<form name="releaseSearchForm" ng-submit="search()">
-         <strong>Search: </strong><input class="input-medium search-query" type="search" value="" name="artist_nm" placeholder="Artist" ng-model="releaseSearchFormData.artist_nm" typeahead-min-length="3" typeahead="suggestion for suggestion in artists($viewValue)" ng-uppercase-input />
-         <input class="input-medium search-query" type="search" placeholder="Title" ng-model="releaseSearchFormData.title" typeahead="suggestion for suggestion in titles($viewValue)" ng-uppercase-input />
+	<h3 class="pad-bot">Music Library</h3>
+	<form name="releaseSearchForm" ng-submit="search()">
+		<strong>Search: </strong>
+		<input class="input-medium search-query" type="search" value="" name="artist_nm" placeholder="Artist" ng-model="releaseSearchFormData.artist_nm" typeahead-min-length="3" typeahead="suggestion for suggestion in artists($viewValue)" ng-uppercase-input />
+		<input class="input-medium search-query" type="search" placeholder="Title" ng-model="releaseSearchFormData.title" typeahead="suggestion for suggestion in titles($viewValue)" ng-uppercase-input />
 
-<input class="input-small search-query" type="search" placeholder="Label" ng-model="releaseSearchFormData.album_label" typeahead="suggestion for suggestion in labels($viewValue)" ng-uppercase-input />
-    
-    <button class="btn btn-primary" type="submit" id="search-button">Search</button>
-    <button class="btn btn-danger" type="button" ng-click="clearForm();" id="clear-button">Clear</button>
-    
-    <a style="padding-left:20px;" href="" ng-click="isCollapsed = !isCollapsed">Advanced Search</a>
-    
-    <button class="btn btn-success" ng-click="add();" type="button" style="float:right;">Add New Release</button>
-        
-    <div collapse="!isCollapsed">
-        <div style="margin-top:10px;" class="well well-small">
-            <div class="control-group controls-row" style="padding:10px 0;">
-                <input class="input-medium search-query" type="search" name="album_label" ng-model="releaseSearchFormData.album_label" placeholder="Label" ng-uppercase-input />
-                <input class="input-small search-query" type="search" name="release_year" ng-model="releaseSearchFormData.release_year" placeholder="Release Year" />
-                <input class="input-medium search-query" type="text" name="release_location" ng-model="releaseSearchFormData.release_location" placeholder="Log" />
-                <label class="checkbox inline"><input type="checkbox" name="cont_local" ng-model="releaseSearchFormData.cont_local" ng-true-value="L" ng-false-value="" >Local?</label>
-                <label class="checkbox inline"><input type="checkbox" name="cont_female" ng-model="releaseSearchFormData.cont_female" ng-true-value="F" ng-false-value="" >Female?</label>
-                <label class="checkbox inline" style="margin-right:5px;">Aus/NZ?</label>  
-                    <select ng-model="releaseSearchFormData.cont_ausnz" name="release.cont_ausnz" class="input-small" ng-options="a for a in ausnz"><option></option></select>
-                </div>
-                 <div class="control-group controls-row">  
-                  <ul class="inline unstyled">
-                    <li>
-                            <div class="control-group">
-                                <label class="control-label">Genre 1</label>
-                                <div class="controls">
-                                    <select ui-select2 ng-model="releaseSearchFormData.cont_genre" class="input-large" multiple >
-                                        <option ng-repeat="g in genres" value="{{g.genre_id}}">{{g.genre_desc}}</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="control-group">
-                                <label class="control-label">Genre 2</label>
-                                <div class="controls">
-                                    <select ui-select2 ng-model="releaseSearchFormData.cont_subgenre" class="input-large" multiple >
-                                        <option ng-repeat="g in genres" value="{{g.genre_id}}">{{g.genre_desc}}</option>
-                                    </select>
-                                </div>
-                            </div>
-                        
-                    </li>
-                    <li>
-                        <label class="control-label inline" style="margin-right:5px;">Log Format</label>
-                        <select ng-model="releaseSearchFormData.release_location" name="release_location" class="input-small" ng-options="f.format_srch as f.format_desc for f in extendedFormats">
-                            <option></option>
-                        </select>
-                    </li>
-                    <li>
-                        <label class="control-label inline" style="margin-right:5px;">Library Format</label>
-                        <select ng-model="releaseSearchFormData.format_stored" name="format_stored" class="input-small" ng-options="f as f for f in format"><option></option></select>
-                    </li>
-                    <li>
-                        <input class="input-small search-query" type="search" name="user" ng-model="releaseSearchFormData.modify_user" placeholder="User" />
-                    </li>
-                    <li>
-                    
-                  </ul>
-        </div> 
-    </div>
-    
-</form>   
-</div>  
-<div ng-show="releases.$resolved && releases.length != 0">   
-<h5>{{releases.length}} items found.</h5>
-<table class="table table-striped">
-        <tr>
-        <th><a href="" ng-click="predicate = 'artist_nm'; reverse=!reverse">Artist</a></th>
-          <th><a href="" ng-click="predicate = 'title'; reverse=!reverse">Title</a></th>
-          <th><a href="" ng-click="predicate = 'library_no'; reverse=!reverse">Record #</a></th>
-          <th><a href="" ng-click="predicate = 'release_year'; reverse=!reverse">Year</a></i></th>
-          <th><a href="" ng-click="predicate = 'entered_dt'; reverse=!reverse">Created</a></i></th>
-        </tr>
-        <tr ng-repeat="release in releases  | orderBy:predicate:reverse">
-          <td>{{release.artist_nm}}</td>
-            <td><a href="#/releases/{{release.library_no}}">{{release.title}}</a></td>
-          <td>{{release.library_no}}</td>
-          <td>{{release.release_year}}</td>
-            <td>{{release.entered_dt}}</td>
-        </tr>
-</table>
-    
+		<input class="input-medium search-query" type="search" placeholder="Label" ng-model="releaseSearchFormData.album_label" typeahead="suggestion for suggestion in labels($viewValue)" ng-uppercase-input />
+
+		<button class="btn btn-primary" type="submit" id="search-button">Search</button>
+		<button class="btn btn-danger" type="button" ng-click="clearForm();" id="clear-button">Clear</button>
+
+		<a style="padding-left:20px;" href="" ng-click="isCollapsed = !isCollapsed">Advanced Search</a>
+
+		<button class="btn btn-success" ng-click="add();" type="button" style="float:right;">Add New Release</button>
+
+		<div collapse="!isCollapsed">
+			<div style="margin-top:10px;" class="well well-small">
+				<div class="control-group controls-row" style="padding:10px 0;">
+					<input class="input-medium search-query" type="search" placeholder="Apra Code" ng-model="releaseSearchFormData.apra_code" typeahead="suggestion for suggestion in apra($viewValue)"  />
+
+					<input class="input-small search-query" type="search" name="release_year" ng-model="releaseSearchFormData.release_year" placeholder="Release Year" />
+					<input class="input-medium search-query" type="text" name="release_location" ng-model="releaseSearchFormData.release_location" placeholder="Log" />
+					<label class="checkbox inline">
+						<input type="checkbox" name="cont_local" ng-model="releaseSearchFormData.cont_local" ng-true-value="L" ng-false-value="" >Local?
+					</label>
+					<label class="checkbox inline">
+						<input type="checkbox" name="cont_female" ng-model="releaseSearchFormData.cont_female" ng-true-value="F" ng-false-value="" >Female?
+					</label>
+					<label class="checkbox inline" style="margin-right:5px;">Aus/NZ?</label>
+					<select ng-model="releaseSearchFormData.cont_ausnz" name="release.cont_ausnz" class="input-small" ng-options="a for a in ausnz"><option></option>
+					</select>
+				</div>
+				<div class="control-group controls-row" style="padding:10px 0;">
+					<input class="input-medium search-query" type="text" name="release_notes" ng-model="releaseSearchFormData.release_notes" placeholder="Release Comments" />
+				</div>
+				<div class="control-group controls-row">
+					<ul class="inline unstyled">
+						<li>
+							<div class="control-group">
+								<label class="control-label">Genre 1</label>
+								<div class="controls">
+									<select ui-select2 ng-model="releaseSearchFormData.cont_genre" class="input-large" multiple >
+										<option ng-repeat="g in genres" value="{{g.genre_id}}">{{g.genre_desc}}</option>
+									</select>
+								</div>
+							</div>
+							<div class="control-group">
+								<label class="control-label">Genre 2</label>
+								<div class="controls">
+									<select ui-select2 ng-model="releaseSearchFormData.cont_subgenre" class="input-large" multiple >
+										<option ng-repeat="g in genres" value="{{g.genre_id}}">{{g.genre_desc}}</option>
+									</select>
+								</div>
+							</div>
+						</li>
+						<li>
+							<label class="control-label inline" style="margin-right:5px;">Log Format</label>
+							<select ng-model="releaseSearchFormData.release_location" name="release_location" class="input-small" ng-options="f.format_srch as f.format_desc for f in extendedFormats">
+								<option></option>
+							</select>
+						</li>
+						<li>
+							<label class="control-label inline" style="margin-right:5px;">Library Format</label>
+							<select ng-model="releaseSearchFormData.format_stored" name="format_stored" class="input-small" ng-options="f as f for f in format"><option></option>
+							</select>
+						</li>
+						<li>
+							<input class="input-small search-query" type="search" name="user" ng-model="releaseSearchFormData.modify_user" placeholder="User" />
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</form>
+</div>
+<div ng-show="rTracker.active()">
+	<img src="/images/spinner_48.gif" />
+</div>
+<div ng-show="releases.$resolved && releases.length != 0">
+	<h5>{{releases.length}} items found.</h5>
+	<table class="table table-striped">
+		<tr>
+			<th><a href="" ng-click="predicate = 'artist_nm'; reverse=!reverse">Artist</a></th>
+		  	<th><a href="" ng-click="predicate = 'title'; reverse=!reverse">Title</a></th>
+		  	<th><a href="" ng-click="predicate = 'library_no'; reverse=!reverse">Record #</a></th>
+		  	<th><a href="" ng-click="predicate = 'release_year'; reverse=!reverse">Year</a></th>
+		  	<th><a href="" ng-click="predicate = 'entered_dt'; reverse=!reverse">Created</a></th>
+		</tr>
+		<tr ng-repeat="release in releases  | orderBy:predicate:reverse">
+			<td>{{release.artist_nm}}</td>
+			<td><a href="/releases/{{release.library_no}}">{{release.title}}</a></td>
+		  	<td>{{release.library_no}}</td>
+		  	<td>{{release.release_year}}</td>
+			<td>{{release.entered_dt}}</td>
+		</tr>
+	</table>
 </div>
 <div class="row-fluid" ng-show="releases.$resolved && releases.length == 0">
-        <h3>Nothing found yo!</h3>
+	<h3>Nothing found yo!</h3>
 </div>
-</div> 
+

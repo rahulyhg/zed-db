@@ -86,7 +86,7 @@
 </div>
  
  <div ng-show="rTracker.active()">
-    <img src="images/spinner_48.gif" />
+    <img src="/images/spinner_48.gif" />
 </div>
 
   <div ng-switch="clicked">

@@ -25,9 +25,6 @@ app.controller('SubscribermgmtCtrl', function($rootScope, $scope, $filter, $http
 
         });
 
-
-
-
         $scope.gridOnlineSubsOptions = {
             data: 'onlinesubs',
             enableCellSelection: false,

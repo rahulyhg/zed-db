@@ -8,7 +8,9 @@
 	"dhorrigan/capsule": "*",
         "slim/extras": "*",
         "twig/twig": "*",
-	"hautelook/phpass": "dev-master"
+        "keboola/csv": "*",
+	"hautelook/phpass": "dev-master",
+	"maximebf/debugbar": ">=1.0.0"
 	},
 	"autoload": {
         "classmap": [

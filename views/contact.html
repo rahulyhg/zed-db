@@ -47,7 +47,7 @@
         </tr>
         <tr ng-repeat="contact in contacts  | orderBy:predicate:reverse">
           
-            <td><a href="#/contacts/{{contact.contact_no}}">{{contact.org_nm}}</a></td>
+            <td><a href="/contacts/{{contact.contact_no}}">{{contact.org_nm}}</a></td>
           <td>{{contact.contac_nmt}}</td>
           <td>{{contact.email}}</td>
         </tr>

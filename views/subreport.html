@@ -58,7 +58,7 @@
       <li><select ng-model="search.radiothonprizeid" class="input-xlarge" ng-options="p.radiothonprizeid as p.radiothonprize for p in prizes" ><option></option></select></li>
       <li><a href="" class="btn btn-primary" style="line-height:15px;" ng-click="clicked ='Grid';getSubsByPrize(search.radiothonprizeid);">Get Subs By Prize</a></li>
 <li><a href="" class="btn btn-primary" style="line-height:15px;" ng-click="clicked ='Grid';getRDraw(search.radiothonprizeid);">Draw Prize</a></li>
-      <li style="border:1px solid red;" ng-show="draw"><strong>The Winner --></strong> <a href="#/subscribers/{{draw.subnumber}}">{{draw.subfirstname}} {{draw.sublastname}} {{draw.subnumber}}</a></li>
+      <li style="border:1px solid red;" ng-show="draw"><strong>The Winner --></strong> <a href="/subscribers/{{draw.subnumber}}">{{draw.subfirstname}} {{draw.sublastname}} {{draw.subnumber}}</a></li>
       </ul>
       <hr/>  
       <ul class="unstyled inline">
@@ -66,9 +66,10 @@
         <li><a href="" class="btn btn-primary" style="line-height:15px;" ng-click="clicked ='Active';activeSubs();">Active Subs</a> </li>
         <li><a href="" class="btn btn-primary" style="line-height:15px;" ng-click="clicked ='Grid';paidToday();">Paid Today</a> </li> 
         <li><a href="" class="btn btn-primary" style="line-height:15px;" ng-click="clicked ='Grid';unPosted();">Unposted</a> 
-            <a href="#/subscriber/report/post/outstanding" class="btn btn-primary" style="line-height:15px;">Print Receipts</a></li> 
+            <a href="/subscriber/report/post/outstanding" class="btn btn-primary" style="line-height:15px;">Print Receipts</a></li> 
         <li><a href="" class="btn btn-primary" style="line-height:15px;" ng-click="clicked ='Pledge';pledgeOut();">Pledges</a> </li>
         <li><a href="" class="btn btn-primary" style="line-height:15px;" ng-click="clicked ='Emaillist';getEmailList();">Email List</a> </li>
+        <li><a href="" class="btn btn-primary" style="line-height:15px;" ng-click="helpfs();">test</a> </li>
       </ul>
     </div>       
   </div>
@@ -106,7 +107,7 @@
 </div>
  
  <div ng-show="rTracker.active()">
-    <img src="images/spinner_48.gif" />
+    <img src="/images/spinner_48.gif" />
 </div>
 
   <div ng-switch="clicked">

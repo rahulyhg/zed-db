@@ -1,16 +1,16 @@
 'use strict';
 
-app.controller('SubdetailsCtrl', function ($rootScope, $scope, $http, $timeout, SessionService, AuthenticationService, $routeParams, SubService, promiseTracker, SkillsService, ProgramsService, PledgeService, PrizesService, SubsBandService, SubtypesService, $dialog, $location, limitToFilter, $anchorScroll, $filter) {
+app.controller('SubdetailsCtrl', function ($rootScope, $scope, $http, $timeout, $routeParams, SubService, promiseTracker, SkillsService, ProgramsService, PledgeService, PrizesService, SubtypesService, $dialog, $location, limitToFilter, $anchorScroll, $filter) {
 
 
 
     $scope.subTracker = promiseTracker('subTracker');
 
     //var for access levels
-    $scope.user =  SessionService.get('user'); 
+    //$scope.user =  SessionService.get('user'); 
     
-    $scope.userRoles = AuthenticationService.userRoles;
-    $scope.accessLevels = AuthenticationService.accessLevels;
+    //$scope.userRoles = AuthenticationService.userRoles;
+    //$scope.accessLevels = AuthenticationService.accessLevels;
 
     //set vars for constants 
     $scope.submitType = ($location.path() === '/subscribers/new/subscriber') ? 'Add Subscriber' : 'Update';
@@ -127,9 +127,11 @@ app.controller('SubdetailsCtrl', function ($rootScope, $scope, $http, $timeout, 
                 //delete $scope.sub.pledges;
                 //delete $scope.sub.bandmembers;
                 delete $scope.sub.subscription;
+                // dumb hacks for handling postgres bool weirdness
                 if ($scope.sub.posted === false) {
                     $scope.sub.posted = 0;
                 }
+                console.log($scope.sub.posted);
                 if ($scope.sub.merch_posted === false) {
                     $scope.sub.merch_posted = 0;
                 }
@@ -137,7 +139,6 @@ app.controller('SubdetailsCtrl', function ($rootScope, $scope, $http, $timeout, 
                 if ($scope.sub.suburbid == null) {
                     $scope.sub.suburbid = 1;
                 } //BLANK SUBURB HACK! 
-console.log($scope.sub.bandmembers);
 
                 $scope.sub.$update({id: $routeParams.id}, function success(response) {
                     $scope.sub = SubService.get({
@@ -315,10 +316,10 @@ console.log($scope.sub.bandmembers);
         };
 
     $scope.deleteBm = function (col, row) {   
+        var ebm = [row.entity.subbandmemberfirstname, row.entity.subbandmemberlastname].join(' ')
         var bag = _.filter($scope.sub.bandmembers, function(arr) { 
-            if (arr.subbandmemberid != row.entity.subbandmemberid) {
-                return arr;
-             };
+            var abm = [arr.subbandmemberfirstname, arr.subbandmemberlastname].join(' ')
+            return abm !== ebm;
         });
         $scope.sub.bandmembers = bag;
     };

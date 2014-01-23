@@ -7,6 +7,9 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  *
  */
+[ng\:cloak], [ng-cloak], .ng-cloak {
+  display: none !important;
+}
 .datepicker {
   padding: 4px;
   -webkit-border-radius: 4px;
@@ -308,6 +311,10 @@ body {
 
 .navbar {
     font-size:14px;
+}
+
+.nav-tabs {
+  cursor:pointer;
 }
 
 .form-horizontal .control-label {
