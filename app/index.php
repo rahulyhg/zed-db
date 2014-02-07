@@ -1681,11 +1681,16 @@ function addRelease() {
     $app = \Slim\Slim::getInstance();
 	$req = $app->request();
 	$body = $req->getBody();
-	$nb = json_decode($body, true);
-	$release = Music::create($nb);
+	$jsonBody = json_decode($body, true);
+    $releaseGenres = $jsonBody['genres'];
+    unset($jsonBody['genres']);
+
+	$release = Music::create($jsonBody);
+    $release->genres()->sync($releaseGenres);
     $res = $app->response();
     $res['Content-Type'] = 'application/json';
     $res->body($release);
+
 }
 
 function addSubscriber() {

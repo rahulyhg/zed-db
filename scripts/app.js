@@ -112,6 +112,34 @@ var app = app || angular.module('zeddbApp', ['ngResource', 'ngSanitize', 'ui', '
 			resolve: { contact: function() { return {}; }},
 			access: access.user
 		})
+		.state('volunteers', {
+			url: '/volunteers',
+			templateUrl: viewsDir + '/volunteer.html',
+			controller: 'VolunteerCtrl',
+			access: access.admin
+		})
+		.state('volunteers.details', {
+			url: '/:id',
+			templateUrl: viewsDir + '/volunteerdetails.html',
+			controller: 'VolunteerDetailsCtrl',
+			resolve: {
+			    volunteer : function(VolunteerService, $stateParams, $q) {
+			        var deferred = $q.defer();
+			        VolunteerService.get({id: $stateParams.id}, function(data){
+			            deferred.resolve(data);
+			        });
+			    return deferred.promise;
+				}
+			},
+			access: access.admin
+		})
+		.state('volunteers.new', {
+			url: '/new/volunteer',
+			templateUrl: viewsDir + '/volunteerdetails.html',
+			controller: 'VolunteerDetailsCtrl',
+			resolve: { volunteer: function() { return {}; }},
+			access: access.admin
+		})
 		// manage
 		.state('contactmanage', {
 			url: '/contact/manage',
@@ -386,6 +414,27 @@ app.factory('SkillsService', function($resource) {
 		}
 	})
 })
+
+app.factory('SkillsNewService', function($resource) {
+	return $resource(apiSrc + '/skillsnew/:id', {
+		id: '@id'
+	}, {
+		update: {
+			method: 'PUT'
+		}
+	})
+})
+
+app.factory('VolunteerService', function($resource) {
+	return $resource(apiSrc + '/volunteers/:id', {
+		id: '@id'
+	}, {
+		update: {
+			method: 'PUT'
+		}
+	})
+})
+
 
 app.factory('ProgramsService', function($resource) {
 	return $resource(apiSrc + '/programs/:id', {
