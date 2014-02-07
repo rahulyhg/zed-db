@@ -1,0 +1,6 @@
+lib/
+node_modules/
+vendor/
+bower_components/
+phpPgAdmin-5.1/
+
