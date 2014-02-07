@@ -1,6 +1,10 @@
 lib/
+backup/
 node_modules/
 vendor/
 bower_components/
 phpPgAdmin-5.1/
+composer.lock
+nodestuff.txt
+views/.fuse*
 
