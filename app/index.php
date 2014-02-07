@@ -1450,21 +1450,23 @@ function saveRelease($id) {
     $app = \Slim\Slim::getInstance();
 	$req = $app->request();
 	$body = $req->getBody();
-	$nb = json_decode($body, true);
-        $release = Music::where('library_no','=',$id)->first();
-	#$release->title = $nb['title'];
-	$release->fill($nb);
+	$jsonBody = json_decode($body, true);
+    $releaseGenres = $jsonBody['genres'];
+    unset($jsonBody['genres']);
+
+    $release = Music::where('library_no','=',$id)->first();
+	$release->fill($jsonBody);
 
 	## hack alert - eloquent to postgres bool problem
 	for ($i = 1; $i <= 4; $i++) {
-	#$i = 1;
-	$boolCheckL = 'track'.$i.'_language';
-	$boolCheckC = 'track'.$i.'_concept';
-	if ($release->{$boolCheckL} == false) { $release->{$boolCheckL} = null; }
-	if ($release->{$boolCheckC} == false) { $release->{$boolCheckC} = null; }
+    	$boolCheckL = 'track'.$i.'_language';
+    	$boolCheckC = 'track'.$i.'_concept';
+    	if ($release->{$boolCheckL} == false) { $release->{$boolCheckL} = 0; }
+    	if ($release->{$boolCheckC} == false) { $release->{$boolCheckC} = 0; }
 	}
 
 	$release->save();
+    $release->genres()->sync($releaseGenres);
 
 }
 
