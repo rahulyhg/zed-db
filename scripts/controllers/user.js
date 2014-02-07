@@ -1,6 +1,6 @@
 'use strict';
 
-app.controller('UserCtrl', function ($rootScope, $scope, $http, $location, $routeParams, UserService, RolesService, $dialog, limitToFilter) {
+app.controller('UserCtrl', function ($rootScope, $scope, $http, $location, UserService, RolesService, $dialog, limitToFilter) {
 
     $scope.contactSearchFormData={};
 

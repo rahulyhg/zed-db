@@ -1,6 +1,6 @@
 'use strict';
 
-app.controller('SubscriberreportCtrl', function ($rootScope, $scope, $http, $timeout, $filter, $location, promiseTracker, $routeParams, SubReportService, SkillsService, SubService, SubtypesService, ProgramsService, PrizesService, limitToFilter) {
+app.controller('SubscriberreportCtrl', function ($rootScope, $scope, $http, $timeout, $filter, $location, promiseTracker, SubReportService, SkillsService, SubService, SubtypesService, ProgramsService, PrizesService, limitToFilter) {
 
 
         $scope.rTracker = promiseTracker('rTracker');
@@ -17,7 +17,7 @@ app.controller('SubscriberreportCtrl', function ($rootScope, $scope, $http, $tim
         $scope.skills = SkillsService.query();
         $scope.subtypes = SubtypesService.query();
         $scope.programs = ProgramsService.query();
-	   $scope.prizes = PrizesService.query();
+	       $scope.prizes = PrizesService.query();
         $scope.subscriberSearchFormData.programid = [];
         $scope.subscriberSearchFormData.skillid = [];
 
@@ -36,7 +36,7 @@ app.controller('SubscriberreportCtrl', function ($rootScope, $scope, $http, $tim
             showFilter: true,
             showFooter: true,
             columnDefs: [
-                {field: 'subnumber', displayName: 'Sub No', cellTemplate: '<div class="ngCellText" ng-class="col.colIndex()"><span ng-cell-text><a href="#/subscribers/{{COL_FIELD}}">{{COL_FIELD}}</a></span></div>'},
+                {field: 'subnumber', displayName: 'Sub No', cellTemplate: '<div class="ngCellText" ng-class="col.colIndex()"><span ng-cell-text><a href="/subscribers/{{COL_FIELD}}">{{COL_FIELD}}</a></span></div>'},
                 {field: 'sublastname', displayName: 'Last Name'},
                 {field: 'subfirstname', displayName: 'First Name'},
                 {field: 'subemail', displayName: 'Email'},

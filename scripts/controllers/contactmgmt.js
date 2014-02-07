@@ -1,6 +1,6 @@
 'use strict';
 
-app.controller('ContactmgmtCtrl', function ($rootScope, $scope, $http, $location, $routeParams, DepartmentsService, InterestsService, limitToFilter, $dialog) {
+app.controller('ContactmgmtCtrl', function ($rootScope, $scope, $http, $location, DepartmentsService, InterestsService, limitToFilter, $dialog) {
         
         //$scope.subscriberSearchFormData={};
         

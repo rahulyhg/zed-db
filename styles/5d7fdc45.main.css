@@ -372,6 +372,10 @@ input[type="search"] {
     border-bottom: 1px solid saddlebrown;
 }
 
+.grey-border-bottom {
+    border-bottom: 1px solid #ccc;
+}
+
 .lowcal {
   height: auto;
   font-size: 12px;
@@ -382,4 +386,16 @@ input[type="search"] {
     border: 1px solid rgb(212,212,212);
     width: 900px; 
     height: 500px
+}
+
+.search__box {
+  max-height:250px; 
+  overflow-y: scroll; 
+  border: 1px solid #ccc;
+  border-top: none;
+  margin-bottom: 20px;
+}
+
+.caps {
+  text-transform: uppercase;
 }

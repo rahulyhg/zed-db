@@ -1,4 +1,4 @@
-<div class="row-fluid brown-border-bottom">
+<div class="row-fluid grey-border-bottom">
 	<h3 class="pad-bot">Subscribers</h3>
 	<form name="subscriberSearchForm" ng-submit="search()">
 		<strong>Search:</strong>
@@ -28,8 +28,8 @@
 	</form>
 </div>
 <div class="row-fluid">
-	<div ng-show="subscribers.$resolved && subscribers.length != 0">
-		<h5>{{subscribers.length}} subscribers found.</h5>
+	<div ng-show="subscribers.$resolved && subscribers.length != 0" class="search__box">
+		<h5 style="padding-left: 5px;">{{subscribers.length}} subscribers found.</h5>
 
 		<table class="table table-striped">
 			<tr>
@@ -60,7 +60,9 @@
 			</tr>
 		</table>
 	</div>
-	<div class="row-fluid" ng-show="subscribers.$resolved && subscribers.length == 0">
+	<div class="row-fluid" ng-show="subscribers.$resolved && subscribers.length == 0" style="margin-bottom: 20px;">
 		<h3>No one found yo!</h3>
 	</div>
 </div>
+
+<div ui-view></div>

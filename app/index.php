@@ -106,6 +106,7 @@ $csvFile = new Keboola\Csv\CsvFile(__DIR__ . '/pc.csv');
 $app->get($api_prefix.'themes/', 'getThemes');
 $app->get($api_prefix.'departments/', 'getDepartments');
 $app->get($api_prefix.'genres/', 'getGenres');
+$app->get($api_prefix.'genresnew/', 'getGenresNew');
 $app->get($api_prefix.'interests/', 'getInterests');
 $app->get($api_prefix.'subtypes/', 'getSubtypes');
 $app->get($api_prefix.'skills/', 'getSkills');
@@ -1250,7 +1251,7 @@ function getTitle($title) {
 function getRelease($id) {
         $app = \Slim\Slim::getInstance();
         //$release = Release::with('artist')->find($id);
-        $release = Music::find($id);
+        $release = Music::with('genres')->find($id);
         $res = $app->response();
         $res['Content-Type'] = 'application/json';
         $res->body($release);
@@ -1905,6 +1906,13 @@ function getGenres() {
         $res->body($genres);
 }
 
+function getGenresNew() {
+        $app = \Slim\Slim::getInstance();
+        $genres = Newgenre::orderBy('genre')->get();
+        $res = $app->response();
+        $res['Content-Type'] = 'application/json';
+        $res->body($genres);
+}
 
 function getThemes() {
         $app = \Slim\Slim::getInstance();

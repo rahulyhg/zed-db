@@ -1,112 +1,158 @@
 <style type="text/css">
-	body {
-	  -webkit-print-color-adjust:exact;
-	}
-	.tbl_blk {
-		color: #fff;
-		background-color: #000;
-		background-image: (images/1x1.gif)
-	}
-	
-	.hd_r {
-		border-radius: 10px;
-		background-color: #000;
-		color: #fff;
-		font-size: 9px;
-		padding-left: 10px;
-		
-	}
-
-	@media print {
-		ul, li {
-        	color: #000 !important;
-        }
-        .hd_r {
-            border-radius: 10px;
-            background-color: #000 !important;
-            color: #FFF !important;
-            font-size: 9px;
-            padding-left: 10px;
-            -webkit-print-color-adjust: exact;
-        }
-        .hd_r ul, li {
-        	color: #FFF !important;
-        }
-        .navbar {
-			display: none;
-		}
-        .hide_b {
-        	display: none;
-        }
+body {
+    -webkit-print-color-adjust:exact;
+}
+.tbl_blk {
+    color: #fff;
+    background-color: #000;
+    background-image: (images/1x1.gif)
+}
+.hd_r {
+    border-radius: 10px;
+    background-color: #000;
+    color: #fff;
+    font-size: 9px;
+    padding-left: 10px;
+}
+@media print {
+    ul, li {
+        color: #000 !important;
+    }
+    .hd_r {
+        border-radius: 10px;
+        background-color: #000 !important;
+        color: #FFF !important;
+        font-size: 9px;
+        padding-left: 10px;
+        -webkit-print-color-adjust: exact;
+    }
+    .hd_r ul, li {
+        color: #FFF !important;
+    }
+    .navbar {
+        display: none;
+    }
+    .hide_b {
+        display: none;
+    }
 }
 </style>
 
-<div class="row"> 
-<div style="padding-bottom:40px;" class="hide_b"><a href="/subscribers/{{sub.subnumber}}" class="btn">Back</a> <button ng-click="onPrint();" class="btn">Print</button></div>
-	<div style="width:600px;margin:0 auto;">
-		
-		<div style="margin-bottom:10px;border-bottom:1px solid #444;page-break-inside: avoid;">
-			<div class="hd_r">
-				<img style="padding:10px;" src="http://www.4zzzfm.org.au/sites/default/files/zed_logo.png"  width="100px;">
-				<ul style="margin-bottom: 0px;" class="unstyled inline">
-                        <li>Creative Broadcasters Ltd </li>
-                        <li>264 Barry Pde </li>
-                        <li>PO Box 509 Fortitude Valley</li>
-                        <li>Ph: (07) 3252 1555</li>
-                        <li>info@4zzz.org.au</li>  
+<div class="row">
+    <div style="padding-bottom:40px;" class="hide_b"><a href="/subscribers/{{sub.subnumber}}" class="btn">Back</a> 
+        <button ng-click="onPrint();" class="btn">Print</button>
+    </div>
+    <div style="width:600px;margin:0 auto;">
+
+        <div style="margin-bottom:10px;border-bottom:1px solid #444;page-break-inside: avoid;">
+            <div class="hd_r">
+                <img style="padding:10px;" src="http://www.4zzzfm.org.au/sites/default/files/zed_logo.png" width="100px;">
+                <ul style="margin-bottom: 0px;" class="unstyled inline">
+                    <li>Creative Broadcasters Ltd</li>
+                    <li>264 Barry Pde</li>
+                    <li>PO Box 509 Fortitude Valley</li>
+                    <li>Ph: (07) 3252 1555</li>
+                    <li>info@4zzz.org.au</li>
                 </ul>
                 <ul class="unstyled inline">
-                        <li>ABN: 62 009 950 958</li>
-                        <li>Fortitude Valley</li>
-                        <li>Brisbane Australia 4006</li>
-                        <li>Fax: (07) 3252 1950</li>
-                        <li>www.4zzzfm.org.au</li>
-                </ul>                  
-			</div>
-			<div style="text-align:center;"><strong>Creative Broadcasters Ltd</strong><br/>
-			Trading as &quot;4ZZZ FM&quot;<br/>
-			ABN – 62 009 950 958<br/>
+                    <li>ABN: 62 009 950 958</li>
+                    <li>Fortitude Valley</li>
+                    <li>Brisbane Australia 4006</li>
+                    <li>Fax: (07) 3252 1950</li>
+                    <li>www.4zzzfm.org.au</li>
+                </ul>
+            </div>
+            <div style="text-align:center;">
+                <strong>Creative Broadcasters Ltd</strong>
+                <br/>Trading as &quot;4ZZZ FM&quot;
+                <br/>ABN – 62 009 950 958
+                <br/>
 
-			</div>
+            </div>
 
-			<table class="table table-bordered table-condensed" width="700px;">
-				<tr></tr>
-				<tr><td><strong>Date:</strong> {{today}}</td><td><strong>Receipt No:</strong> {{sub.receiptnumber}}</td></tr>
-				<tr><td width="400px;"><strong>Received From:</strong> {{sub.subfirstname}} {{sub.sublastname}}</td><td style="text-align:left;"><strong>Subnumber:</strong> {{sub.subnumber}}</td></tr>
-				<tr><td>{{sub.subaddress1}} <br/>{{sub.suburb.suburb}} <br/> {{sub.suburb.state}} <br/> {{sub.suburb.postcode}}</td>
-				<td style="text-align:left;"><strong>Expiry Date:</strong> {{sub.expirydate | date}}</td></tr>
-				
-				<tr><td>
-					<div ng-show="(sub.subscription.subtypecode == 'Passionate') && (sub.pledge.pledgeid > 0)">Passionate pack</div>
-					<div ng-show="sub.pledge">
-					Gold Prize: {{gold.radiothonprize}}<br/>
-					Silver Prize: {{silver.radiothonprize}}
-					</div>
-					<div ng-show="sub.subbandname">Band: {{sub.subbandname}}
-						<table class="unstyled" style="margin-left:20px;"><tr ng-repeat="b in sub.bandmembers" style="border:none;">
-						<td style="border:none;">{{b.subbandmemberfirstname}} {{b.subbandmemberlastname}}</td></tr>
-						</table>
-					</div>
-					  {{sub.subbusinessname}} {{sub.submusicianname}} {{subartistname}}
-					
- 					
-				</td><td></td></tr>
-				<tr class="tbl_blk"><td>Item</td><td>Posted</td></tr>
+            <table class="table table-bordered table-condensed" width="700px;">
+                <tr></tr>
+                <tr>
+                    <td>
+                        <strong>Date:</strong>{{today}}</td>
+                    <td>
+                        <strong>Receipt No:</strong>{{sub.receiptnumber}}</td>
+                </tr>
+                <tr>
+                    <td width="400px;">
+                        <strong>Received From:</strong>{{sub.subfirstname}} {{sub.sublastname}}</td>
+                    <td style="text-align:left;">
+                        <strong>Subnumber:</strong>{{sub.subnumber}}</td>
+                </tr>
+                <tr>
+                    <td>{{sub.subaddress1}}
+                        <br/>{{sub.suburb.suburb}}
+                        <br/>{{sub.suburb.state}}
+                        <br/>{{sub.suburb.postcode}}</td>
+                    <td style="text-align:left;">
+                        <strong>Expiry Date:</strong>{{sub.expirydate | date}}</td>
+                </tr>
 
-				<tr><td style="text-align:right;">{{sub.subscription.subtypecode}}</td><td style="text-align:right;"> {{sub.subscription.subtypevalue | currency}}</td></tr>
-				
-				<tr><td style="text-align:right;">Donation</td><td style="text-align:right;"> {{sub.donation | currency}}</td></tr>
-				<tr><td style="text-align:right;">Postage</td><td style="text-align:right;"><span ng-show="sub.merch_posted">{{sub.postage | currency}}</span></td></tr>
-				<tr><td style="text-align:right;">GST Included</td><td style="text-align:right;"> {{sub.subscription.subtypevalue/11 | currency}}</td></tr>
-				<tr><td style="text-align:right;"><strong>Total Amount Charged</strong></td><td style="text-align:right;"><strong>
-				{{(sub.subscription.subtypevalue + sub.donation + sub.postage) | currency}}</strong></td></tr>
-			</table>
+                <tr>
+                    <td>
+                        <div ng-show="(sub.subscription.subtypecode == 'Passionate') && (sub.pledge.pledgeid > 0)">Passionate pack</div>
+                        <div ng-show="sub.pledge">
+                            Gold Prize: {{gold.radiothonprize}}
+                            <br/>Silver Prize: {{silver.radiothonprize}}
+                        </div>
+                        <div ng-show="sub.subbandname">Band: {{sub.subbandname}}
+                            <table class="unstyled" style="margin-left:20px;">
+                                <tr ng-repeat="b in sub.bandmembers" style="border:none;">
+                                    <td style="border:none;">{{b.subbandmemberfirstname}} {{b.subbandmemberlastname}}</td>
+                                </tr>
+                            </table>
+                        </div>
+                        {{sub.subbusinessname}} {{sub.submusicianname}} {{subartistname}}
 
-			<p style="text-align:center;font-size:11px;line-height:12px;">If any details are wrong or need to be updated please email us at reception@4zzz.org.au </p>
-			<p style="text-align:center;">DONATIONS OF $2.00 OR MORE ARE TAX DEDUCTIBLE.<br/>
-			SUBSCRIPTIONS ARE NOT TAX DEDUCTIBLE.</p>
-			</div>
-		
-	</div>
+
+                    </td>
+                    <td></td>
+                </tr>
+                <tr class="tbl_blk">
+                    <td>Item</td>
+                    <td>Posted</td>
+                </tr>
+
+                <tr>
+                    <td style="text-align:right;">{{sub.subscription.subtypecode}}</td>
+                    <td style="text-align:right;">{{sub.subscription.subtypevalue | currency}}</td>
+                </tr>
+
+                <tr>
+                    <td style="text-align:right;">Donation</td>
+                    <td style="text-align:right;">{{sub.donation | currency}}</td>
+                </tr>
+                <tr>
+                    <td style="text-align:right;">Postage</td>
+                    <td style="text-align:right;">
+                        <span ng-show="sub.merch_posted">{{sub.postage | currency}}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align:right;">GST Included</td>
+                    <td style="text-align:right;">{{sub.subscription.subtypevalue/11 | currency}}</td>
+                </tr>
+                <tr>
+                    <td style="text-align:right;">
+                        <strong>Total Amount Charged</strong>
+                    </td>
+                    <td style="text-align:right;">
+                        <strong>
+                            {{(sub.subscription.subtypevalue + sub.donation + sub.postage) | currency}}</strong>
+                    </td>
+                </tr>
+            </table>
+
+            <p style="text-align:center;font-size:11px;line-height:12px;">If any details are wrong or need to be updated please email us at reception@4zzz.org.au</p>
+            <p style="text-align:center;">DONATIONS OF $2.00 OR MORE ARE TAX DEDUCTIBLE.
+                <br/>SUBSCRIPTIONS ARE NOT TAX DEDUCTIBLE.</p>
+        </div>
+
+    </div>
 
 </div>

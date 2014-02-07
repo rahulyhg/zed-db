@@ -1,6 +1,6 @@
 'use strict';
 
-app.controller('ContactreportCtrl', function ($rootScope, $scope, $http, $filter, $location, $routeParams, ContactReportService, DepartmentsService, InterestsService, limitToFilter) {
+app.controller('ContactreportCtrl', function ($rootScope, $scope, $http, $filter, $location, ContactReportService, DepartmentsService, InterestsService, limitToFilter) {
         
         $scope.contactSearchFormData={};
               

@@ -1,6 +1,6 @@
 'use strict';
 
-app.controller('ReleasereportCtrl', function ($rootScope, $scope, $http, $filter, $location, $routeParams, ContactReportService, DepartmentsService, InterestsService, limitToFilter) {
+app.controller('ReleasereportCtrl', function ($rootScope, $scope, $http, $filter, $location, ContactReportService, DepartmentsService, InterestsService, limitToFilter) {
         
         $scope.releaseSearchFormData={};
               

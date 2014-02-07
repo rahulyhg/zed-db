@@ -1,6 +1,6 @@
 'use strict';
 
-app.controller('ReleasemgmtCtrl', function ($rootScope, $scope, $http, $location, $routeParams, ThemesService, GenresService, limitToFilter, $dialog) {
+app.controller('ReleasemgmtCtrl', function ($rootScope, $scope, $http, $location, ThemesService, GenresService, limitToFilter, $dialog) {
         
         //$scope.subscriberSearchFormData={};
         

@@ -1,6 +1,6 @@
 'use strict';
 
-app.controller('SubscribermgmtCtrl', function($rootScope, $scope, $filter, $http, $location, $modal, $timeout, $routeParams, SubService, PrizetypesService, SkillsService, OnlineSubsService, ProgramsService, PrizesService, SubsBandService, BandService, SubtypesService, GenresService, limitToFilter, $dialog) {
+app.controller('SubscribermgmtCtrl', function($rootScope, $scope, $filter, $http, $location, $modal, $timeout, SubService, PrizetypesService, SkillsService, OnlineSubsService, ProgramsService, PrizesService, SubsBandService, BandService, SubtypesService, GenresService, limitToFilter, $dialog) {
 
         //$scope.subscriberSearchFormData={};
 
@@ -30,7 +30,7 @@ app.controller('SubscribermgmtCtrl', function($rootScope, $scope, $filter, $http
             enableCellSelection: false,
             enableRowSelection: false,
             enableCellEdit: false,
-	    showFilter: true,
+	        showFilter: true,
             dataUpdated: function() {
                 console.log(row);
             },
@@ -46,7 +46,7 @@ app.controller('SubscribermgmtCtrl', function($rootScope, $scope, $filter, $http
             }, {
                 field: 'prev_subnumber',
                 displayName: 'Prev Sub No',
-                cellTemplate: '<div class="ngCellText" ng-class="col.colIndex()"><span ng-cell-text><a href="#/subscribers/{{COL_FIELD}}">{{COL_FIELD}}</a></span></div>'
+                cellTemplate: '<div class="ngCellText" ng-class="col.colIndex()"><span ng-cell-text><a href="/subscribers/{{COL_FIELD}}">{{COL_FIELD}}</a></span></div>'
             }, {
                 field: 'receiptnumber',
                 displayName: 'FS Receipt'

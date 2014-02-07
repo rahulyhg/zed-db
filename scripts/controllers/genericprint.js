@@ -1,6 +1,6 @@
 'use strict';
 
-app.controller('GenericprintCtrl', function ($rootScope, $scope, $http, $location, $filter, $routeParams, SubService, SkillsService, OnlineSubsService, ProgramsService, PrizesService, SubsBandService, SubtypesService, GenresService, limitToFilter, $dialog) {
+app.controller('GenericprintCtrl', function ($rootScope, $scope, $http, $location, $filter, SubService, SkillsService, OnlineSubsService, ProgramsService, PrizesService, SubsBandService, SubtypesService, GenresService, limitToFilter, $dialog) {
         
         //$scope.subscriberSearchFormData={};
         

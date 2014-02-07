@@ -24,5 +24,9 @@ public function submusicianname()
         return $query->select('artist_nm', 'title', 'release_year');
     }
 
+public function genres() {
+	return $this->belongsToMany('Newgenre', 'genres_releases', 'release_id', 'genre_id');
+}
+
 }
 ?>

@@ -29,5 +29,6 @@ public function artist()
         return $query->select('artist', 'title', 'release_year');
     }
 
+
 }
 ?>
