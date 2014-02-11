@@ -5,8 +5,8 @@ class Volunteer extends Illuminate\Database\Eloquent\Model {
 	public $timestamps = true;
 
 	public function subscriber() {
-		return $this->belongsTo('Subscriber');
-	}
+        return $this->belongsTo('Subscriber', 'subno');
+    }
 
 }
 

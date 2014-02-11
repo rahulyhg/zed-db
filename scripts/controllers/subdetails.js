@@ -129,7 +129,6 @@ app.controller('SubdetailsCtrl', function($rootScope, $scope, $http, $timeout, $
                 if ($scope.sub.posted === false) {
                     $scope.sub.posted = 0;
                 }
-                console.log($scope.sub.posted);
                 if ($scope.sub.merch_posted === false) {
                     $scope.sub.merch_posted = 0;
                 }
@@ -391,6 +390,12 @@ app.controller('SubdetailsCtrl', function($rootScope, $scope, $http, $timeout, $
         });
     };
 
-
+    $scope.addVolunteer = function() {
+        if (!$scope.sub.volunteer) {
+            $scope.sub.volunteer = {};
+            $scope.sub.volunteer.subscriber_id = $scope.sub.subnumber;
+            console.log($scope.sub.volunteer);
+        }
+    }
 
 });

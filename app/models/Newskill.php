@@ -6,9 +6,9 @@ class Newskill extends Illuminate\Database\Eloquent\Model {
 	protected $key = "id";
 	public $timestamps = false;
 
-public function subscribers() {
-	return $this->belongsToMany('Subscriber', 'skills_subscribers', 'skill_id', 'subscriber_id');
-}
+	public function subscribers() {
+		return $this->belongsToMany('Subscriber', 'skills_subscribers', 'skill_id', 'subscriber_id');
+	}
 
 }
 

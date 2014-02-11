@@ -38,6 +38,7 @@ $app->get($api_prefix.'artist/:artist', 'getArtist');
 
 $app->get($api_prefix.'artistsuggest/:artist', 'getTypeaheadArtist');
 $app->get($api_prefix.'subsuggest/:name', 'getTypeaheadSub');
+$app->get($api_prefix.'volsuggest/:name', 'getTypeaheadVol');
 $app->get($api_prefix.'subsuggesta/:lname/:fname', 'getTypeaheadSubA');
 $app->get($api_prefix.'relcheck/:artist/:title', 'releaseCheck');
 $app->get($api_prefix.'concheck/:org_nm', 'contactCheck');
@@ -52,6 +53,7 @@ $app->get($api_prefix.'aprasuggest/:key', 'getTypeaheadApra');
 // search releases - mutiple fields
 $app->get($api_prefix.'releases', 'getReleases');
 $app->get($api_prefix.'subscribers', 'getSubscribers');
+$app->get($api_prefix.'volunteers', 'getSubscribers');
 
 $app->get($api_prefix.'subscribers/expired/:start(/:end)', 'getSubscribersExp');
 $app->get($api_prefix.'subscribers/active/', 'getSubscribersActive');
@@ -72,6 +74,7 @@ $app->get($api_prefix.'contacts', 'getContacts');
 $app->get($api_prefix.'contact/report', 'getContacts');
 
 $app->get($api_prefix.'subscribers/:id', 'getSubscriber');
+$app->get($api_prefix.'volunteers/:id', 'getVolunteer');
 //$app->get($api_prefix.'subscriber/report', 'getSubNew');
 $app->post($api_prefix.'testfs/', 'getFs');
 
@@ -110,6 +113,8 @@ $app->get($api_prefix.'genresnew/', 'getGenresNew');
 $app->get($api_prefix.'interests/', 'getInterests');
 $app->get($api_prefix.'subtypes/', 'getSubtypes');
 $app->get($api_prefix.'skills/', 'getSkills');
+$app->get($api_prefix.'qualifications/', 'getQualifications');
+$app->get($api_prefix.'skillsnew/', 'getSkillsNew');
 $app->get($api_prefix.'skills/:id', 'getSkill');
 $app->get($api_prefix.'programs/', 'getPrograms');
 $app->get($api_prefix.'prizes/', 'getPrizes');
@@ -120,8 +125,9 @@ $app->put($api_prefix.'users/:id', 'saveUser');
 $app->put($api_prefix.'releases/:id', 'saveRelease');
 $app->put($api_prefix.'contacts/:id', 'saveContact');
 $app->put($api_prefix.'subscribers/:id', 'saveSubscriber');
+$app->put($api_prefix.'volunteers/:id', 'saveVolunteer');
 $app->put($api_prefix.'skills/:id', 'saveSkill');
-$app->put($api_prefix.'genres/:id', 'saveGenre');
+$app->put($api_prefix.'genresnew/:id', 'saveGenre');
 $app->put($api_prefix.'themes/:id', 'saveTheme');
 $app->put($api_prefix.'subtypes/:id', 'saveSubtype');
 $app->put($api_prefix.'departments/:id', 'saveCategory');
@@ -137,7 +143,7 @@ $app->post($api_prefix.'releases/', 'addRelease');
 $app->post($api_prefix.'subscribers/', 'addSubscriber');
 $app->post($api_prefix.'contacts/', 'addContact');
 $app->post($api_prefix.'skills/', 'addSkill');
-$app->post($api_prefix.'genres/', 'addGenre');
+$app->post($api_prefix.'genresnew/', 'addGenre');
 $app->post($api_prefix.'themes/', 'addTheme');
 $app->post($api_prefix.'subtypes/', 'addSubtype');
 $app->post($api_prefix.'departments/', 'addCategory');
@@ -153,7 +159,7 @@ $app->delete($api_prefix.'releases/:id', 'deleteRelease');
 $app->delete($api_prefix.'subscribers/:id', 'deleteSubscriber');
 $app->delete($api_prefix.'contacts/:id', 'deleteContact');
 $app->delete($api_prefix.'skills/:id', 'deleteSkill');
-$app->delete($api_prefix.'genres/:id', 'deleteGenre');
+$app->delete($api_prefix.'genresnew/:id', 'deleteGenre');
 $app->delete($api_prefix.'themes/:id', 'deleteTheme');
 $app->delete($api_prefix.'subtypes/:id', 'deleteSubtype');
 $app->delete($api_prefix.'departments/:id', 'deleteCategory');
@@ -1225,6 +1231,31 @@ function getTypeaheadSub($name) {
         }
 }
 
+function getTypeaheadVol($name) {
+        $name = strtoupper($name);
+        if (strlen($name) >= 3) {
+            $name = '%'.$name.'%';
+            $app = \Slim\Slim::getInstance();
+
+            $query = Subscriber::where('fl_volunteer', '=', true)->where(function($query) use ($name) {
+                $query->where('sublastname','like',$name)
+                      ->orWhere('subfirstname', 'like', $name);
+            });
+            $volunteers = $query->get();
+
+            $res = $app->response();
+            $res['Content-Type'] = 'application/json';
+            $foo='[';
+            foreach ($volunteers as $ar){
+                $foo .= '"'.$ar->sublastname.', '.$ar->subfirstname.'",';
+                }
+            $foo = rtrim($foo, ",");
+            $foo .= ']';
+            $res->body($foo);
+        }
+}
+
+
 function getTypeaheadSubA($lname, $fname) {
         #$name = '%'.$lname.'%';
         $app = \Slim\Slim::getInstance();
@@ -1267,7 +1298,15 @@ function getBandSubscribers($name) {
 
 function getSubscriber($id) {
         $app = \Slim\Slim::getInstance();
-        $sub = Subscriber::with('bandmembers','suburb', 'pledge', 'subscription')->find($id);
+        $sub = Subscriber::with('bandmembers','suburb', 'pledge', 'subscription', 'volunteer')->find($id);
+        $res = $app->response();
+        $res['Content-Type'] = 'application/json';
+        $res->body($sub);
+}
+
+function getVolunteer($id) {
+        $app = \Slim\Slim::getInstance();
+        $sub = Subscriber::with('skills','volunteer')->find($id);
         $res = $app->response();
         $res['Content-Type'] = 'application/json';
         $res->body($sub);
@@ -1625,7 +1664,7 @@ function saveSubscriber($id) {
 	$body = $req->getBody();
 
 	$sb = json_decode($body, true);
-    $sub = Subscriber::with('pledge', 'bandmembers')->where('subnumber','=',$id)->first();
+    $sub = Subscriber::with('pledge', 'bandmembers','volunteer')->where('subnumber','=',$id)->first();
     //$bandmembers = $sub->bandmembers;
 
 	if (isset($sb['pledge'])) {
@@ -1636,7 +1675,7 @@ function saveSubscriber($id) {
 	}
 
 	if (isset($sb['bandmembers'])) {
-    $dm = Subbandmember::where('subid', '=', $id)->delete();
+        $dm = Subbandmember::where('subid', '=', $id)->delete();
         foreach ($sb['bandmembers'] as $arr) {
 
             $bm = new Subbandmember();
@@ -1646,10 +1685,19 @@ function saveSubscriber($id) {
         };
     }
 
+    if (isset($sb['volunteer'])) {
+        if (!$sub->volunteer) {
+            $volunteer =  new Volunteer();
+            $volunteer->subscriber_id = $id;
+            $comment = $volunteer->save();
+        }
+    }
+
 	$sub->fill($sb);
 	//$sub->pledge()->save();
 	unset($sub->bandmembers);
 	unset($sub->pledge);
+    unset($sub->volunteer);
     // crappy hack due to inability to save related models due to eloq 1.1/php 5.2 issue
 	if ($sub->fl_volunteer == "") { $sub->fl_volunteer = NULL; }
 	if ($sub->fl_announcer == "") { $sub->fl_announcer = NULL; }
@@ -1663,11 +1711,38 @@ function saveSubscriber($id) {
 
 }
 
+function saveVolunteer($id) {
+    $app = \Slim\Slim::getInstance();
+    $req = $app->request();
+    $body = $req->getBody();
+
+    $jsonBody = json_decode($body, true);
+    $sub = Subscriber::with('volunteer')->where('subnumber','=',$id)->first();
+
+    if (isset($jsonBody['volunteer'])) {
+        $volunteer = ($sub->volunteer) ? Volunteer::where('subscriber_id', '=', $id)->first() : new Volunteer();
+        $volunteer->subscriber_id = $id;
+        $volunteer->fill($jsonBody['volunteer']);
+        if ($volunteer->completed_orientation == "") {
+            $volunteer->completed_orientation = 0;
+        }
+        $volunteer->save();
+    }
+
+    $skills = $jsonBody['skills'];
+    $sub->skills()->sync($skills);
+
+    $res = $app->response();
+    $res['Content-Type'] = 'application/json';
+    $res->body($sub);
+
+}
+
 function saveSubscriberOLD($id) {
     $app = \Slim\Slim::getInstance();
 	$req = $app->request();
 	$body = $req->getBody();
-	$sb = json_decode($body, true);
+	$sjb = json_decode($body, true);
         $sub = Subscriber::where('subnumber','=',$id)->first();
 	$sub->fill($sb);
 
@@ -1755,7 +1830,7 @@ function addGenre() {
         $req = $app->request();
         $body = $req->getBody();
         $nb = json_decode($body, true);
-        $genre = Genre::create($nb);
+        $genre = Newgenre::create($nb);
 }
 
 function addTheme() {
@@ -1848,7 +1923,7 @@ function deleteSkill($id) {
 
 function deleteGenre($id) {
         $app = \Slim\Slim::getInstance();
-        $genre = Genre::find($id);
+        $genre = Newgenre::find($id);
         $genre->delete();
 }
 
@@ -2018,6 +2093,22 @@ function getSkills() {
         $res = $app->response();
         $res['Content-Type'] = 'application/json';
         $res->body($skills);
+}
+
+function getSkillsNew() {
+        $app = \Slim\Slim::getInstance();
+        $skills = Newskill::orderBy('skill')->get();
+        $res = $app->response();
+        $res['Content-Type'] = 'application/json';
+        $res->body($skills);
+}
+
+function getQualifications() {
+        $app = \Slim\Slim::getInstance();
+        $qualifications = Qualification::orderBy('qualification')->get();
+        $res = $app->response();
+        $res['Content-Type'] = 'application/json';
+        $res->body($qualifications);
 }
 
 function getSkill($id) {

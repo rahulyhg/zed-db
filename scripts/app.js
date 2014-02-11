@@ -425,6 +425,16 @@ app.factory('SkillsNewService', function($resource) {
 	})
 })
 
+app.factory('QualificationService', function($resource) {
+	return $resource(apiSrc + '/qualifications/:id', {
+		id: '@id'
+	}, {
+		update: {
+			method: 'PUT'
+		}
+	})
+})
+
 app.factory('VolunteerService', function($resource) {
 	return $resource(apiSrc + '/volunteers/:id', {
 		id: '@id'

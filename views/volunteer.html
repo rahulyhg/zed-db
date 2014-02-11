@@ -2,7 +2,7 @@
 	<h3 class="pad-bot">Volunteers</h3>
 	<form name="volunteerSearchForm" ng-submit="search()">
 		<strong>Search:</strong>
-		<input class="input-medium search-query" type="search" name="subName" placeholder="Name" ng-model="volunteerSearchFormData.subName" typeahead-min-length="3" typeahead="suggestion for suggestion in subsuggest($viewValue)" ng-uppercase-input />
+		<input class="input-medium search-query" type="search" name="subName" placeholder="Name" ng-model="volunteerSearchFormData.subName" typeahead-min-length="3" typeahead="suggestion for suggestion in volsuggest($viewValue)" ng-uppercase-input />
 
 		<button class="btn btn-primary" type="submit" id="search-button">Search</button>
 		<button class="btn btn-danger" type="button" ng-click="clearForm();" id="clear-button">Clear</button>

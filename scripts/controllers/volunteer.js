@@ -4,19 +4,9 @@ app.controller('VolunteerCtrl', function ($rootScope, $scope, $http, $location, 
 
 		$scope.volunteerSearchFormData={};
 
-		if ($rootScope.volunteerParams) {
-			$scope.volunteers = SubService.query($rootScope.volunteerParams, function(u, getResponseHeaders){
 
-					//set order of display
-					$scope.predicate = 'createddate';
 
-					$scope.volunteerSearchFormData.subName = $rootScope.subName;
-					delete $rootScope.volunteerParams;
-					delete $rootScope.subName;
-				});
-		}
-
-		$scope.subsuggest = function (subName) {
+		$scope.volsuggest = function (subName) {
 			return $http.get(apiSrc + '/volsuggest/' + subName).then(function (response) {
 				return limitToFilter(response.data, 15);
 			});
@@ -65,17 +55,9 @@ app.controller('VolunteerCtrl', function ($rootScope, $scope, $http, $location, 
 
 				$rootScope.subName = params.subName;
 				delete params.subName;
-				// search with qstring - return LIST of results from resource
-				// $scope.volunteers = SubService.query(params, function(u, getResponseHeaders){
-				// 	//set order of display
-				// 	$scope.predicate = 'createddate';
-				// 	$rootScope.volunteerParams = $scope.volunteerSearchFormData;
-
-				// });
 
 				$http.get(apiSrc + '/subscribers', { params: params }).success(function (response) {
 						var foo = _.filter(response, function(vol){ return vol.fl_volunteer == true });
-						console.log(foo);
 						$scope.volunteers = foo;
 				});
 

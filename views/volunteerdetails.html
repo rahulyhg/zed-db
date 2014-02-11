@@ -55,12 +55,12 @@
                                 <input type="text" class="input-xlarge" ng-model="volunteer.subemail">
                             </div>
                         </div>
-                        <!-- <div class="control-group">
+                        <div class="control-group">
                             <label class="control-label">Skills</label>
                             <div class="controls">
-                                <select ng-model="volunteer.subskill" class="input-large" ng-options="s.skillid as s.skilldescription for s in skills"></select>
+                                <select ng-model="volunteer.subskill" class="input-large" ng-options="s.skillid as s.skilldescription for s in skillsold"></select>
                             </div>
-                        </div> -->
+                        </div>
                         <div class="control-group controls-row">
                             <label class="control-label" style="margin-right:5px">Skill</label>
                             <select ui-select2="skillSelectOptions" ng-model="skillsArr" class="input-xlarge" multiple placeholder="Skill">
@@ -76,20 +76,24 @@
                                <a href="/subscribers/{{volunteer.subnumber}}">{{volunteer.subnumber}}</a>
                             </div>
                         </div>
-                        <div class="control-group" style="clear:both">
+                        <div class="control-group">
                             <label class="control-label">Sub Status</label>
                             <div class="controls">
                                 <div class="alert alert-success" ng-show="subactive">Subscriber Active</div>
                                 <div class="alert alert-error" ng-hide="subactive">Subscriber Inactive</div>
                             </div>
                         </div>
-                        <div class="control-group" style="clear:both">
-                            <label class="control-label">Completed Orientation</label>
-                            <div class="controls">
-                               <input type="checkbox" ng-model="volunteer.volunteer.completed_orientation">
-                            </div>
+                        <div style="padding-bottom: 20px;">
+                            <span style="padding-left: 20px;">
+                                <label style="display:inline-block">Completed Orientation</label>
+                                <input type="checkbox" ng-model="volunteer.volunteer.completed_orientation" ng-click="toggleOrientationDate();">
+                            </span>
+                            <span style="padding-left: 20px;">
+                                <label style="display:inline-block">Date Completed</label>
+                                <input type="text" class="span3" ng-model="volunteer.volunteer.completed_orientation_date" data-date-format="yyyy/mm/dd" bs-datepicker>
+                            </span>
                         </div>
-                        <div class="control-group" style="clear:both">
+                        <div class="control-group" style="clear:both;">
                             <label class="control-label">Department</label>
                             <div class="controls">
                                <input type="text" ng-model="volunteer.volunteer.department_id">
@@ -126,9 +130,12 @@
                         </div>
                     </div>
                     <div class="control-group">
+                    {{qualifications}}
                         <label class="control-label">Qualified As</label>
                         <div class="controls">
-                            <textarea rows="5" ng-model="volunteer.volunteer.qualified" class="input-xlarge"></textarea>
+                            <select ui-select2="qualifications" ng-model="q" class="input-xlarge" multiple placeholder="Qualifications">
+                                <option ng-repeat="q in qualifications" value="{{q.id}">{{q.qualification}}</option>
+                            </select>
                         </div>
                     </div>
                     <div class="control-group">
@@ -157,7 +164,7 @@
                 <div ng-show="notvalid">Please fill out all fields marked
                     <span class="invalid">red.</span>
                 </div>
-                <button ng-click="saveVolunteer();" class="btn btn-primary">{{submitType}}</button>
+                <button ng-click="saveVolunteer();" class="btn btn-primary">Update Volunteer</button>
                 <button type="submit" ng-hide="submitType == '/subscribers/new/subscriber'" ng-click="deleteSubscriber();" data-access-level='accessLevels.admin' class="btn btn-danger">Delete</button>
             </div>
 

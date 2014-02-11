@@ -518,7 +518,6 @@ app.controller('SubscribermgmtCtrl', function($rootScope, $scope, $filter, $http
             if (row.entity.prev_subnumber) {
 
                 SubService.get({ id: row.entity.prev_subnumber}, function(data) {
-console.log('ds'+data.subnumber);
                     if (!data.subnumber) {
                         console.log('no');
                         $http.get(apiSrc + '/subsuggesta/' + row.entity.sublastname + '/' + row.entity.subfirstname).then(function(response) {
@@ -527,8 +526,7 @@ console.log('ds'+data.subnumber);
                             angular.forEach(response.data, function(value, key) {
                                 this.push(value.subnumber);
                             }, $scope.logc);
-                            
-                            
+
                             if ($scope.logc.length > 0) {
 
                                 $scope.testmsg = '';
@@ -552,15 +550,12 @@ console.log('ds'+data.subnumber);
 
                 }); //end subservice
 
-                
             } else {
                  $scope.confirmSub();
             } // end prev_subnumber check
         };
 
         $scope.gotoSub = function(l){
-            console.log(l);
-            
             $timeout(function(){
             $location.path('/subscribers/' + l);
             }, 500)
@@ -569,9 +564,7 @@ console.log('ds'+data.subnumber);
         $scope.mergeSub = function(l){
             console.log('in merge');
             console.log(l);
-            
             $scope.row.entity.prev_subnumber = l;
-            
             $scope.confirmSub();
         }
 
@@ -580,7 +573,6 @@ console.log('ds'+data.subnumber);
 
                 var row = $scope.row;
                 var col = $scope.col;
-            
                 /*
                     msg += '<input ng-model="result"><div class="modal-footer">'+ '<button ng-click="digclose(result)" class="btn btn-primary" >Close</button>'+'</div>';
                     $scope.opts = {
@@ -598,7 +590,6 @@ console.log('ds'+data.subnumber);
                         .then(function(result){
                             alert(result);
                             if (result === 'ok') {
-                        
                      ////
 
                         }
@@ -608,7 +599,7 @@ console.log('ds'+data.subnumber);
 
 
 
-                ///       
+                ///
 
                 if (row.entity.prev_subnumber) {
                     $scope.exsub = SubService.get({
@@ -618,7 +609,6 @@ console.log('ds'+data.subnumber);
 
                         /*$http.get(apiSrc + '/suburbsuggest/' + row.entity.suburbid).then(function (response) {
                     $scope.exsub.suburbid = response.data.suburbid;
-                
                 });
                 */
                         var title = 'Warning';

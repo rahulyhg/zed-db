@@ -74,28 +74,28 @@ body {
                 <tr></tr>
                 <tr>
                     <td>
-                        <strong>Date:</strong>{{today}}</td>
+                        <strong>Date:</strong> {{today}}</td>
                     <td>
-                        <strong>Receipt No:</strong>{{sub.receiptnumber}}</td>
+                        <strong>Receipt No:</strong> {{sub.receiptnumber}}</td>
                 </tr>
                 <tr>
                     <td width="400px;">
-                        <strong>Received From:</strong>{{sub.subfirstname}} {{sub.sublastname}}</td>
+                        <strong>Received From:</strong> {{sub.subfirstname}} {{sub.sublastname}}</td>
                     <td style="text-align:left;">
-                        <strong>Subnumber:</strong>{{sub.subnumber}}</td>
+                        <strong>Subnumber:</strong> {{sub.subnumber}}</td>
                 </tr>
                 <tr>
-                    <td>{{sub.subaddress1}}
-                        <br/>{{sub.suburb.suburb}}
-                        <br/>{{sub.suburb.state}}
-                        <br/>{{sub.suburb.postcode}}</td>
+                    <td> {{sub.subaddress1}}
+                        <br/> {{sub.suburb.suburb}}
+                        <br/> {{sub.suburb.state}}
+                        <br/> {{sub.suburb.postcode}}</td>
                     <td style="text-align:left;">
-                        <strong>Expiry Date:</strong>{{sub.expirydate | date}}</td>
+                        <strong>Expiry Date:</strong> {{sub.expirydate | date}}</td>
                 </tr>
 
                 <tr>
                     <td>
-                        <div ng-show="(sub.subscription.subtypecode == 'Passionate') && (sub.pledge.pledgeid > 0)">Passionate pack</div>
+                        <div ng-show="(sub.subscription.subtypecode == 'Passionate') && (sub.pledge.pledgeid > 0)"> Passionate pack</div>
                         <div ng-show="sub.pledge">
                             Gold Prize: {{gold.radiothonprize}}
                             <br/>Silver Prize: {{silver.radiothonprize}}
@@ -103,11 +103,11 @@ body {
                         <div ng-show="sub.subbandname">Band: {{sub.subbandname}}
                             <table class="unstyled" style="margin-left:20px;">
                                 <tr ng-repeat="b in sub.bandmembers" style="border:none;">
-                                    <td style="border:none;">{{b.subbandmemberfirstname}} {{b.subbandmemberlastname}}</td>
+                                    <td style="border:none;"> {{b.subbandmemberfirstname}} {{b.subbandmemberlastname}}</td>
                                 </tr>
                             </table>
                         </div>
-                        {{sub.subbusinessname}} {{sub.submusicianname}} {{subartistname}}
+                        {{sub.subbusinessname}} {{sub.submusicianname}} {{sub.subartistname}} {{sub.subcommunitygroup}}
 
 
                     </td>
