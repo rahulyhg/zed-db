@@ -3,9 +3,18 @@
 app.controller('VolunteerDetailsCtrl', function($rootScope, $scope, $http, $timeout, $stateParams, VolunteerService, SkillsNewService, SkillsService, QualificationService, $dialog, $location, limitToFilter, $anchorScroll, $filter, volunteer) {
 
 		$scope.volunteer = ($stateParams.id) ? volunteer : new VolunteerService();
-		$scope.alerts = [];
-		$scope.qualifications = QualificationService.query()
+		$scope.alerts = [],
+					$scope.qArr = [],
+					$scope.skillsArr = [];
+
+		$scope.qualifications = QualificationService.query(function(){
+			if ($scope.volunteer.qualifications) {
+				var fakeQ = function() { $scope.qArr = _.pluck($scope.volunteer.qualifications, 'id'); };
+				$timeout(fakeQ, 300);
+			}
+		});
 		$scope.skillsold = SkillsService.query();
+		$scope.availability = ['full time', 'part time', 'student', 'under 18'];
 
 		$scope.skills = SkillsNewService.query(function(){
 		// timeout to allow select2 to render initial values
@@ -21,12 +30,8 @@ app.controller('VolunteerDetailsCtrl', function($rootScope, $scope, $http, $time
 				if ($scope.volunteerForm.$valid === true) {
 						if ($stateParams.id) {
 
-								//update
-								// delete $scope.sub.suburb; // delete suburb object
-								// delete $scope.sub.pledges;
-								// delete $scope.sub.bandmembers;
-								// delete $scope.sub.subscription;
 								$scope.volunteer.skills = $scope.skillsArr;
+								$scope.volunteer.qualifications = $scope.qArr;
 
 								$scope.volunteer.$update({ id: $stateParams.id }, function success(response) {
 										$scope.volunteer = VolunteerService.get({ id: $stateParams.id }, function() {
@@ -43,39 +48,6 @@ app.controller('VolunteerDetailsCtrl', function($rootScope, $scope, $http, $time
 								}, function err() {
 										console.log('Couldnt update!');
 								});
-						} else {
-								//insert
-								delete $scope.sub.suburb;
-								delete $scope.sub.bandmembers;
-								delete $scope.sub.subscription;
-
-								if ($scope.sub.suburbid == null) {
-										$scope.sub.suburbid = 1;
-								} //BLANK SUBURB HACK! 
-
-								$http.get(apiSrc + '/subscribers/lastrec/').success(function(data) {
-										var log = [];
-										angular.forEach(data, function(value, key) {
-												var receipts = value.receiptnumber.split('-');
-												this.push(parseInt(receipts[1]));
-										}, log);
-
-										var nlog = _.sortBy(log, function(num) {
-												return num;
-										});
-										var latest = _.last(nlog)
-
-										$scope.sub.receiptnumber = 'FD-' + (latest + 1);
-
-										$scope.sub.$save(function(u, response) {
-												alert('Subscriber added.');
-												$location.path('/subscribers/' + $scope.sub.subnumber);
-
-										});
-								})
-
-
-
 						}
 				} else {
 						$scope.notvalid = true;

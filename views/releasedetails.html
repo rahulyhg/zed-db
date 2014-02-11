@@ -58,7 +58,7 @@
 							<label class="control-label">Album Label</label>
 							<div class="controls">
 								<!--<input ng-uppercase-input2 type="text" class="input-xlarge" ng-model="release.album_label">-->
-								<input class="input-xlarge" type="text" placeholder="Label" ng-model="release.album_label" typeahead="suggestion for suggestion in labels($viewValue)" ng-uppercase-input2 />
+								<input class="input-xlarge" type="text" placeholder="Label" ng-model="release.album_label" typeahead="suggestion for suggestion in labels($viewValue)" typeahead-min-length="3" ng-uppercase-input2 />
 							</div>
 						</div>
 						<div class="control-group controls-row" style="padding:10px 0">
@@ -76,13 +76,14 @@
 						<div class="control-group">
 							<label class="control-label">Home Town</label>
 							<div class="controls">
-								<input ng-uppercase-input2 type="text" class="input-xlarge" ng-model="release.artist_hometown">
+								<input ng-uppercase-input2 type="text" class="input-xlarge" ng-model="release.artist_hometown" typeahead="suggestion.artist_hometown for suggestion in hometown($viewValue)" typeahead-min-length="3">
 							</div>
 						</div>
 						<div class="control-group">
 							<label class="control-label">Country</label>
 							<div class="controls">
-								<input select-on-click ng-uppercase-input2 type="text" class="input-xlarge" ng-model="release.album_origin">
+								<!-- <input select-on-click ng-uppercase-input2 type="text" class="input-xlarge" ng-model="release.album_origin"> -->
+								<input ng-uppercase-input2 type="text" class="input-xlarge" ng-model="release.album_origin" typeahead="suggestion.album_origin for suggestion in country($viewValue)" typeahead-min-length="3">
 							</div>
 						</div>
 						<div class="control-group">
@@ -325,8 +326,8 @@
 			<!-- end row -->
 
 			<div class="inline pad-top" ng-show="relsuggest.length == 0">
-				<button type="submit" ng-click="saveRelease();" class="btn btn-primary">{{submitType}}</button>
-				<button ng-hide="submitType == '/releases/new/release'" type="submit" ng-click="deleteRelease();" class="btn btn-danger">Delete</button>
+				<button type="submit" ng-click="saveRelease();" ng-disabled="locked" class="btn btn-primary">{{submitType}}</button>
+				<button ng-hide="submitType == 'Add Release'" type="submit" ng-click="deleteRelease();" class="btn btn-danger">Delete</button>
 			</div>
 		</div>
 	</fieldset>

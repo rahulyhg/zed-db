@@ -61,8 +61,9 @@
                                 <select ng-model="volunteer.subskill" class="input-large" ng-options="s.skillid as s.skilldescription for s in skillsold"></select>
                             </div>
                         </div>
+                        {{skillsArr}}
                         <div class="control-group controls-row">
-                            <label class="control-label" style="margin-right:5px">Skill</label>
+                            <label class="control-label" style="margin-right:5px">Skills</label>
                             <select ui-select2="skillSelectOptions" ng-model="skillsArr" class="input-xlarge" multiple placeholder="Skill">
                                 <option ng-repeat="s in skills" value="{{s.id}}">{{s.skill}}</option>
                             </select>
@@ -130,11 +131,10 @@
                         </div>
                     </div>
                     <div class="control-group">
-                    {{qualifications}}
                         <label class="control-label">Qualified As</label>
                         <div class="controls">
-                            <select ui-select2="qualifications" ng-model="q" class="input-xlarge" multiple placeholder="Qualifications">
-                                <option ng-repeat="q in qualifications" value="{{q.id}">{{q.qualification}}</option>
+                            <select ui-select2="qualifications" ng-model="qArr" class="input-xlarge" multiple placeholder="Qualifications">
+                                <option ng-repeat="q in qualifications" value="{{q.id}}">{{q.qualification}}</option>
                             </select>
                         </div>
                     </div>

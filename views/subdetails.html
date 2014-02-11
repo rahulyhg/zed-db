@@ -363,8 +363,8 @@
                 <div ng-show="notvalid">Please fill out all fields marked
                     <span class="invalid">red.</span>
                 </div>
-                <button ng-click="saveSubscriber();" class="btn btn-primary">{{submitType}}</button>
-                <button type="submit" ng-hide="submitType == '/subscribers/new/subscriber'" ng-click="deleteSubscriber();" data-access-level='accessLevels.admin' class="btn btn-danger">Delete</button>
+                <button ng-click="saveSubscriber();" ng-disabled="locked" class="btn btn-primary">{{submitType}}</button>
+                <button type="submit" ng-hide="submitType == 'Add Subscriber'" ng-click="deleteSubscriber();" data-access-level='accessLevels.admin' class="btn btn-danger">Delete</button>
             </div>
 
         </div>

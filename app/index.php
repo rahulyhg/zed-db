@@ -49,6 +49,8 @@ $app->get($api_prefix.'titlesuggest/:name', 'getTypeaheadTitle');
 $app->get($api_prefix.'contactsuggest/:key', 'getTypeaheadContact');
 $app->get($api_prefix.'labelsuggest/:key', 'getTypeaheadLabel');
 $app->get($api_prefix.'aprasuggest/:key', 'getTypeaheadApra');
+$app->get($api_prefix.'hometownsuggest/:key', 'getTypeaheadHome');
+$app->get($api_prefix.'countrysuggest/:key', 'getTypeaheadCountry');
 
 // search releases - mutiple fields
 $app->get($api_prefix.'releases', 'getReleases');
@@ -1161,6 +1163,33 @@ function getTypeaheadApra($val) {
     }
 }
 
+function getTypeaheadHome($val) {
+    $key = 'artist_hometown';
+    $val = strtoupper($val);
+        if (strlen($val) >= 3) {
+        $val = '%'.$val.'%';
+        $app = \Slim\Slim::getInstance();
+        $result = Music::where($key,'like',$val)->select($key)->distinct()->get();
+        $res = $app->response();
+        $res['Content-Type'] = 'application/json';
+        $res->body($result);
+    }
+}
+
+function getTypeaheadCountry($val) {
+    $key = 'album_origin';
+    $val = strtoupper($val);
+    if (strlen($val) >= 3) {
+        $val = '%'.$val.'%';
+        $app = \Slim\Slim::getInstance();
+        $result = Music::where($key,'like',$val)->select($key)->distinct()->get();
+        $res = $app->response();
+        $res['Content-Type'] = 'application/json';
+        $res->body($result);
+    }
+}
+
+
 function getTypeaheadContact($val) {
         $key = 'org_nm';
         $val = '%'.strtoupper($val).'%';
@@ -1306,7 +1335,7 @@ function getSubscriber($id) {
 
 function getVolunteer($id) {
         $app = \Slim\Slim::getInstance();
-        $sub = Subscriber::with('skills','volunteer')->find($id);
+        $sub = Subscriber::with('skills','volunteer','qualifications')->find($id);
         $res = $app->response();
         $res['Content-Type'] = 'application/json';
         $res->body($sub);
@@ -1729,8 +1758,12 @@ function saveVolunteer($id) {
         $volunteer->save();
     }
 
+
     $skills = $jsonBody['skills'];
     $sub->skills()->sync($skills);
+
+    $qualifications = $jsonBody['qualifications'];
+    $sub->qualifications()->sync($qualifications);
 
     $res = $app->response();
     $res['Content-Type'] = 'application/json';

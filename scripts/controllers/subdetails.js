@@ -13,6 +13,7 @@ app.controller('SubdetailsCtrl', function($rootScope, $scope, $http, $timeout, $
     //$scope.accessLevels = AuthenticationService.accessLevels;
 
     //set vars for constants 
+    $scope.locked = false;
     $scope.submitType = ($location.path() === '/subscribers/new/subscriber') ? 'Add Subscriber' : 'Update';
     $scope.alerts = [];
     $scope.subsuggest = [];
@@ -120,6 +121,7 @@ app.controller('SubdetailsCtrl', function($rootScope, $scope, $http, $timeout, $
 
         if ($scope.subForm.$valid === true) {
             if ($stateParams.id) {
+                $scope.locked = true;
                 //update
                 delete $scope.sub.suburb; // delete suburb object
                 //delete $scope.sub.pledges;
@@ -140,6 +142,7 @@ app.controller('SubdetailsCtrl', function($rootScope, $scope, $http, $timeout, $
                 $scope.sub.$update({
                     id: $stateParams.id
                 }, function success(response) {
+                    $scope.locked = false;
                     $scope.sub = SubService.get({
                         id: $stateParams.id
                     }, function() {
@@ -164,6 +167,7 @@ app.controller('SubdetailsCtrl', function($rootScope, $scope, $http, $timeout, $
                 });
             } else {
                 //insert
+                $scope.locked = true;
                 delete $scope.sub.suburb;
                 delete $scope.sub.bandmembers;
                 delete $scope.sub.subscription;
@@ -187,6 +191,7 @@ app.controller('SubdetailsCtrl', function($rootScope, $scope, $http, $timeout, $
                     $scope.sub.receiptnumber = 'FD-' + (latest + 1);
 
                     $scope.sub.$save(function(u, response) {
+                        $scope.locked = false;
                         alert('Subscriber added.');
                         $location.path('/subscribers/' + $scope.sub.subnumber);
 

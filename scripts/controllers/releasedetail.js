@@ -5,6 +5,7 @@ app.controller('ReleaseDetailCtrl', function($rootScope, $scope, $timeout, $http
 	$scope.release = ($stateParams.id) ? release : new ReleaseService();
 
 	//set vars for constants
+	$scope.locked = false;
 	$scope.submitType = (!$stateParams.id) ? 'Add Release' : 'Update';
 	$scope.alerts = [];
 	$scope.relsuggest = [];
@@ -37,16 +38,30 @@ app.controller('ReleaseDetailCtrl', function($rootScope, $scope, $timeout, $http
 		});
 	};
 
+	$scope.hometown = function(hometown) {
+		return $http.get(apiSrc + '/hometownsuggest/' + hometown).then(function(response) {
+			return limitToFilter(response.data, 15);
+		});
+	};
+
+	$scope.country = function(country) {
+		return $http.get(apiSrc + '/countrysuggest/' + country).then(function(response) {
+			return limitToFilter(response.data, 15);
+		});
+	};
+
 
 	$scope.saveRelease = function() {
 
 		$scope.release.genres = $scope.gs;
 		if ($stateParams.id) {
 			//update
+			$scope.locked = true;
 
 			$scope.release.$update({
 				id: $stateParams.id
 			}, function success(response) {
+				$scope.locked = false;
 				if ($scope.alerts.length > 0) {
 					$scope.alerts.splice(0, 1);
 				}
@@ -63,7 +78,9 @@ app.controller('ReleaseDetailCtrl', function($rootScope, $scope, $timeout, $http
 			});
 		} else {
 			//insert
+			$scope.locked = true;
 			$scope.release.$save(function() {
+				$scope.locked = false;
 				alert('Record added');
 				$location.path('/releases/' + $scope.release.library_no);
 			});
