@@ -2,8 +2,6 @@
 
 app.controller('ReleaseCtrl', function($rootScope, $scope, $http, $location, $stateParams, ReleaseService, GenresService, ThemesService, limitToFilter, $filter, promiseTracker) {
 
-
-
 	$scope.releaseSearchFormData = {};
 	$scope.rTracker = promiseTracker('rTracker');
 

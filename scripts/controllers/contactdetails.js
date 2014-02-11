@@ -1,8 +1,9 @@
 'use strict';
 
-app.controller('ContactdetailsCtrl', function($scope, $stateParams, $http, ContactService, DepartmentsService, InterestsService, $dialog, $location, limitToFilter, contact, $anchorScroll) {
+app.controller('ContactdetailsCtrl', function($scope, $stateParams, $http, ContactService, ContactCategoriesService, DepartmentsService, InterestsService, $dialog, $location, limitToFilter, contact, $anchorScroll, $timeout) {
 
     //set vars for constants
+    $scope.locked = false;
     $scope.alerts = [];
     $scope.consuggest = [];
     $scope.submitType = ($location.path() == '/contacts/new/contact') ? 'Add Contact' : 'Update';
@@ -28,15 +29,27 @@ app.controller('ContactdetailsCtrl', function($scope, $stateParams, $http, Conta
 
     $scope.departments = DepartmentsService.query();
     $scope.interests = InterestsService.query();
+    $scope.contactcats = ContactCategoriesService.query(function() {
+        if ($scope.contact.contactcategories) {
+            var fakeInit = function() {
+                $scope.csArr = _.pluck($scope.contact.contactcategories, 'id');
+            }
+            $timeout(fakeInit, 300);
+        }
+    });
+
 
     $scope.saveContact = function() {
+        $scope.contact.contactcategories = $scope.csArr;
+        $scope.locked = true;
 
         if ($stateParams.id) {
             //update
-
             $scope.contact.$update({
                 id: $stateParams.id
             }, function success(response) {
+
+                $scope.locked = false;
                 if ($scope.alerts.length > 0) {
                     $scope.alerts.splice(0, 1);
                 }
@@ -55,25 +68,12 @@ app.controller('ContactdetailsCtrl', function($scope, $stateParams, $http, Conta
 
         } else {
             //insert
-
-            /*$scope.contact.$save();
-            alert('Contact added');
-            $location.path('/contacts');*/
             $scope.contact.$save(function() {
+
+                $scope.locked = false;
                 alert('Contact added');
                 $location.path('/contacts/' + $scope.contact.contact_no);
             });
-
-            // $http.post(apiSrc + '/contacts/', $scope.contact).success(function(data) {
-            //     var matches = data.match(/int\((\d+)\)/);
-            //     $scope.contact = ContactService.get({
-            //         id: matches[1]
-            //     }, function() {
-            //         alert('Contact added.');
-            //         $location.path('/contacts/' + $scope.contact.contact_no);
-            //     });
-
-            // });
         }
     };
 

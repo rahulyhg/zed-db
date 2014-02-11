@@ -113,6 +113,7 @@ $app->get($api_prefix.'departments/', 'getDepartments');
 $app->get($api_prefix.'genres/', 'getGenres');
 $app->get($api_prefix.'genresnew/', 'getGenresNew');
 $app->get($api_prefix.'interests/', 'getInterests');
+$app->get($api_prefix.'contactcats/', 'getContactCats');
 $app->get($api_prefix.'subtypes/', 'getSubtypes');
 $app->get($api_prefix.'skills/', 'getSkills');
 $app->get($api_prefix.'qualifications/', 'getQualifications');
@@ -1485,7 +1486,7 @@ function getSubscriberNotPosted($id) {
 
 function getContact($id) {
     $app = \Slim\Slim::getInstance();
-    $contact = Contact::find($id);
+    $contact = Contact::with('contactcategories')->find($id);
     //$deps = $contact->departments;
     $res = $app->response();
     $res['Content-Type'] = 'application/json';
@@ -1543,13 +1544,16 @@ function saveContact($id) {
     $app = \Slim\Slim::getInstance();
 	$req = $app->request();
 	$body = $req->getBody();
-	$nb = json_decode($body, true);
+	$jsonBody = json_decode($body, true);
     //$depArr = $nb['departments'];
     //unset($nb['departments']);
+    $contactCategories = $jsonBody['contactcategories'];
+    unset($jsonBody['contactcategories']);
 
     $contact = Contact::where('contact_no','=',$id)->first();
-    $contact->fill($nb);
+    $contact->fill($jsonBody);
 	$contact->save();
+    $contact->contactcategories()->sync($contactCategories);
     //$contact->departments()->sync($depArr);
 
 }
@@ -1840,14 +1844,19 @@ function addSubscriber() {
 }
 
 function addContact() {
-        $app = \Slim\Slim::getInstance();
-        $req = $app->request();
-        $body = $req->getBody();
-        $nb = json_decode($body, true);
-        $contact = Contact::create($nb);
-        $res = $app->response();
-        $res['Content-Type'] = 'application/json';
-        $res->body($contact);
+    $app = \Slim\Slim::getInstance();
+    $req = $app->request();
+    $body = $req->getBody();
+    $jsonBody = json_decode($body, true);
+
+    $contactCategories = $jsonBody['contactcategories'];
+    unset($jsonBody['contactcategories']);
+
+    $contact = Contact::create($jsonBody);
+    $contact->contactcategories()->sync($contactCategories);
+    $res = $app->response();
+    $res['Content-Type'] = 'application/json';
+    $res->body($contact);
 }
 
 function addSkill() {
@@ -1938,7 +1947,7 @@ function deleteSubscriber($id) {
 
 function deleteContact($id) {
         $app = \Slim\Slim::getInstance();
-        $contact = Subscriber::find($id);
+        $contact = Contact::find($id);
         $contact->delete();
 }
 
@@ -2060,6 +2069,14 @@ function getInterests() {
         $res = $app->response();
         $res['Content-Type'] = 'application/json';
         $res->body($interests);
+}
+
+function getContactCats() {
+        $app = \Slim\Slim::getInstance();
+        $cats = Contactcategory::orderBy('category')->get();
+        $res = $app->response();
+        $res['Content-Type'] = 'application/json';
+        $res->body($cats);
 }
 
 function getSubtypes() {

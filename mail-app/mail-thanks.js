@@ -46,11 +46,8 @@ var html_body = '<span style="display:none !important">Thanks for subscribing!</
 
 //Subscriber.find({ expirydate: orm.between( week, fortnight) }).order('sublastname').run(function (err, subs) {
 Subscriber.find({ subnumber: 55908 }).order('sublastname').run(function (err, subs) {
-  console.log("Subs found: %d", subs.length);
   _.each(subs, function(sub){
-    console.log(sub.subemail);
       if (sub.subemail) {
-      console.log("Sub: %s, Email: %s", sub.fullName(), sub.subemail);
         var mailOptions = {
           to: sub.subemail,
           subject: subject,

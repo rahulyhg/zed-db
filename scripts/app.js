@@ -405,6 +405,16 @@ app.factory('InterestsService', function($resource) {
 	})
 })
 
+app.factory('ContactCategoriesService', function($resource) {
+	return $resource(apiSrc + '/contactcats/:id', {
+		id: '@id'
+	}, {
+		update: {
+			method: 'PUT'
+		}
+	})
+})
+
 app.factory('SkillsService', function($resource) {
 	return $resource(apiSrc + '/skills/:id', {
 		id: '@subtypeid'

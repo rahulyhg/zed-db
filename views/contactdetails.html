@@ -182,6 +182,14 @@
                             </div>
                         </div>
                         <div class="control-group">
+                            <label class="control-label">Categories</label>
+                            <div class="controls">
+                                <select ui-select2="categories" ng-model="csArr" class="input-xlarge" multiple placeholder="Categories">
+                                    <option ng-repeat="c in contactcats" value="{{c.id}}">{{c.category}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-group">
                             <label class="control-label">Contact Log</label>
                             <div class="controls">
                                 <textarea ng-model="contact.log" class="input-xlarge" rows="9"></textarea>
@@ -198,8 +206,8 @@
             <!-- end row  -->
 
             <div class="inline pad-top">
-                <button type="submit" ng-click="saveContact();" class="btn btn-primary">{{submitType}}</button>
-                <button ng-hide="submitType == '/contacts/new/contact'" type="submit" ng-click="deleteContact();" class="btn btn-danger">Delete</button>
+                <button type="submit" ng-click="saveContact();" ng-disabled="locked" class="btn btn-primary">{{submitType}}</button>
+                <button ng-hide="submitType == 'Add Contact'" type="submit" ng-click="deleteContact();" class="btn btn-danger">Delete</button>
             </div>
 
         </div>

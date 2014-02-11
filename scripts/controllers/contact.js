@@ -1,17 +1,9 @@
 'use strict';
 
-app.controller('ContactCtrl', function($rootScope, $scope, $http, $location, $stateParams, ContactService, DepartmentsService, InterestsService, limitToFilter, promiseTracker) {
+app.controller('ContactCtrl', function($rootScope, $scope, $http, $location, $stateParams, ContactService, limitToFilter, promiseTracker) {
 
 	$scope.contactSearchFormData = {};
 	$scope.rTracker = promiseTracker('rTracker');
-
-	$scope.departments = DepartmentsService.query(function(data) {
-		$scope.contactSearchFormData.dept_sun = [];
-	});
-
-	$scope.interests = InterestsService.query(function(data) {
-		$scope.contactSearchFormData.interest_sun = [];
-	});
 
 	if ($rootScope.contactParams) {
 		$scope.contacts = ContactService.query($rootScope.contactParams, function(u, getResponseHeaders) {
