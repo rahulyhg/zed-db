@@ -1,8 +1,10 @@
 <div class="row-fluid grey-border-bottom">
 	<h3 class="pad-bot">Music Library</h3>
-	<div class="right"><button class="btn btn-success" ng-click="add();" type="button" style="float:right;">Add New Release</button></div>
+	<div class="right">
+		<button class="btn btn-success" ng-click="add();" type="button" style="float:right;">Add New Release</button>
+	</div>
 	<form name="releaseSearchForm" ng-submit="search()">
-		<strong>Search: </strong>
+		<strong>Search:</strong>
 		<input class="input-medium search-query" type="search" value="" name="artist_nm" placeholder="Artist" ng-model="releaseSearchFormData.artist_nm" typeahead-min-length="3" typeahead="suggestion for suggestion in artists($viewValue)" ng-uppercase-input2 />
 		<input class="input-medium search-query" type="search" placeholder="Title" ng-model="releaseSearchFormData.title" typeahead="suggestion for suggestion in titles($viewValue)" typeahead-min-length="3" ng-uppercase-input2 />
 
@@ -15,6 +17,29 @@
 		<div collapse="!isCollapsed">
 			<div style="margin-top:10px;" class="well well-small">
 				<div class="control-group controls-row" style="padding:10px 0;">
+					<ul class="inline">
+					<li>
+							<!-- <div class="control-group input-append">
+							<input type="text" ng-model="releaseSearchFormData.entered_dt" class="input-small" bs-datepicker data-date-format="dd/mm/yyyy" placeholder="Created After" data-date-today-highlight="true" data-date-today-btn="linked" />
+							<button type="button" class="btn lowcal" data-toggle="datepicker"><i class="icon-calendar"></i>
+							</button>
+							</div> -->
+							<div class="control-group input-append">
+								<input type="text" class="form-control" data-date-format="yyyy/MM/dd" datepicker-popup="yyyy/MM/dd" class="input-small" placeholder="Created Start Date" is-open="opened" ng-model="releaseSearchFormData.entered_dt" show-button-bar="true" show-weeks="false" />
+								<button type="button" class="btn lowcal" ng-click="open($event)" data-toggle="datepicker"><i class="icon-calendar"></i>
+								</button>
+							</div>
+						</li>
+						<li>
+							<div class="control-group input-append">
+								<input type="text" class="form-control" data-date-format="yyyy/MM/dd" datepicker-popup="yyyy/MM/dd" class="input-small" placeholder="Created End Date" ng-model="releaseSearchFormData.entered_dtend" show-button-bar="true" show-weeks="false" />
+								<button type="button" class="btn lowcal" ng-click="open($event)" data-toggle="datepicker"><i class="icon-calendar"></i>
+								</button>
+							</div>
+						</li>
+					</ul>
+				</div>
+				<div class="control-group controls-row" style="padding:10px 0;">
 					<input class="input-medium search-query" type="search" placeholder="Apra Code" ng-model="releaseSearchFormData.apra_code" typeahead="suggestion for suggestion in apra($viewValue)" typeahead-min-length="3" />
 
 					<input class="input-small search-query" type="search" name="release_year" ng-model="releaseSearchFormData.release_year" placeholder="Release Year" />
@@ -22,41 +47,50 @@
 					<input class="input-medium search-query" type="text" name="release_location" ng-model="releaseSearchFormData.release_location" placeholder="Log" />
 
 					<label class="checkbox inline">
-						<input type="checkbox" name="cont_local" ng-model="releaseSearchFormData.cont_local" ng-true-value="L" ng-false-value="" >Local?
+						<input type="checkbox" name="cont_local" ng-model="releaseSearchFormData.cont_local" ng-true-value="L" ng-false-value="">Local?
 					</label>
 					<label class="checkbox inline">
-						<input type="checkbox" name="cont_female" ng-model="releaseSearchFormData.cont_female" ng-true-value="F" ng-false-value="" >Female?
+						<input type="checkbox" name="cont_female" ng-model="releaseSearchFormData.cont_female" ng-true-value="F" ng-false-value="">Female?
 					</label>
 					<label class="checkbox inline" style="margin-right:5px;">Aus/NZ?</label>
-					<select ng-model="releaseSearchFormData.cont_ausnz" name="release.cont_ausnz" class="input-small" ng-options="a for a in ausnz"><option></option>
+					<select ng-model="releaseSearchFormData.cont_ausnz" name="release.cont_ausnz" class="input-small" ng-options="a for a in ausnz">
+						<option></option>
 					</select>
 				</div>
 				<div class="control-group controls-row" style="padding:10px 0;">
-					<input class="input-medium search-query" type="text" name="release_notes" ng-model="releaseSearchFormData.release_notes" placeholder="Release Comments" />
-
-					<input class="input-medium search-query" type="search" name="artist_hometown" ng-model="releaseSearchFormData.artist_hometown" placeholder="Home Town" typeahead="suggestion.artist_hometown for suggestion in hometown($viewValue)" typeahead-min-length="3"  ng-uppercase-input2 />
-
-					<input class="input-medium search-query" type="search" name="album_origin" ng-model="releaseSearchFormData.album_origin" placeholder="Country" typeahead="suggestion.album_origin for suggestion in country($viewValue)" typeahead-min-length="3" ng-uppercase-input2 />
+					<ul class="inline">
+						<li>
+							<input class="input-medium search-query" type="text" name="release_notes" ng-model="releaseSearchFormData.release_notes" placeholder="Release Comments" />
+						</li>
+						<li>
+							<input class="input-medium search-query" type="search" name="artist_hometown" ng-model="releaseSearchFormData.artist_hometown" placeholder="Home Town" typeahead="suggestion.artist_hometown for suggestion in hometown($viewValue)" typeahead-min-length="3" ng-uppercase-input2 />
+						</li>
+						<li>
+							<input class="input-medium search-query" style="z-index:1000;" type="search" name="album_origin" ng-model="releaseSearchFormData.album_origin" placeholder="Country" typeahead="suggestion.album_origin for suggestion in country($viewValue)" typeahead-min-length="3" ng-uppercase-input2 />
+						</li>
+						
+					</ul>
 				</div>
+				
 				<div class="control-group controls-row">
 					<ul class="inline unstyled">
 						<li>
 							<div class="control-group">
 								<label class="control-label">Genre</label>
 								<div class="controls">
-									<select ui-select2 ng-model="releaseSearchFormData.cont_genre" class="input-large" multiple >
-										<option ng-repeat="g in genres" value="{{g.genre_id}}">{{g.genre_desc}}</option>
+									<select ui-select2 ng-model="releaseSearchFormData.genre" class="input-large" multiple>
+										<option ng-repeat="g in genres" value="{{g.id}}">{{g.genre}}</option>
 									</select>
 								</div>
 							</div>
-							<div class="control-group">
+							<!-- <div class="control-group">
 								<label class="control-label">Genre 2</label>
 								<div class="controls">
-									<select ui-select2 ng-model="releaseSearchFormData.cont_subgenre" class="input-large" multiple >
+									<select ui-select2 ng-model="releaseSearchFormData.cont_subgenre" class="input-large" multiple>
 										<option ng-repeat="g in genres" value="{{g.genre_id}}">{{g.genre_desc}}</option>
 									</select>
 								</div>
-							</div>
+							</div> -->
 						</li>
 						<li>
 							<label class="control-label inline" style="margin-right:5px;">Log Format</label>
@@ -66,7 +100,8 @@
 						</li>
 						<li>
 							<label class="control-label inline" style="margin-right:5px;">Library Format</label>
-							<select ng-model="releaseSearchFormData.format_stored" name="format_stored" class="input-small" ng-options="f as f for f in format"><option></option>
+							<select ng-model="releaseSearchFormData.format_stored" name="format_stored" class="input-small" ng-options="f as f for f in format">
+								<option></option>
 							</select>
 						</li>
 						<li>
@@ -81,27 +116,35 @@
 <div ng-show="rTracker.active()">
 	<img src="/images/spinner_48.gif" />
 </div>
-<div ng-show="releases.$resolved && releases.length != 0" class="search__box">
+<!-- <div ng-show="releases.$resolved && releases.length != 0" class="search__box">
 	<h5 style="padding-left:5px;">{{releases.length}} items found.</h5>
 	<table class="table table-striped">
 		<tr>
 			<th><a href="" ng-click="predicate = 'artist_nm'; reverse=!reverse">Artist</a></th>
-		  	<th><a href="" ng-click="predicate = 'title'; reverse=!reverse">Title</a></th>
-		  	<th><a href="" ng-click="predicate = 'library_no'; reverse=!reverse">Record #</a></th>
-		  	<th><a href="" ng-click="predicate = 'release_year'; reverse=!reverse">Year</a></th>
-		  	<th><a href="" ng-click="predicate = 'entered_dt'; reverse=!reverse">Created</a></th>
+			<th><a href="" ng-click="predicate = 'title'; reverse=!reverse">Title</a></th>
+			<th><a href="" ng-click="predicate = 'library_no'; reverse=!reverse">Record #</a></th>
+			<th><a href="" ng-click="predicate = 'release_year'; reverse=!reverse">Year</a></th>
+			<th><a href="" ng-click="predicate = 'entered_dt'; reverse=!reverse">Created</a></th>
 		</tr>
 		<tr ng-repeat="release in releases  | orderBy:predicate:reverse">
 			<td>{{release.artist_nm}}</td>
 			<td><a href="/releases/{{release.library_no}}">{{release.title}}</a></td>
-		  	<td>{{release.library_no}}</td>
-		  	<td>{{release.release_year}}</td>
+			<td>{{release.library_no}}</td>
+			<td>{{release.release_year}}</td>
 			<td>{{release.entered_dt}}</td>
 		</tr>
 	</table>
-</div>
-<div class="row-fluid" ng-show="releases.$resolved && releases.length == 0" style="margin-bottom: 20px;">
-	<h3>Nothing found yo!</h3>
+</div> -->	
+<div ng-hide="rTracker.active()">
+	<div class="row-fluid search__box" ng-show="releases.length > 0">
+
+		<h5 style="padding-left: 5px;">{{releases.length}} releases found.</h5>
+		<div style="height:200px;" ng-grid="gridReleases"></div>
+	</div>
+
+	<div class="row-fluid" ng-show="releases.length == 0" style="margin-bottom: 20px;">
+		<h3>Nothing found yo!</h3>
+	</div>
 </div>
 
 <div ui-view></div>

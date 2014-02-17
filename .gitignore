@@ -7,4 +7,4 @@ phpPgAdmin-5.1/
 composer.lock
 nodestuff.txt
 views/.fuse*
-
+scripts/controllers/.fuse*

@@ -1,9 +1,31 @@
 'use strict';
 
-app.controller('ContactCtrl', function($rootScope, $scope, $http, $location, $stateParams, ContactService, limitToFilter, promiseTracker) {
+app.controller('ContactCtrl', function($rootScope, $scope, $http, $location, $stateParams, ContactService, DepartmentsService, InterestsService, limitToFilter, promiseTracker) {
 
 	$scope.contactSearchFormData = {};
 	$scope.rTracker = promiseTracker('rTracker');
+
+	$scope.gridContacts = {
+        data: 'contacts',
+        enableCellSelection: false,
+        enableRowSelection: false,
+        enableCellEdit: false,
+        showFilter: true,
+        columnDefs: [{
+            field: 'org_nm',
+            displayName: 'Organisation'
+        }, {
+            field: 'contact_nm',
+            displayName: 'Contact Name',
+            cellTemplate: '<div class="ngCellText" ng-class="col.colIndex()"><span ng-cell-text><a href="/contacts/{{row.entity.contact_no}}">{{row.getProperty(col.field)}}</a></span></div>'
+        }, {
+            field: 'email',
+            displayName: 'Email'
+        }, {
+            field: 'work_ph',
+            displayName: 'Phone'
+        }]
+    };
 
 	if ($rootScope.contactParams) {
 		$scope.contacts = ContactService.query($rootScope.contactParams, function(u, getResponseHeaders) {
@@ -14,6 +36,14 @@ app.controller('ContactCtrl', function($rootScope, $scope, $http, $location, $st
 			delete $rootScope.contactParams;
 		});
 	}
+
+	$scope.departments = DepartmentsService.query(function(data, status) {
+        $scope.contactSearchFormData.dept_sun = [];
+    });
+
+    $scope.interests = InterestsService.query(function(data, status) {
+        $scope.contactSearchFormData.interest_sun = [];
+    });
 
 	$scope.contactsuggest = function(orgName) {
 		return $http.get(apiSrc + '/contactsuggest/' + orgName).then(function(response) {

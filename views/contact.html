@@ -2,7 +2,8 @@
     <h3 class="pad-bot">Contacts</h3>
     <form name="contactSearchForm" ng-submit="search()">
         <strong>Search:</strong>
-        <input class="input-medium search-query" type="search" name="orgName" placeholder="Organisation" ng-model="contactSearchFormData.org_nm" typeahead-min-length="3" typeahead="suggestion.org_nm for suggestion in contactsuggest($viewValue)" ng-uppercase-input />
+        <input class="input-medium search-query" type="search" name="orgName" placeholder="Organisation" ng-model="contactSearchFormData.org_nm" typeahead-min-length="3" typeahead="suggestion.org_nm for suggestion in contactsuggest($viewValue)" ng-uppercase-input2 />
+        <input class="input-medium search-query" type="search" name="contactName" placeholder="Contact Name" ng-model="contactSearchFormData.contact_nm" ng-uppercase-input2 />
 
         <button class="btn btn-primary" type="submit" id="search-button">Search</button>
         <button class="btn btn-danger" type="button" ng-click="clearForm();" id="clear-button">Clear</button>
@@ -13,31 +14,29 @@
 
         <div collapse="!isCollapsed">
             <div style="margin-top:10px;" class="well well-large">
-                <div class="control-group">
-                    <label class="control-label">Category</label>
-                    <div class="controls">
-                        <select ui-select2 ng-model="contactSearchFormData.dept_sun" class="input-large" multiple>
+                <ul class="inline">
+                    <li>
+                        <input class="input-medium search-query" type="search" name="email" ng-model="contactSearchFormData.email" placeholder="Email" />
+                    </li>
+                    <li>
+                        <select ui-select2 ng-model="contactSearchFormData.dept_sun" class="input-xlarge" multiple placeholder="Department">
                             <option ng-repeat="d in departments" value="{{d.department_no}}">{{d.department_nm}}</option>
                         </select>
-                    </div>
-                </div>
-                <div class="control-group">
-                    <label class="control-label">Sub-category</label>
-                    <div class="controls">
-                        <select ui-select2 ng-model="contactSearchFormData.interest_sun" class="input-large" multiple>
-                            <option></option>
+                    </li>
+                    <li>
+                        <select ui-select2 style="padding-left: 5px;" ng-model="contactSearchFormData.interest_sun" class="input-large" multiple placeholder="Sub-category">
                             <option ng-repeat="i in interests" value="{{i.interest_no}}">{{i.interest_nm}}</option>
                         </select>
-                    </div>
-                </div>
+                    </li>
+                </ul>
             </div>
         </div>
 
     </form>
 </div>
-<div class="row-fluid">
+<!-- <div class="row-fluid">
     <div ng-show="contacts.$resolved && contacts.length != 0" class="search__box">
-        <h5>{{contacts.length}} contacts found.</h5>
+        <h5 style="padding-left: 5px;">{{contacts.length}} contacts found.</h5>
         <table class="table table-striped">
             <tr>
 
@@ -57,9 +56,17 @@
             </tr>
         </table>
     </div>
-    <div class="row-fluid" ng-show="contacts.$resolved && contacts.length == 0" style="margin-bottom: 20px;">
+</div> -->
+<div ng-show="rTracker.active()">
+    <img src="/images/spinner_48.gif" />
+</div>
+<div class="row-fluid search__box" ng-show="contacts.$resolved && contacts.length != 0">
+    <h5 style="padding-left: 5px;">{{contacts.length}} contacts found.</h5>
+    <div style="height:200px;" ng-grid="gridContacts"></div>
+</div>
+<div class="row-fluid">
+    <div ng-show="contacts.$resolved && contacts.length == 0" style="margin-bottom: 20px;">
         <h3>No one found yo!</h3>
     </div>
 </div>
-
 <div ui-view></div>

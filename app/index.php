@@ -211,6 +211,9 @@ $app->options($api_prefix.'testfs/', 'optReleases');
 $app->options($api_prefix.'newhuh/:user/:pass', 'optReleases');
 $app->get($api_prefix.'newhuh/:user/:pass', 'createP');
 
+$app->get($api_prefix.'copycats', 'copyCats');
+
+
 function createP($r, $pass) {
     $app = \Slim\Slim::getInstance();
     $passwordHasher = new PasswordHash(8,false);
@@ -225,6 +228,20 @@ function createP($r, $pass) {
     $res->body($user);
 
 
+}
+
+function copyCats() {
+    $cts = Contact::get();
+
+    foreach ($cts as $ct) {
+        if ($ct->dept_sun) {
+            $d = Department::where('department_no', '=', $ct->dept_sun)->get();
+            $cc = Contactcategory::where('category', '=', $d[0]->department_nm)->get();
+            $foo = [$cc[0]->id];
+            echo "ctc: ".$ct->contact_no." ".$cc[0]->id."<br/>";
+            $ct->contactcategories()->sync($foo);
+        }
+    }
 }
 
 
@@ -572,10 +589,19 @@ function getReleases() {
 
 	#parse and flatten qstring
 	$q = properParseQstr($_SERVER['QUERY_STRING']);
-	$q = array_filter($q);
+    $q = array_filter($q);
+
+    // $genres = array();
+    // foreach ($q as $k => $v) {
+    //     if (is_array($v) && $k == 'genre') {
+    //         $genres = $v;
+    //     }
+    // }
+    // unset($q['genre']);
 
 	#get first params - set as first where
 	$alpha = arrayKshift($q);
+    $checkEndDate = array_key_exists('entered_dtend', $q);
 
 	foreach ($alpha as $key => $value) {
 
@@ -586,11 +612,10 @@ function getReleases() {
 			if ($keycheck == 'cont_genre' || $keycheck == 'cont_subgenre') { $f = (int) $f; }
 			if (!is_int($f)){
 				$f = '%'.urldecode($f).'%';
-				$query = Music::where($key,'ilike',$f);
+				$query = Music::with('genres')->where($key,'ilike',$f);
 				//echo 'select from music where '.$key.' like '.$f;
 			} else {
-				$query = Music::where($key,'=',$f);
-
+				$query = Music::with('genres')->where($key,'=',$f);
 			}
 
 			foreach ($value as $k => $val) {
@@ -605,18 +630,21 @@ function getReleases() {
 
 		} else {
 			if ($keycheck == 'cont_genre' || $keycheck == 'cont_subgenre') { $value = (int) $value; }
-			if (!is_int($value)){
+			if (($keycheck != 'entered_dt') && (!is_int($value))){
 				$value = '%'.urldecode($value).'%';
-				$query = Music::where($key,'ilike',$value);
+				$query = Music::with('genres')->where($key,'ilike',$value);
 				//echo 'select from music where '.$key.' like '.$value;
 
 			} else {
-				$query = Music::where($key,'=',$value);
+                if ($checkEndDate) {
+                    $query = Music::with('genres')->where($key,'>=',$value);
+                } else {
+                    $query = Music::with('genres')->where($key,'=',$value);
+                }
 			}
 
+
 		}
-
-
 	}
 
 	foreach ($q as $key => $value) {
@@ -648,8 +676,20 @@ function getReleases() {
 		} else {
 
 			if ($key == 'cont_genre' || $key == 'cont_subgenre') { $value = (int) $value; }
-			if (is_int($value)) {
-				$query->where($key, '=', $value);
+			if (($key == 'entered_dt') || ($key == 'entered_dtend') || is_int($value)) {
+                $op = '=';
+                switch ($key) {
+                    case 'entered_dt':
+                        $op = '>=';
+                        break;
+
+                    case 'entered_dtend':
+                        $key = 'entered_dt';
+                        $op = '<=';
+                        break;
+                }
+
+				$query->where($key, $op, $value);
 			} else {
 				$value = '%'.urldecode($value).'%';
 				$query->where($key, 'like', $value);
@@ -998,11 +1038,6 @@ function getSubNew() {
 
             }
     }
-
-
-
-
-
 
 	foreach ($q as $key => $value) {
 

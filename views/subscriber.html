@@ -28,7 +28,7 @@
 	</form>
 </div>
 <div class="row-fluid">
-	<div ng-show="subscribers.$resolved && subscribers.length != 0" class="search__box">
+	<!-- <div ng-show="subscribers.$resolved && subscribers.length != 0" class="search__box">
 		<h5 style="padding-left: 5px;">{{subscribers.length}} subscribers found.</h5>
 
 		<table class="table table-striped">
@@ -59,10 +59,14 @@
 				<td>{{sub.createddate}}</td>
 			</tr>
 		</table>
+	</div>-->
+	<div class="row-fluid search__box" ng-show="subscribers.$resolved && subscribers.length != 0">
+		<h5 style="padding-left: 5px;">{{subscribers.length}} subscribers found.</h5>
+	    <div style="height:200px;" ng-grid="gridSubs"></div>
 	</div>
 	<div class="row-fluid" ng-show="subscribers.$resolved && subscribers.length == 0" style="margin-bottom: 20px;">
 		<h3>No one found yo!</h3>
 	</div>
-</div>
+</div> 
 
 <div ui-view></div>

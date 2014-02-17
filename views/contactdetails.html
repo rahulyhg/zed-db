@@ -5,11 +5,11 @@
                 <h2>{{contact.org_nm}}</h2>
                 <ul class="inline">
                     <li>
-                        <strong>ID:</strong>{{contact.contact_no}}</li>
+                        <strong>ID:</strong> {{contact.contact_no}}</li>
                     <li>
-                        <strong>Created:</strong>{{contact.created_at}}</li>
+                        <strong>Created:</strong> {{contact.created_at}}</li>
                     <li>
-                        <strong>Last Updated:</strong>{{contact.updated_at}}</li>
+                        <strong>Last Updated:</strong> {{contact.updated_at}}</li>
                 </ul>
 
                 <alert ng-repeat="alert in alerts" type="alert.type" close="closeAlert($index)">{{ alert.msg }}</alert>

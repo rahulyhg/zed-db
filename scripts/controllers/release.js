@@ -1,6 +1,6 @@
 'use strict';
 
-app.controller('ReleaseCtrl', function($rootScope, $scope, $http, $location, $stateParams, ReleaseService, GenresService, ThemesService, limitToFilter, $filter, promiseTracker) {
+app.controller('ReleaseCtrl', function($rootScope, $scope, $http, $location, $stateParams, ReleaseService, GenresNewService, ThemesService, limitToFilter, $filter, promiseTracker) {
 
 	$scope.releaseSearchFormData = {};
 	$scope.rTracker = promiseTracker('rTracker');
@@ -13,6 +13,31 @@ app.controller('ReleaseCtrl', function($rootScope, $scope, $http, $location, $st
 			//delete $rootScope.releaseParams;
 		});
 	}
+	$scope.gridReleases = {
+				data: 'releases',
+				enableCellSelection: false,
+				enableRowSelection: false,
+				enableCellEdit: false,
+				showFilter: true,
+				showFooter: false,
+				columnDefs: [{
+						field: 'artist_nm',
+						displayName: 'Artist',
+				}, {
+						field: 'title',
+						displayName: 'Title',
+						cellTemplate: '<div class="ngCellText" ng-class="col.colIndex()"><span ng-cell-text><a href="/releases/{{row.entity.library_no}}">{{COL_FIELD}}</a></span></div>'
+				}, {
+						field: 'library_no',
+						displayName: 'Record #',
+				}, {
+						field: 'release_year',
+						displayName: 'Year'
+				}, {
+						field: 'entered_dt',
+						displayName: 'Created'
+				}]
+		};
 
 	$scope.ausnz = ["A", "NZ"];
 	$scope.format = ["CD", "DIGITAL", "VINYL"];
@@ -30,7 +55,7 @@ app.controller('ReleaseCtrl', function($rootScope, $scope, $http, $location, $st
 		format_desc: 'VINYL 7"'
 	}];
 
-	$scope.genres = GenresService.query();
+	$scope.genres = GenresNewService.query();
 	$scope.themes = ThemesService.query();
 
 	$scope.artists = function(artistName) {
@@ -73,13 +98,36 @@ app.controller('ReleaseCtrl', function($rootScope, $scope, $http, $location, $st
 
 	$scope.search = function($element) {
 
-
 		if ($scope.releaseSearchForm.$dirty === true) {
-			var params = $scope.releaseSearchFormData;
+			if ($scope.releaseSearchFormData.entered_dt) {
+				$scope.releaseSearchFormData.entered_dt = convertDate($scope.releaseSearchFormData.entered_dt);
+			}
+			if ($scope.releaseSearchFormData.entered_dtend) {
+				$scope.releaseSearchFormData.entered_dtend = convertDate($scope.releaseSearchFormData.entered_dtend);
+			}
+			// filter genres and apply on cb
+			var genresArr = _.map($scope.releaseSearchFormData.genre, function(g) {
+				return g = +g;
+			});
 
-			$scope.releases = ReleaseService.query(params);
-			$scope.rTracker.addPromise($scope.releases);
-			$scope.releases.$then(function(u, getResponseHeaders) {
+			var params = _.clone($scope.releaseSearchFormData);
+			delete params.genre;
+			console.log(params);
+			//$scope.releases = ReleaseService.query(params);
+			//$scope.rTracker.addPromise($scope.releases);
+
+			$http.get(apiSrc + '/releases', {params: params, tracker: 'rTracker' }).success(function(response) {
+			//$scope.releases.$then(function(response) {
+
+				if (genresArr.length > 0) {
+					$scope.releases = _.filter(response, function(data){
+						var filteredGenres = _.pluck(data.genres, 'id');
+						var inter = _.intersection(filteredGenres, genresArr);
+						return inter.length > 0;
+					});
+				} else {
+					$scope.releases = response;
+				}
 
 				//set order of display
 				$scope.predicate = 'release_year';
@@ -93,6 +141,22 @@ app.controller('ReleaseCtrl', function($rootScope, $scope, $http, $location, $st
 		}
 	};
 
+	$scope.open = function($event) {
+		$event.preventDefault();
+		$event.stopPropagation();
+
+		$scope.opened = true;
+	};
+
+	var convertDate = function(oldate) {
+		var d = new Date(oldate);
+		//gross js date formatting
+		var curr_date =  ('0' + d.getDate()).slice(-2);
+			var curr_month = ('0' + (d.getMonth()+1)).slice(-2);
+			var curr_year = d.getFullYear();
+			var entd = curr_year + '-' + curr_month + '-' + curr_date;
+		return entd;
+	}
 
 	$scope.clearForm = function() {
 		$location.path('/releases');
