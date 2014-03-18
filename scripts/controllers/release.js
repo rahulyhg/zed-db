@@ -36,7 +36,8 @@ app.controller('ReleaseCtrl', function($rootScope, $scope, $http, $location, $st
 				}, {
 						field: 'entered_dt',
 						displayName: 'Created'
-				}]
+				}]//,
+        		//plugins: [new ngGridCsvExportPlugin(), new ngGridFlexibleHeightPlugin()]
 		};
 
 	$scope.ausnz = ["A", "NZ"];
@@ -112,7 +113,6 @@ app.controller('ReleaseCtrl', function($rootScope, $scope, $http, $location, $st
 
 			var params = _.clone($scope.releaseSearchFormData);
 			delete params.genre;
-			console.log(params);
 			//$scope.releases = ReleaseService.query(params);
 			//$scope.rTracker.addPromise($scope.releases);
 

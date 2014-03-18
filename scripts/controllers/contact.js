@@ -10,6 +10,7 @@ app.controller('ContactCtrl', function($rootScope, $scope, $http, $location, $st
         enableCellSelection: false,
         enableRowSelection: false,
         enableCellEdit: false,
+        showFooter: true,
         showFilter: true,
         columnDefs: [{
             field: 'org_nm',
@@ -24,7 +25,8 @@ app.controller('ContactCtrl', function($rootScope, $scope, $http, $location, $st
         }, {
             field: 'work_ph',
             displayName: 'Phone'
-        }]
+        }],
+        plugins: [new ngGridCsvExportPlugin(), new ngGridFlexibleHeightPlugin()]
     };
 
 	if ($rootScope.contactParams) {

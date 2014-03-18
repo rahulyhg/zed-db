@@ -12,5 +12,4 @@ class Qualification extends Illuminate\Database\Eloquent\Model {
 
 }
 
-
 ?>

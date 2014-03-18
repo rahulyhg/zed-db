@@ -1,0 +1,22 @@
+<form name="zedletterForm">
+	<div class="row">
+		<div class="control-group">
+				<label class="control-label">Email From</label>
+				<div class="controls">
+						<input class="input-medium" type="text" name="emailFrom" placeholder="Email From" ng-model="emailFrom" />
+				</div>
+		</div>
+		<div class="control-group">
+					<label class="control-label">Subject</label>
+					<div class="controls">
+							<input class="input-medium" type="text" name="subject" placeholder="Subject" ng-model="subject" />
+					</div>
+			</div>
+	 	<div class="control-group">
+			<div class="controls">
+					<textarea ui-tinymce="tinymceOptions" ng-model="template" style="min-height:450px;"></textarea>
+			</div>
+		</div>
+		<button class="btn btn-primary" type="submit">Submit</button>
+	</div>
+</form>

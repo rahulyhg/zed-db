@@ -1,0 +1,20 @@
+<div class="container-fluid">
+
+	<h2>Manage</h2>
+	<div class="row-fluid">
+		<div class="span12">
+			<tabset>
+				<tab heading="Qualifications">
+					<input type="text" ng-model="$parent.qualificationName" placeholder="New Qualification" />
+					<button type="submit" class="btn btn-primary" ng-click="addQualification()">Add Qualification</button>
+					<div class="gridStyle" ng-grid="gridQualOptions"></div>
+				</tab>
+				<tab heading="Departments">
+					<input type="text" ng-model="$parent.departmentName" placeholder="New Department" />
+					<button type="submit" class="btn btn-primary" ng-click="addDepartment()">Add Department</button>
+					<div class="gridStyle" ng-grid="gridDepOptions"></div>
+				</tab>
+			</tabset>
+		</div>
+	</div>
+</div>

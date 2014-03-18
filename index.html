@@ -54,9 +54,9 @@
                     <li>
                         <a href="/subscribers">Subscribers</a>
                     </li>
-                   <!--  <li>
+                   <li>
                         <a href="/volunteers">Volunteers</a>
-                    </li> -->
+                    </li>
                     <li>
                         <a href="/contacts">Contacts</a>
                     </li>
@@ -85,6 +85,9 @@
                         <ul class="dropdown-menu">
                             <li>
                                 <a href="/subscriber/manage">Subscribers</a>
+                            </li>
+                            <li>
+                                <a href="/volunteer/manage">Volunteers</a>
                             </li>
                             <li>
                                 <a href="/contact/manage">Contacts</a>
@@ -123,6 +126,7 @@
 
     <script src="scripts/lib/jquery.min.js"></script>
     <script src="scripts/lib/select2-3.4.js"></script>
+    <script src="bower_components/tinymce/js/tinymce/tinymce.js"></script>
     <!--<script src="scripts/lib/angular.js"></script>-->
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
     <!--
@@ -143,12 +147,14 @@
     <!-- <script src="scripts/lib/ui-bootstrap-tpls-0.5.0.js"></script>-->
     <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.5.0/ui-bootstrap-tpls.min.js"></script>
     <script src="bower_components/angular-strap/vendor/bootstrap-datepicker.js"></script>
+    <script src="bower_components/angular-ui-tinymce/src/tinymce.js"></script>
 
     <!--<script src="bower_components/angular-ui-bootstrap/src/typeahead/typeahead.js"></script>-->
 
     <script src="bower_components/angular-ui-select2/src/select2.js"></script>
     <script src="scripts/lib/ng-grid.debug.js"></script>
     <script src="scripts/lib/ng-grid-csv-export.js"></script>
+    <script src="scripts/lib/ng-grid-flexible-height.js"></script>
     <script src="bower_components/angular-promise-tracker/promise-tracker.min.js"></script>
 
     <!--<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
@@ -203,9 +209,11 @@
     <script src="scripts/controllers/contactmgmt.js"></script>
     <script src="scripts/controllers/volunteer.js"></script>
     <script src="scripts/controllers/volunteerdetails.js"></script>
+    <script src="scripts/controllers/volunteermgmt.js"></script>
     <script src="scripts/controllers/user.js"></script>
 
     <script src="scripts/controllers/genericprint.js"></script>
+    <script src="scripts/controllers/zedletter.js"></script>
     <!-- endbuild -->
     <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. <script>
 	  var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];

@@ -33,7 +33,7 @@
                         <div class="control-group">
                             <label ng-class="(sub.sublastname==null) ? 'invalid' : ''" class="control-label">Last name</label>
                             <div class="controls">
-                                <input type="text" class="input-xlarge" ng-change="subCheck(sub.sublastname, sub.subfirstname)" ng-uppercase-input ng-model="sub.sublastname" required ngRequired />
+                                <input type="text" class="input-xlarge" ng-change="subCheck(sub.sublastname, sub.subfirstname)" ng-uppercase-input2 ng-model="sub.sublastname" required ngRequired />
                             </div>
                             <div style="padding:10px;margin-top:10px;" class="alert alert-error" ng-show="subsuggest.length != 0">
                                 <strong>Hey! A subscriber by this name already exists. Please check if they are the same.</strong>
@@ -80,6 +80,7 @@
                             <span style="float:left;margin-left:25px;">
                                 <label class="checkbox inline">
                                     <input type="checkbox" ng-click="addVolunteer();" ng-model="sub.fl_volunteer">Volunteer?</label>
+                                    <a href="/volunteers/{{sub.subnumber}}" ng-show="sub.fl_volunteer">{{sub.subnumber}}</a>
                                 <label class="checkbox inline">
                                     <input type="checkbox" ng-model="sub.fl_announcer">Announcer?</label>
                                 <label class="checkbox inline">

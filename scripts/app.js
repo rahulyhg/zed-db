@@ -3,7 +3,19 @@
 //var apiSrc = 'http://newdb.4zzzfm.org.au/api/v1';
 var apiSrc = '/app/api/v1';
 
-var app = app || angular.module('zeddbApp', ['ngResource', 'ngSanitize', 'ui', 'ui.bootstrap', '$strap.directives', 'ngGrid', 'ngGrid.services', 'ui.select2', 'ajoslin.promise-tracker', 'ui.router'])
+var app = app || angular.module('zeddbApp', [
+								'ngResource',
+								'ngSanitize',
+								'ui',
+								'ui.bootstrap',
+								'$strap.directives',
+								'ngGrid',
+								'ngGrid.services',
+								'ui.select2',
+								'ajoslin.promise-tracker',
+								'ui.router',
+								'ui.tinymce'
+								])
 	.config(function($httpProvider, $locationProvider, $stateProvider, $urlRouterProvider) {
 
 	$locationProvider.html5Mode(true);
@@ -159,6 +171,12 @@ var app = app || angular.module('zeddbApp', ['ngResource', 'ngSanitize', 'ui', '
 			controller: 'SubscribermgmtCtrl',
 			access: access.admin
 		})
+		.state('volunteermanage', {
+			url: '/volunteer/manage',
+			templateUrl: viewsDir + '/volunteermgmt.html',
+			controller: 'VolunteermgmtCtrl',
+			access: access.admin
+		})
 		.state('usermanage', {
 			url: '/user/manage',
 	        templateUrl: viewsDir + '/user.html',
@@ -217,6 +235,12 @@ var app = app || angular.module('zeddbApp', ['ngResource', 'ngSanitize', 'ui', '
 			url: '/subscriber/report/receipt/:id',
 		    templateUrl: viewsDir + '/subpostind.html',
 		    controller: 'SubscriberpostCtrl',
+		    access: access.user
+		})
+		.state('zedletter', {
+			url: '/zedletter',
+		    templateUrl: viewsDir + '/zedletter.html',
+		    controller: 'ZedletterCtrl',
 		    access: access.user
 		})
 
@@ -437,6 +461,16 @@ app.factory('SkillsNewService', function($resource) {
 
 app.factory('QualificationService', function($resource) {
 	return $resource(apiSrc + '/qualifications/:id', {
+		id: '@id'
+	}, {
+		update: {
+			method: 'PUT'
+		}
+	})
+})
+
+app.factory('VolDepartmentsService', function($resource) {
+	return $resource(apiSrc + '/voldepartments/:id', {
 		id: '@id'
 	}, {
 		update: {

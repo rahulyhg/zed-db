@@ -5,11 +5,11 @@
                 <h2>{{volunteer.subfirstname}} {{volunteer.sublastname}}</h2>
                 <ul class="inline">
                     <li>
-                        <strong>ID:</strong>{{volunteer.subnumber}}</li>
+                        <strong>ID:</strong> {{volunteer.subnumber}}</li>
                     <li>
-                        <strong>Created:</strong>{{volunteer.created_at | date}}</li>
+                        <strong>Created:</strong> {{volunteer.created_at | date}}</li>
                     <li>
-                        <strong>Last Updated:</strong>{{volunteer.updated_at | date:'medium'}}</li>
+                        <strong>Last Updated:</strong> {{volunteer.updated_at | date:'medium'}}</li>
                 </ul>
                 <alert ng-repeat="alert in alerts" type="alert.type" close="closeAlert($index)">{{ alert.msg }}</alert>
             </div>
@@ -56,22 +56,6 @@
                             </div>
                         </div>
                         <div class="control-group">
-                            <label class="control-label">Skills</label>
-                            <div class="controls">
-                                <select ng-model="volunteer.subskill" class="input-large" ng-options="s.skillid as s.skilldescription for s in skillsold"></select>
-                            </div>
-                        </div>
-                        {{skillsArr}}
-                        <div class="control-group controls-row">
-                            <label class="control-label" style="margin-right:5px">Skills</label>
-                            <select ui-select2="skillSelectOptions" ng-model="skillsArr" class="input-xlarge" multiple placeholder="Skill">
-                                <option ng-repeat="s in skills" value="{{s.id}}">{{s.skill}}</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-box">
-                        <h6 class="sideheader">Subscriber Details</h6>
-                        <div class="control-group" style="clear:both">
                             <label class="control-label">Sub Number</label>
                             <div class="controls">
                                <a href="/subscribers/{{volunteer.subnumber}}">{{volunteer.subnumber}}</a>
@@ -84,7 +68,11 @@
                                 <div class="alert alert-error" ng-hide="subactive">Subscriber Inactive</div>
                             </div>
                         </div>
-                        <div style="padding-bottom: 20px;">
+                    </div>
+                    <div class="form-box">
+                        <h6 class="sideheader">Current Volunteer Status</h6>
+                        
+                        <div style="padding-bottom:20px;clear:both;">
                             <span style="padding-left: 20px;">
                                 <label style="display:inline-block">Completed Orientation</label>
                                 <input type="checkbox" ng-model="volunteer.volunteer.completed_orientation" ng-click="toggleOrientationDate();">
@@ -97,10 +85,53 @@
                         <div class="control-group" style="clear:both;">
                             <label class="control-label">Department</label>
                             <div class="controls">
-                               <input type="text" ng-model="volunteer.volunteer.department_id">
+                                <select ui-select2="departments" ng-model="vdArr" class="input-xlarge" multiple placeholder="Departments">
+                                    <option ng-repeat="d in departments" value="{{d.id}}">{{d.department}}</option>
+                                </select>
                             </div>
                         </div>
+                        <div class="control-group">
+                            <label class="control-label">Skills</label>
+                            <div class="controls">
+                                <select ui-select2="skills" ng-model="skillsArr" class="input-xlarge" multiple placeholder="Sklls">
+                                    <option ng-repeat="s in skills" value="{{s.id}}">{{s.skill}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">Available</label>
+                            <div class="controls">
+                                <select ng-model="volunteer.volunteer.volunteer_availability" class="input-small" ng-options="a for a in availability"></select>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">Skills (Other)</label>
+                            <div class="controls">
+                                <textarea ng-model="volunteer.subskilldesc" class="input-xlarge"></textarea>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">Qualified As</label>
+                            <div class="controls">
+                                <select ui-select2="qualifications" ng-model="qArr" class="input-xlarge" multiple placeholder="Qualifications">
+                                    <option ng-repeat="q in qualifications" value="{{q.id}}">{{q.qualification}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">Contribution</label>
+                            <div class="controls">
+                                <label class="checkbox inline">
+                                  <input type="checkbox" ng-model="volunteer.volunteer.contribute_emergency"> Emergency
+                                </label>
+                                <label class="checkbox inline" ng-model="contribute_general">
+                                  <input type="checkbox"> General Hours
+                                </label>
+                            </div>
+                        </div>
+
                     </div>
+
             </div>
             <div class="span6">
                 <div class="form-box">
@@ -130,31 +161,7 @@
                             <textarea rows="5" ng-model="volunteer.volunteer.training" class="input-xlarge"></textarea>
                         </div>
                     </div>
-                    <div class="control-group">
-                        <label class="control-label">Qualified As</label>
-                        <div class="controls">
-                            <select ui-select2="qualifications" ng-model="qArr" class="input-xlarge" multiple placeholder="Qualifications">
-                                <option ng-repeat="q in qualifications" value="{{q.id}}">{{q.qualification}}</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="control-group">
-                        <label class="control-label">Contribution</label>
-                        <div class="controls">
-                            <label class="checkbox inline">
-                              <input type="checkbox" ng-model="volunteer.volunteer.contribute_emergency"> Emergency
-                            </label>
-                            <label class="checkbox inline" ng-model="contribute_general">
-                              <input type="checkbox"> General Hours
-                            </label>
-                        </div>
-                    </div>
-                    <div class="control-group">
-                        <label class="control-label">Available</label>
-                        <div class="controls">
-                            <select ng-model="volunteer.volunteer.volunteer_availability" class="input-small" ng-options="a for a in availability"></select>
-                        </div>
-                    </div>
+
                 </div>
             </div>
             <!-- end row  -->

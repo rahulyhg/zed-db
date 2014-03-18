@@ -62,7 +62,7 @@
 </div>
 <div class="row-fluid search__box" ng-show="contacts.$resolved && contacts.length != 0">
     <h5 style="padding-left: 5px;">{{contacts.length}} contacts found.</h5>
-    <div style="height:200px;" ng-grid="gridContacts"></div>
+    <div ng-grid="gridContacts"></div>
 </div>
 <div class="row-fluid">
     <div ng-show="contacts.$resolved && contacts.length == 0" style="margin-bottom: 20px;">

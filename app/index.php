@@ -117,6 +117,7 @@ $app->get($api_prefix.'contactcats/', 'getContactCats');
 $app->get($api_prefix.'subtypes/', 'getSubtypes');
 $app->get($api_prefix.'skills/', 'getSkills');
 $app->get($api_prefix.'qualifications/', 'getQualifications');
+$app->get($api_prefix.'voldepartments/', 'getVD');
 $app->get($api_prefix.'skillsnew/', 'getSkillsNew');
 $app->get($api_prefix.'skills/:id', 'getSkill');
 $app->get($api_prefix.'programs/', 'getPrograms');
@@ -134,6 +135,8 @@ $app->put($api_prefix.'genresnew/:id', 'saveGenre');
 $app->put($api_prefix.'themes/:id', 'saveTheme');
 $app->put($api_prefix.'subtypes/:id', 'saveSubtype');
 $app->put($api_prefix.'departments/:id', 'saveCategory');
+$app->put($api_prefix.'qualifications/:id', 'saveQualification');
+$app->put($api_prefix.'voldepartments/:id', 'saveVD');
 $app->put($api_prefix.'interests/:id', 'saveSubCategory');
 $app->put($api_prefix.'programs/:id', 'saveProgram');
 $app->put($api_prefix.'prizes/:id', 'savePrize');
@@ -150,6 +153,8 @@ $app->post($api_prefix.'genresnew/', 'addGenre');
 $app->post($api_prefix.'themes/', 'addTheme');
 $app->post($api_prefix.'subtypes/', 'addSubtype');
 $app->post($api_prefix.'departments/', 'addCategory');
+$app->post($api_prefix.'qualifications/', 'addQualification');
+$app->post($api_prefix.'voldepartments/', 'addVD');
 $app->post($api_prefix.'interests/', 'addSubcategory');
 $app->post($api_prefix.'programs/', 'addProgram');
 $app->post($api_prefix.'prizes/', 'addPrize');
@@ -166,6 +171,8 @@ $app->delete($api_prefix.'genresnew/:id', 'deleteGenre');
 $app->delete($api_prefix.'themes/:id', 'deleteTheme');
 $app->delete($api_prefix.'subtypes/:id', 'deleteSubtype');
 $app->delete($api_prefix.'departments/:id', 'deleteCategory');
+$app->delete($api_prefix.'qualifications/:id', 'deleteQualification');
+$app->delete($api_prefix.'voldepartments/:id', 'deleteVD');
 $app->delete($api_prefix.'interests/:id', 'deleteSubcategory');
 $app->delete($api_prefix.'programs/:id', 'deleteProgram');
 $app->delete($api_prefix.'prizes/:id', 'deletePrize');
@@ -1114,43 +1121,43 @@ function getArtist($artist) {
 function getTypeaheadArtist($artist) {
 	$artist = strtoupper($artist);
 	if (strlen($artist) >= 3) {
-	$artist = '%'.$artist.'%';
-	$app = \Slim\Slim::getInstance();
-	$music = Music::where('artist_nm','like',$artist)->select('artist_nm')->distinct()->get();
-	$res = $app->response();
-    	$res['Content-Type'] = 'application/json';
-    	#$res->body($music);
-	$foo='[';
-	foreach ($music as $ar){
-                $foo .= '"'.$ar->artist_nm.'",';
+    	$artist = '%'.$artist.'%';
+    	$app = \Slim\Slim::getInstance();
+    	$music = Music::where('artist_nm','like',$artist)->select('artist_nm')->distinct()->get();
+    	$res = $app->response();
+        	$res['Content-Type'] = 'application/json';
+        	#$res->body($music);
+    	$foo='[';
+    	foreach ($music as $ar){
+                    $foo .= '"'.$ar->artist_nm.'",';
 
-        }
-	$foo = rtrim($foo, ",");
-	$foo .= ']';
-	$res->body($foo);
+            }
+    	$foo = rtrim($foo, ",");
+    	$foo .= ']';
+    	$res->body($foo);
 	}
 }
 
 // key: searchfirld, $val: searchfield, $type: table
 function getTypeaheadTitle($val) {
 	$key = 'title';
-        $val = strtoupper($val);
-        if (strlen($val) >= 3) {
-        $val = '%'.$val.'%';
-        $app = \Slim\Slim::getInstance();
-        $result = Music::where($key,'like',$val)->select($key)->distinct()->get();
-        $res = $app->response();
-        $res['Content-Type'] = 'application/json';
-        #$res->body($music);
-        $foo='[';
-        foreach ($result as $ar){
-                $foo .= '"'.$ar->{$key}.'",';
+    $val = strtoupper($val);
+    if (strlen($val) >= 3) {
+    $val = '%'.$val.'%';
+    $app = \Slim\Slim::getInstance();
+    $result = Music::where($key,'like',$val)->select($key)->distinct()->get();
+    $res = $app->response();
+    $res['Content-Type'] = 'application/json';
+    #$res->body($music);
+    $foo='[';
+    foreach ($result as $ar){
+            $foo .= '"'.$ar->{$key}.'",';
 
-        }
-        $foo = rtrim($foo, ",");
-        $foo .= ']';
-        $res->body($foo);
-        }
+    }
+    $foo = rtrim($foo, ",");
+    $foo .= ']';
+    $res->body($foo);
+    }
 }
 
 function getTypeaheadLabel($val) {
@@ -1180,12 +1187,12 @@ function getTypeaheadApra($val) {
     $key = 'apra_code';
     $val = strtoupper($val);
     if (strlen($val) >= 3) {
-    $val = '%'.$val.'%';
-    $app = \Slim\Slim::getInstance();
-    $result = Music::where($key,'like',$val)->select($key)->distinct()->get();
-    $res = $app->response();
-    $res['Content-Type'] = 'application/json';
-    $res->body($result);
+        $val = '%'.$val.'%';
+        $app = \Slim\Slim::getInstance();
+        $result = Music::where($key,'like',$val)->select($key)->distinct()->get();
+        $res = $app->response();
+        $res['Content-Type'] = 'application/json';
+        $res->body($result);
 
         //parse object to array
         $foo='[';
@@ -1202,7 +1209,7 @@ function getTypeaheadApra($val) {
 function getTypeaheadHome($val) {
     $key = 'artist_hometown';
     $val = strtoupper($val);
-        if (strlen($val) >= 3) {
+    if (strlen($val) >= 3) {
         $val = '%'.$val.'%';
         $app = \Slim\Slim::getInstance();
         $result = Music::where($key,'like',$val)->select($key)->distinct()->get();
@@ -1227,19 +1234,22 @@ function getTypeaheadCountry($val) {
 
 
 function getTypeaheadContact($val) {
-        $key = 'org_nm';
-        $val = '%'.strtoupper($val).'%';
+    $key = 'org_nm';
+    $val = strtoupper($val);
+    if (strlen($val) >= 3) {
+        $val = '%'.$val.'%';
         $app = \Slim\Slim::getInstance();
         $result = Contact::where($key,'like',$val)->select($key)->distinct()->get();
         $res = $app->response();
         $res['Content-Type'] = 'application/json';
         $res->body($result);
+    }
 }
 
 
 function getTypeaheadSuburb($val) {
 	$key = 'suburb';
-        if (strlen($val) >= 3) {
+    if (strlen($val) >= 3) {
         $val = strtoupper($val);
         $val = '%'.$val.'%';
         $app = \Slim\Slim::getInstance();
@@ -1247,12 +1257,12 @@ function getTypeaheadSuburb($val) {
         $res = $app->response();
         $res['Content-Type'] = 'application/json';
         $res->body($result);
-        }
+    }
 }
 
 function getTypeaheadPostcodeiOLD($val) {
 	$key = 'postcode';
-        if (strlen($val) >= 2) {
+    if (strlen($val) >= 2) {
         $val .= "%";
         $val = (int) $val;
         $app = \Slim\Slim::getInstance();
@@ -1260,23 +1270,23 @@ function getTypeaheadPostcodeiOLD($val) {
         $res = $app->response();
         $res['Content-Type'] = 'application/json';
         $res->body($result);
-        }
+    }
 }
 
 function getTypeaheadPostcode($val) {
 
-        if (strlen($val) >= 2) {
+    if (strlen($val) >= 2) {
         $val = (int) $val;
         $app = \Slim\Slim::getInstance();
         $result = Suburb::where('postcode', '=', $val)->distinct()->get();
         $res = $app->response();
         $res['Content-Type'] = 'application/json';
         $res->body($result);
-        }
+    }
 }
 function getTypeaheadSub($name) {
-        $name = strtoupper($name);
-        if (strlen($name) >= 3) {
+    $name = strtoupper($name);
+    if (strlen($name) >= 3) {
         $name = '%'.$name.'%';
         $app = \Slim\Slim::getInstance();
         $sub = Subscriber::where('sublastname','like',$name)
@@ -1293,7 +1303,7 @@ function getTypeaheadSub($name) {
         $foo = rtrim($foo, ",");
         $foo .= ']';
         $res->body($foo);
-        }
+    }
 }
 
 function getTypeaheadVol($name) {
@@ -1363,7 +1373,7 @@ function getBandSubscribers($name) {
 
 function getSubscriber($id) {
         $app = \Slim\Slim::getInstance();
-        $sub = Subscriber::with('bandmembers','suburb', 'pledge', 'subscription', 'volunteer')->find($id);
+        $sub = Subscriber::with('bandmembers', 'suburb', 'pledge', 'subscription', 'volunteer')->find($id);
         $res = $app->response();
         $res['Content-Type'] = 'application/json';
         $res->body($sub);
@@ -1371,7 +1381,7 @@ function getSubscriber($id) {
 
 function getVolunteer($id) {
         $app = \Slim\Slim::getInstance();
-        $sub = Subscriber::with('skills','volunteer','qualifications')->find($id);
+        $sub = Subscriber::with('skills', 'volunteer', 'qualifications', 'voldepartments')->find($id);
         $res = $app->response();
         $res['Content-Type'] = 'application/json';
         $res->body($sub);
@@ -1643,6 +1653,26 @@ function saveCategory($id) {
 	$department->save();
 }
 
+function saveQualification($id) {
+    $app = \Slim\Slim::getInstance();
+    $req = $app->request();
+    $body = $req->getBody();
+    $nb = json_decode($body, true);
+    $qualification = Qualification::where('id','=',$id)->first();
+    $qualification->fill($nb);
+    $qualification->save();
+}
+
+function saveVD($id) {
+    $app = \Slim\Slim::getInstance();
+    $req = $app->request();
+    $body = $req->getBody();
+    $nb = json_decode($body, true);
+    $department = Voldepartment::where('id','=',$id)->first();
+    $department->fill($nb);
+    $department->save();
+}
+
 function saveSubcategory($id) {
     $app = \Slim\Slim::getInstance();
 	$req = $app->request();
@@ -1804,6 +1834,9 @@ function saveVolunteer($id) {
     $qualifications = $jsonBody['qualifications'];
     $sub->qualifications()->sync($qualifications);
 
+    $departments = $jsonBody['departments'];
+    $sub->voldepartments()->sync($departments);
+
     $res = $app->response();
     $res['Content-Type'] = 'application/json';
     $res->body($sub);
@@ -1854,6 +1887,10 @@ function addSubscriber() {
         $mailOut = $nb['id'];
         unset($nb['id']);
     }
+    if (isset($nb['volunteer'])) {
+        $vol = $nb['volunteer'];
+        unset($nb['volunteer']);
+    }
 
 	$subscriber = Subscriber::create($nb);
 
@@ -1870,6 +1907,11 @@ function addSubscriber() {
                 mail($subscriber->subemail, 'You are a Sub!', $message, 'From:reception@4zzz.org.au');
 		}
 
+        if (isset($vol)) {
+            $volunteer = new Volunteer();
+            $volunteer->subscriber_id = $subscriber->subnumber;
+            $volunteer->save();
+        }
     }
 
     $res = $app->response();
@@ -1932,6 +1974,22 @@ function addCategory() {
         $body = $req->getBody();
         $nb = json_decode($body, true);
         $department = Department::create($nb);
+}
+
+function addQualification() {
+    $app = \Slim\Slim::getInstance();
+    $req = $app->request();
+    $body = $req->getBody();
+    $nb = json_decode($body, true);
+    $qualification = Qualification::create($nb);
+}
+
+function addVD() {
+    $app = \Slim\Slim::getInstance();
+    $req = $app->request();
+    $body = $req->getBody();
+    $nb = json_decode($body, true);
+    $department = Voldepartment::create($nb);
 }
 
 function addSubcategory() {
@@ -2019,6 +2077,24 @@ function deleteSubtype($id) {
 function deleteCategory($id) {
         $app = \Slim\Slim::getInstance();
         $department = Department::find($id);
+        $department->delete();
+}
+
+function deleteQualification($id) {
+        $app = \Slim\Slim::getInstance();
+        $qualification = Qualification::find($id);
+        $qualification->delete();
+}
+
+function deleteVD($id) {
+        $app = \Slim\Slim::getInstance();
+        $department = Voldepartment::find($id);
+        $department->delete();
+}
+
+function deleteDepartment($id) {
+        $app = \Slim\Slim::getInstance();
+        $department = Voldepartment::find($id);
         $department->delete();
 }
 
@@ -2194,6 +2270,14 @@ function getQualifications() {
         $res = $app->response();
         $res['Content-Type'] = 'application/json';
         $res->body($qualifications);
+}
+
+function getVD() {
+        $app = \Slim\Slim::getInstance();
+        $vd = Voldepartment::orderBy('department')->get();
+        $res = $app->response();
+        $res['Content-Type'] = 'application/json';
+        $res->body($vd);
 }
 
 function getSkill($id) {

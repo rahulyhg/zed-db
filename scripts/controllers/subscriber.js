@@ -1,8 +1,10 @@
 'use strict';
 
-app.controller('SubscriberCtrl', function($rootScope, $scope, $http, $location, SubService, limitToFilter) {
+app.controller('SubscriberCtrl', function($rootScope, $scope, $http, $location, SubService, SubtypesService, ProgramsService, limitToFilter) {
 
     $scope.subscriberSearchFormData = {};
+    $scope.subtypes = SubtypesService.query();
+    $scope.programs = ProgramsService.query();
 
     if ($rootScope.subscriberParams) {
         $scope.subscribers = SubService.query($rootScope.subscriberParams, function(u, getResponseHeaders) {
@@ -22,7 +24,7 @@ app.controller('SubscriberCtrl', function($rootScope, $scope, $http, $location, 
         enableRowSelection: false,
         enableCellEdit: false,
         showFilter: true,
-        showFooter: false,
+        showFooter: true,
         columnDefs: [{
             field: 'subname',
             displayName: 'Name',
@@ -49,6 +51,7 @@ app.controller('SubscriberCtrl', function($rootScope, $scope, $http, $location, 
             field: 'subscription.subtypecode',
             displayName: 'Sub Type'
         }],
+        plugins: [new ngGridCsvExportPlugin(), new ngGridFlexibleHeightPlugin()]
     };
 
     $scope.subsuggest = function(subName) {
@@ -57,10 +60,16 @@ app.controller('SubscriberCtrl', function($rootScope, $scope, $http, $location, 
         });
     };
 
+    $scope.suburbsuggest = function(suburbName) {
+        return $http.get(apiSrc + '/suburbsuggest/' + suburbName).then(function(response) {
+            return limitToFilter(response.data, 15);
+        });
+    };
+
     $scope.search = function() {
 
         if ($scope.subscriberSearchForm.$dirty === true) {
-            if ($scope.subscriberSearchFormData.subName) {
+           
                 // add operator to sub search
                 Object.defineProperty($scope.subscriberSearchFormData, 'operator', {
                     value: 'AND',
@@ -71,34 +80,31 @@ app.controller('SubscriberCtrl', function($rootScope, $scope, $http, $location, 
 
 
                 //split and flip full name from typeahead
-                var re = /,\s*/;
-                if ($scope.subscriberSearchFormData.subName.search(re) !== -1) {
-                    var nameList = $scope.subscriberSearchFormData.subName.split(re);
-                    nameList.reverse()
-                    $scope.subscriberSearchFormData.subfirstname = nameList[0];
-                    $scope.subscriberSearchFormData.sublastname = nameList[1];
-
-
-
-                } else {
-
-                    // no typeahed, check for space? 2 names : 1 name
-                    var subre = /\s/;
-                    if ($scope.subscriberSearchFormData.subName.search(subre) !== -1) {
-
-                        var nameList = $scope.subscriberSearchFormData.subName.split(subre);
+                if ($scope.subscriberSearchFormData.subName) {
+                    var re = /,\s*/;
+                    if ($scope.subscriberSearchFormData.subName.search(re) !== -1) {
+                        var nameList = $scope.subscriberSearchFormData.subName.split(re);
+                        nameList.reverse()
                         $scope.subscriberSearchFormData.subfirstname = nameList[0];
                         $scope.subscriberSearchFormData.sublastname = nameList[1];
-                        $scope.subscriberSearchFormData.operator = 'AND';
-
                     } else {
-                        $scope.subscriberSearchFormData.subfirstname = $scope.subscriberSearchFormData.subName;
-                        $scope.subscriberSearchFormData.sublastname = $scope.subscriberSearchFormData.subName;
-                        $scope.subscriberSearchFormData.operator = 'OR';
-                    }
+                        // no typeahed, check for space? 2 names : 1 name
+                        var subre = /\s/;
+                        if ($scope.subscriberSearchFormData.subName.search(subre) !== -1) {
 
+                            var nameList = $scope.subscriberSearchFormData.subName.split(subre);
+                            $scope.subscriberSearchFormData.subfirstname = nameList[0];
+                            $scope.subscriberSearchFormData.sublastname = nameList[1];
+                            $scope.subscriberSearchFormData.operator = 'AND';
+
+                        } else {
+                            $scope.subscriberSearchFormData.subfirstname = $scope.subscriberSearchFormData.subName;
+                            $scope.subscriberSearchFormData.sublastname = $scope.subscriberSearchFormData.subName;
+                            $scope.subscriberSearchFormData.operator = 'OR';
+                        }
+                    }
                 }
-            }
+            
 
             var params = $scope.subscriberSearchFormData;
 
@@ -112,12 +118,18 @@ app.controller('SubscriberCtrl', function($rootScope, $scope, $http, $location, 
                 $rootScope.subscriberParams = $scope.subscriberSearchFormData;
 
             });
+
+
         } else {
             console.log('no search shit!');
 
         }
     };
 
+    $scope.onSuburbChange = function($item, $model, $label) {
+        //item = suburb object, model = val (id), label = name
+        $scope.subscriberSearchFormData.postcode = $item.postcode;
+    };
 
     $scope.clearForm = function() {
         $location.path('/subscribers');

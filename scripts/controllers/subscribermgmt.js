@@ -116,9 +116,7 @@ app.controller('SubscribermgmtCtrl', function($rootScope, $scope, $filter, $http
                     displayName: 'Program',
                     enableCellEdit: true,
                     editableCellTemplate: programCell
-                },
-
-                {
+                }, {
                     field: 'programdate',
                     displayName: 'Day',
                     cellTemplate: '<div><select class="input-medium" ng-model="row.entity.programdate" ng-options="d for d in days" ng-change="updateDay(col, row)"></select></div>',
@@ -130,9 +128,7 @@ app.controller('SubscribermgmtCtrl', function($rootScope, $scope, $filter, $http
                     enableCellEdit: true,
                     editableCellTemplate: programCell,
                     width: 70
-                },
-
-                {
+                }, {
                     field: 'active',
                     displayName: 'Active?',
                     cellTemplate: '<div class="ngSelectionCell"><input tabindex="-1" class="ngSelectionCheckbox" type="checkbox" ng-model="row.entity[col.field]" ng-change="updatePrograms(col, row)" ng-checked="row.entity[col.field]" /></div>',
@@ -152,7 +148,6 @@ app.controller('SubscribermgmtCtrl', function($rootScope, $scope, $filter, $http
             enableRowSelection: false,
             enableCellEdit: true,
             columnDefs: [
-
                 {
                     field: 'skilldescription',
                     displayName: 'Skill',
