@@ -8,3 +8,6 @@ composer.lock
 nodestuff.txt
 views/.fuse*
 scripts/controllers/.fuse*
+app/.fuse*
+*.sql
+*.bak*

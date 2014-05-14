@@ -1,6 +1,6 @@
 'use strict';
 
-app.controller('SubscriberreportCtrl', function($rootScope, $scope, $http, $timeout, $filter, $location, promiseTracker, SubReportService, SkillsService, SubService, SubtypesService, ProgramsService, PrizesService, limitToFilter) {
+app.controller('SubscriberreportCtrl', function($rootScope, $scope, $http, $timeout, $filter, $location, promiseTracker, SubReportService, SkillsService, SubService, SubtypesService, ProgramsService, PrizesService, TrainingService, limitToFilter) {
 
 
     $scope.rTracker = promiseTracker('rTracker');
@@ -18,6 +18,7 @@ app.controller('SubscriberreportCtrl', function($rootScope, $scope, $http, $time
     $scope.subtypes = SubtypesService.query();
     $scope.programs = ProgramsService.query();
     $scope.prizes = PrizesService.query();
+    $scope.training = TrainingService.query();
     $scope.subscriberSearchFormData.programid = [];
     $scope.subscriberSearchFormData.skillid = [];
 

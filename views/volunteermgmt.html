@@ -14,6 +14,11 @@
 					<button type="submit" class="btn btn-primary" ng-click="addDepartment()">Add Department</button>
 					<div class="gridStyle" ng-grid="gridDepOptions"></div>
 				</tab>
+				<tab heading="Training">
+					<input type="text" ng-model="$parent.trainingName" placeholder="New Training" />
+					<button type="submit" class="btn btn-primary" ng-click="addTraining()">Add Training</button>
+					<div class="gridStyle" ng-grid="gridTrainingOptions"></div>
+				</tab>
 			</tabset>
 		</div>
 	</div>

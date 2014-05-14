@@ -55,7 +55,7 @@ $app->get($api_prefix.'countrysuggest/:key', 'getTypeaheadCountry');
 // search releases - mutiple fields
 $app->get($api_prefix.'releases', 'getReleases');
 $app->get($api_prefix.'subscribers', 'getSubscribers');
-$app->get($api_prefix.'volunteers', 'getSubscribers');
+$app->get($api_prefix.'volunteers', 'getVolunteers');
 
 $app->get($api_prefix.'subscribers/expired/:start(/:end)', 'getSubscribersExp');
 $app->get($api_prefix.'subscribers/active/', 'getSubscribersActive');
@@ -107,6 +107,48 @@ $csvFile = new Keboola\Csv\CsvFile(__DIR__ . '/pc.csv');
 	}
 }
 
+$app->get($api_prefix.'convertskills', 'convertSkills');
+
+function convertSkills() {
+    $app = \Slim\Slim::getInstance();
+    $subs = Subscriber::where('subskill', '>', 0)->get();
+
+    // foreach ($subs as $sub) {
+    //     $skk = +$sub->subskill;
+    //     if ($skk > 0) {
+    //         $skill = Skill::where('skillid', '=', $skk)->first();
+    //         if ($skill) {
+    //             $ns = Newskill::where('skill', '=', $skill->skilldescription)->first();
+    //             echo "sub: ".$sub->subnumber." ".$ns->skillid."<br>";
+    //         }
+    //     }
+        
+    // }
+
+    foreach ($subs as $sub) {
+        if ($sub->subskill) {
+            $skill = Skill::where('skillid', '=', $sub->subskill)->first();
+            if ($skill) {
+                $ns = Newskill::where('skill', '=', $skill->skilldescription)->first();
+                $foo = [$ns->id];
+                echo "sub: ".$sub->subnumber." ".$ns->id."<br/>";
+                $sub->skills()->sync($foo);
+            }
+        }
+        
+    }
+
+    // foreach ($cts as $ct) {
+    //     if ($ct->dept_sun) {
+    //         $d = Department::where('department_no', '=', $ct->dept_sun)->get();
+    //         $cc = Contactcategory::where('category', '=', $d[0]->department_nm)->get();
+    //         $foo = [$cc[0]->id];
+    //         echo "ctc: ".$ct->contact_no." ".$cc[0]->id."<br/>";
+    //         $ct->contactcategories()->sync($foo);
+    //     }
+    // }
+}
+
 
 $app->get($api_prefix.'themes/', 'getThemes');
 $app->get($api_prefix.'departments/', 'getDepartments');
@@ -117,6 +159,7 @@ $app->get($api_prefix.'contactcats/', 'getContactCats');
 $app->get($api_prefix.'subtypes/', 'getSubtypes');
 $app->get($api_prefix.'skills/', 'getSkills');
 $app->get($api_prefix.'qualifications/', 'getQualifications');
+$app->get($api_prefix.'training/', 'getTraining');
 $app->get($api_prefix.'voldepartments/', 'getVD');
 $app->get($api_prefix.'skillsnew/', 'getSkillsNew');
 $app->get($api_prefix.'skills/:id', 'getSkill');
@@ -136,6 +179,7 @@ $app->put($api_prefix.'themes/:id', 'saveTheme');
 $app->put($api_prefix.'subtypes/:id', 'saveSubtype');
 $app->put($api_prefix.'departments/:id', 'saveCategory');
 $app->put($api_prefix.'qualifications/:id', 'saveQualification');
+$app->put($api_prefix.'training/:id', 'saveTraining');
 $app->put($api_prefix.'voldepartments/:id', 'saveVD');
 $app->put($api_prefix.'interests/:id', 'saveSubCategory');
 $app->put($api_prefix.'programs/:id', 'saveProgram');
@@ -153,6 +197,7 @@ $app->post($api_prefix.'genresnew/', 'addGenre');
 $app->post($api_prefix.'themes/', 'addTheme');
 $app->post($api_prefix.'subtypes/', 'addSubtype');
 $app->post($api_prefix.'departments/', 'addCategory');
+$app->post($api_prefix.'training/', 'addTraining');
 $app->post($api_prefix.'qualifications/', 'addQualification');
 $app->post($api_prefix.'voldepartments/', 'addVD');
 $app->post($api_prefix.'interests/', 'addSubcategory');
@@ -172,6 +217,7 @@ $app->delete($api_prefix.'themes/:id', 'deleteTheme');
 $app->delete($api_prefix.'subtypes/:id', 'deleteSubtype');
 $app->delete($api_prefix.'departments/:id', 'deleteCategory');
 $app->delete($api_prefix.'qualifications/:id', 'deleteQualification');
+$app->delete($api_prefix.'training/:id', 'deleteTraining');
 $app->delete($api_prefix.'voldepartments/:id', 'deleteVD');
 $app->delete($api_prefix.'interests/:id', 'deleteSubcategory');
 $app->delete($api_prefix.'programs/:id', 'deleteProgram');
@@ -237,6 +283,7 @@ function createP($r, $pass) {
 
 }
 
+// function for copy things to many-to-many things...
 function copyCats() {
     $cts = Contact::get();
 
@@ -250,7 +297,6 @@ function copyCats() {
         }
     }
 }
-
 
 $authenticateForRole = function ( $role = 'member' ) {
     return function () use ( $role ) {
@@ -356,8 +402,19 @@ function updateSubID($subscriber) {
     $existingSub = Subscriber::find($subscriber->prev_subnumber);
     $existingSub->fill($subscriber->toArray());
     $existingSub->posted = ($existingSub->posted === false) ? 0 : 1;
-    if ($existingSub->save()) {
-       return $existingSub->sublastname;
+    $existingSub->fl_volunteer = (is_null($existingSub->fl_volunteer)) ? 0 : $existingSub->fl_volunteer;
+    $existingSub->fl_volunteer = ($existingSub->fl_volunteer === false) ? 0 : 1;
+    $existingSub->fl_volunteer = ($existingSub->fl_volunteer === true) ? 1 : 0;
+    
+    $existingSub->fl_announcer = (is_null($existingSub->fl_announcer)) ? 0 : $existingSub->fl_announcer;
+    $existingSub->fl_announcer = ($existingSub->fl_announcer === false) ? 0 : 1;
+    $existingSub->fl_announcer = ($existingSub->fl_announcer === true) ? 1 : 0;
+    if ($existingSub) {
+      if ($existingSub->save()) {
+        return $existingSub->sublastname;
+      }  else {
+          mail($subscriber->subemail, 'problem in updateSubID function!', $existingSub.'\n'.$subscriber, 'From:reception@4zzz.org.au');
+      }
     }
 }
 
@@ -469,9 +526,12 @@ function getFs() {
         $existingSub = Subscriber::where('subnumber', '=', $subscriber->prev_subnumber)->first();
         if (($existingSub) && ($existingSub->sublastname == $subscriber->sublastname)) {
             $updatedSub = updateSubID($subscriber);
-            if ($updatedSub) {
+            if (is_null($updatedSub)) {
+                mail($subscriber->subemail, 'problem!', $existingSub.'-----\n'.$updatedSub, 'From:reception@4zzz.org.au');
+            } else {
                 mail($subscriber->subemail, 'Welcome back to 4ZZZ!', $message, 'From:reception@4zzz.org.au');
                 return;
+        
             }
         } else {
             $subscriber->subcomment .= "\nPlease check this sub, it had subnumber ".$subscriber->prev_subnumber." entered in the form but Last Name did not match.";
@@ -945,10 +1005,11 @@ function getSubscribers() {
 
 
 	if (!is_int($alphaSearch)){
+
 		$alphaSearch = '%'.$alphaSearch.'%';
 		$query = Subscriber::with('subscription')->where($alphaKey,'like',$alphaSearch);
 	} else {
-		$query = Subscriber::with('subscription')->where($alphaKey,'=',$alphaSearch);
+		  $query = Subscriber::with('subscription')->where($alphaKey,'=',$alphaSearch);
 	}
 	if (sizeof($params) > 0) {
 		foreach($params as $key => $val) {
@@ -970,13 +1031,72 @@ function getSubscribers() {
 		}
 	}
 
-	$subscribers = $query->get();
-	$res = $app->response();
+    $subscribers = $query->get();
+    $res = $app->response();
     $res['Content-Type'] = 'application/json';
-	$res->body($subscribers);
+    $res->body($subscribers);
 
 }
 
+
+// get volunteers with m2m rships...
+function getVolunteers() {
+	$app = \Slim\Slim::getInstance();
+	$req = $app->request();
+	$paramsDirty = $req->params();
+	$params = array_filter($paramsDirty);
+	$returnFields = array('subfirstname', 'sublastname', 'subnumber', 'createddate');
+	if ($req->params('operator')) { $operator = array_shift($params); }
+	if ($req->params('subnumber')) { $params['subnumber'] = (int) $params['subnumber']; }
+
+	#get first params - set as first where
+	$keys = array_keys($params);
+	$alphaSearch = reset($params);
+	$alphaKey = key($params);
+	unset($params[$alphaKey]);
+	if ($alphaKey == "subName") {
+		$alphaKey = "sublastname";
+	}
+
+
+	if (!is_int($alphaSearch) && ($alphaKey != 'training_id')){
+
+		$alphaSearch = '%'.$alphaSearch.'%';
+		$query = Subscriber::with('subscription', 'training')->where($alphaKey,'like',$alphaSearch);
+	} else {
+echo $alphaSearch;
+                if ($alphaKey == 'training_id') {
+                  $query = Training::with('subscribers')->where('id','=',$alphaSearch);
+                } else {
+		  $query = Subscriber::with('subscription', 'training')->where($alphaKey,'=',$alphaSearch);
+                }
+	}
+	if (sizeof($params) > 0) {
+		foreach($params as $key => $val) {
+			$val = '%'.$val.'%';
+			if ($operator == "AND") {
+			if (is_int($val)) {
+					$query->where($key, '=', $val);
+				} else {
+					$query->where($key, 'like', $val);
+
+				}
+			} elseif ($operator == "OR") {
+			if (is_int($val)) {
+					$query->orWhere($key, '=', $val);
+				} else {
+					$query->orWhere($key, 'like', $val);
+				}
+			}
+		}
+	}
+
+    $subscribers = $query->get();
+    $res = $app->response();
+    $res['Content-Type'] = 'application/json';
+    $res->body($subscribers);
+
+}
 function getSubNew() {
 	$app = \Slim\Slim::getInstance();
 	$req = $app->request();
@@ -1381,7 +1501,7 @@ function getSubscriber($id) {
 
 function getVolunteer($id) {
         $app = \Slim\Slim::getInstance();
-        $sub = Subscriber::with('skills', 'volunteer', 'qualifications', 'voldepartments')->find($id);
+        $sub = Subscriber::with('skills', 'volunteer', 'qualifications', 'training', 'voldepartments')->find($id);
         $res = $app->response();
         $res['Content-Type'] = 'application/json';
         $res->body($sub);
@@ -1663,6 +1783,16 @@ function saveQualification($id) {
     $qualification->save();
 }
 
+function saveTraining($id) {
+    $app = \Slim\Slim::getInstance();
+    $req = $app->request();
+    $body = $req->getBody();
+    $nb = json_decode($body, true);
+    $training = Training::where('id','=',$id)->first();
+    $training->fill($nb);
+    $training->save();
+}
+
 function saveVD($id) {
     $app = \Slim\Slim::getInstance();
     $req = $app->request();
@@ -1837,6 +1967,9 @@ function saveVolunteer($id) {
     $departments = $jsonBody['departments'];
     $sub->voldepartments()->sync($departments);
 
+    $training = $jsonBody['training'];
+    $sub->training()->sync($training);
+
     $res = $app->response();
     $res['Content-Type'] = 'application/json';
     $res->body($sub);
@@ -1984,6 +2117,14 @@ function addQualification() {
     $qualification = Qualification::create($nb);
 }
 
+function addTraining() {
+    $app = \Slim\Slim::getInstance();
+    $req = $app->request();
+    $body = $req->getBody();
+    $nb = json_decode($body, true);
+    $training = Training::create($nb);
+}
+
 function addVD() {
     $app = \Slim\Slim::getInstance();
     $req = $app->request();
@@ -2084,6 +2225,12 @@ function deleteQualification($id) {
         $app = \Slim\Slim::getInstance();
         $qualification = Qualification::find($id);
         $qualification->delete();
+}
+
+function deleteTraining($id) {
+        $app = \Slim\Slim::getInstance();
+        $training = Training::find($id);
+        $training->delete();
 }
 
 function deleteVD($id) {
@@ -2270,6 +2417,14 @@ function getQualifications() {
         $res = $app->response();
         $res['Content-Type'] = 'application/json';
         $res->body($qualifications);
+}
+
+function getTraining() {
+        $app = \Slim\Slim::getInstance();
+        $training = Training::orderBy('training')->get();
+        $res = $app->response();
+        $res['Content-Type'] = 'application/json';
+        $res->body($training);
 }
 
 function getVD() {

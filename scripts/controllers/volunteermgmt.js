@@ -1,11 +1,12 @@
 'use strict';
 
-app.controller('VolunteermgmtCtrl', function($rootScope, $scope, $http, $location, QualificationService, VolDepartmentsService, limitToFilter, $dialog) {
+app.controller('VolunteermgmtCtrl', function($rootScope, $scope, $http, $location, QualificationService, VolDepartmentsService, TrainingService, limitToFilter, $dialog) {
 
     //$scope.subscriberSearchFormData={};
 
     $scope.qualifications = QualificationService.query();
     $scope.voldepartments = VolDepartmentsService.query();
+    $scope.training = TrainingService.query();
 
 
     var qualCell = '<input ng-class="\'colt\' + col.index" ng-model="row.entity[col.field]" ng-input="COL_FIELD" ng-on-blur="updateQualification(col, row);" />';
@@ -50,6 +51,25 @@ app.controller('VolunteermgmtCtrl', function($rootScope, $scope, $http, $locatio
         }]
     };
 
+    var trainCell = '<input ng-class="\'colt\' + col.index" ng-model="row.entity[col.field]" ng-input="COL_FIELD" ng-on-blur="updateTraining(col, row);" />';
+    
+    $scope.gridTrainingOptions = {
+        data: 'training',
+        enableCellSelection: true,
+        enableRowSelection: false,
+        enableCellEdit: true,
+        showFilter: true,
+        columnDefs: [{
+            field: 'training',
+            displayName: 'Training',
+            enableCellEdit: true,
+            editableCellTemplate: trainCell
+        }, {
+            field: '',
+            cellTemplate: '<button class="close" style="float:left;padding-left:5px;" ng-click="deleteTraining(col, row);">&times;</button> ',
+            width: 30
+        }]
+    };
 
     $scope.updateQualification = function(col, row) {
         $scope.qualification = QualificationService.get({
@@ -71,6 +91,16 @@ app.controller('VolunteermgmtCtrl', function($rootScope, $scope, $http, $locatio
         });
     };
 
+    $scope.updateTraining = function(col, row) {
+        $scope.training_single = TrainingService.get({
+            id: row.entity.id
+        });
+        $scope.training_single.training = row.entity.training;
+        $scope.training_single.$update({
+            id: row.entity.id
+        });
+    };
+
     $scope.addQualification = function(col, row) {
         $scope.qualification = new QualificationService;
         $scope.qualification.qualification = $scope.qualificationName;
@@ -87,6 +117,14 @@ app.controller('VolunteermgmtCtrl', function($rootScope, $scope, $http, $locatio
         });
     }
 
+
+    $scope.addTraining = function(col, row) {
+        $scope.training_single = new TrainingService;
+        $scope.training_single.training = $scope.trainingName;
+        $scope.training_single.$save(function(u, res) {
+            $scope.training = TrainingService.query();
+        });
+    }
 
     $scope.deleteQualification = function(col, row) {
 
@@ -152,5 +190,35 @@ app.controller('VolunteermgmtCtrl', function($rootScope, $scope, $http, $locatio
 
     };
 
+    $scope.deleteTraining = function(col, row) {
+
+        $scope.training_single = TrainingService.get({
+            id: row.entity.id
+        });
+
+        var title = 'Warning';
+        var msg = 'Are you sure you wish to delete this record? ' + row.entity.training;
+        var btns = [{
+            result: 'cancel',
+            label: 'Cancel'
+        }, {
+            result: 'ok',
+            label: 'OK',
+            cssClass: 'btn-primary btn-danger'
+        }];
+
+
+        $dialog.messageBox(title, msg, btns)
+            .open()
+            .then(function(result) {
+                if (result === 'ok') {
+                    $scope.training_single.$delete({
+                        id: row.entity.id
+                    }, function() {
+                        $scope.training = TrainingService.query();
+                    });
+                }
+            });
+    };
 
 });

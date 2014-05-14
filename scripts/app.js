@@ -479,6 +479,16 @@ app.factory('VolDepartmentsService', function($resource) {
 	})
 })
 
+app.factory('TrainingService', function($resource) {
+	return $resource(apiSrc + '/training/:id', {
+		id: '@id'
+	}, {
+		update: {
+			method: 'PUT'
+		}
+	})
+})
+
 app.factory('VolunteerService', function($resource) {
 	return $resource(apiSrc + '/volunteers/:id', {
 		id: '@id'

@@ -1,9 +1,9 @@
 'use strict';
 
-app.controller('VolunteerCtrl', function ($rootScope, $scope, $http, $location, SubService, limitToFilter) {
+app.controller('VolunteerCtrl', function ($rootScope, $scope, $http, $location, SubService, TrainingService, limitToFilter) {
 
 		$scope.volunteerSearchFormData={};
-
+		$scope.training = TrainingService.query();
 
 
 		$scope.volsuggest = function (subName) {
@@ -52,11 +52,10 @@ app.controller('VolunteerCtrl', function ($rootScope, $scope, $http, $location, 
 				}
 
 				var params = $scope.volunteerSearchFormData;
-
 				$rootScope.subName = params.subName;
 				delete params.subName;
 
-				$http.get(apiSrc + '/subscribers', { params: params }).success(function (response) {
+				$http.get(apiSrc + '/volunteers', { params: params }).success(function (response) {
 						var foo = _.filter(response, function(vol){ return vol.fl_volunteer == true });
 						$scope.volunteers = foo;
 				});

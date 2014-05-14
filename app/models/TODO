@@ -1,0 +1,15 @@
+TODO
+
+pull in bitbucket changes to openshift repo and check what breaks! (maybe back up os repo first)
+	- outcome: keep .env in git, refresh permalinks and we are pretty good.
+on air box - improve x
+fix nav in media queries
+fork and customize radio plugin???
+add highlights to program guide - maybe js
+layout of events - which file to overwrite? Events class
+where to put custom js
+show images/fields in dj pages
+fix search box
+
+
+
