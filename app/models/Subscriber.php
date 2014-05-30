@@ -5,7 +5,7 @@ class Subscriber extends Illuminate\Database\Eloquent\Model
 	protected $table = 'tbl_subscribers';
 	protected $primaryKey = "subnumber";
 	protected $key = "subnumber";
-		#protected $fillable = array('subemail', 'subtypeid', 'gender', 'submobile', 'subaddress1', 'suburbid', 'subfirstname', 'sublastname', 'receiptnumber', 'donation', 'programid', 'paymentdate', 'expirydate');
+        #protected $fillable = array('subemail', 'subtypeid', 'gender', 'submobile', 'subaddress1', 'suburbid', 'subfirstname', 'sublastname', 'receiptnumber', 'donation', 'programid', 'paymentdate', 'expirydate');
 	protected $guarded = array('subnumber', 'created');
 	public $timestamps = true;
 

@@ -1,10 +1,14 @@
 'use strict';
 
-app.controller('VolunteerCtrl', function ($rootScope, $scope, $http, $location, SubService, TrainingService, limitToFilter) {
+app.controller('VolunteerCtrl', function ($rootScope, $scope, $http, $location, SubService, TrainingService, VolDepartmentsService, SkillsNewService, limitToFilter) {
 
 		$scope.volunteerSearchFormData={};
 		$scope.training = TrainingService.query();
-
+		$scope.departments = VolDepartmentsService.query();
+	$scope.departments = VolDepartmentsService.query(function(data, status) {
+        $scope.volunteerSearchFormData.department_id = [];
+    });
+		$scope.skills = SkillsNewService.query();
 
 		$scope.volsuggest = function (subName) {
 			return $http.get(apiSrc + '/volsuggest/' + subName).then(function (response) {
@@ -53,9 +57,9 @@ app.controller('VolunteerCtrl', function ($rootScope, $scope, $http, $location, 
 
 				var params = $scope.volunteerSearchFormData;
 				$rootScope.subName = params.subName;
-				delete params.subName;
+				//delete params.subName;
 
-				$http.get(apiSrc + '/volunteers', { params: params }).success(function (response) {
+				$http.post(apiSrc + '/volunteerssearch', params ).success(function (response) {
 						var foo = _.filter(response, function(vol){ return vol.fl_volunteer == true });
 						$scope.volunteers = foo;
 				});

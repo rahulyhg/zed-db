@@ -2,15 +2,17 @@
 require '../vendor/autoload.php';
 $twigView = new \Slim\Extras\Views\Twig();
 use Hautelook\Phpass\PasswordHash;
-
 date_default_timezone_set('Australia/Brisbane');
 
+use Illuminate\Database\Capsule\Manager as Capsule;  
+ 
 $app = new \Slim\Slim(array(
 	'debug' => true,
     	'view' => $twigView,
     	'templates.path' => './app/views',
 ));
 
+$capsule = new Capsule; 
 $conn = array(
         'driver'    => 'pgsql',
         'host'      => 'localhost',
@@ -20,21 +22,20 @@ $conn = array(
         'charset' => 'utf8',
         'prefix'    => '',
 );
-
-
+ 
+$capsule->addConnection($conn);
+ 
+$capsule->bootEloquent();
 // Make a new connection
-$app->db = Capsule\Database\Connection::make('default', $conn, true);
-
-use \Slim\Extras\Middleware\HttpBasicAuth;
-
-
-
+//$app->db = Capsule\Datab$conn)nnection::make('default', $conn, true);
 
 $api_prefix = "/api/v1/";
 
 $app->post($api_prefix.'auth/login', 'getLogin');
+$app->post($api_prefix.'subform/paypal', 'IpnListen');
 
 $app->get($api_prefix.'artist/:artist', 'getArtist');
+
 
 $app->get($api_prefix.'artistsuggest/:artist', 'getTypeaheadArtist');
 $app->get($api_prefix.'subsuggest/:name', 'getTypeaheadSub');
@@ -82,6 +83,7 @@ $app->post($api_prefix.'testfs/', 'getFs');
 
 
 $app->post($api_prefix.'subscriber/report/', 'getSubNew');
+$app->post($api_prefix.'volunteerssearch', 'getVolunteers');
 
 $app->get($api_prefix.'releases/:id', 'getRelease');
 $app->get($api_prefix.'contacts/:id', 'getContact');
@@ -205,7 +207,6 @@ $app->post($api_prefix.'programs/', 'addProgram');
 $app->post($api_prefix.'prizes/', 'addPrize');
 $app->post($api_prefix.'pledge/', 'addPledge');
 $app->post($api_prefix.'subform/join', 'saveFormsite');
-#Jotfomr test
 
 $app->delete($api_prefix.'users/:id', 'deleteUser');
 $app->delete($api_prefix.'releases/:id', 'deleteRelease');
@@ -386,6 +387,136 @@ function getJotform() {
 	}
 }
 
+// function for ipnlistener - currently unused
+function IpnListen() {
+        $app = \Slim\Slim::getInstance();
+// CONFIG: Enable $debug mode. This means we'll log requests into 'ipn.log' in the same directory.
+// Especially useful if you encounter network errors or other intermittent problems with IPN (validation).
+// Set this to 0 once you go live or don't require logging.
+$debug=1;
+// Set to 0 once you're ready to go live
+$use_sandbox=1;
+$log_file="/tmp/ipn.log";
+
+// Read POST data
+// reading posted data directly from $_POST causes serialization
+// issues with array data in POST. Reading raw POST data from input stream instead.
+$raw_post_data = file_get_contents('php://input');
+$raw_post_array = explode('&', $raw_post_data);
+$myPost = array();
+foreach ($raw_post_array as $keyval) {
+  $keyval = explode ('=', $keyval);
+  if (count($keyval) == 2)
+    $myPost[$keyval[0]] = urldecode($keyval[1]);
+}
+// read the post from PayPal system and add 'cmd'
+$req = 'cmd=_notify-validate';
+if(function_exists('get_magic_quotes_gpc')) {
+  $get_magic_quotes_exists = true;
+}
+foreach ($myPost as $key => $value) {
+  if($get_magic_quotes_exists == true && get_magic_quotes_gpc() == 1) {
+    $value = urlencode(stripslashes($value));
+  } else {
+    $value = urlencode($value);
+  }
+  $req .= "&$key=$value";
+}
+// Post IPN data back to PayPal to validate the IPN data is genuine
+// Without this step anyone can fake IPN data
+
+if($use_sandbox == true) {
+  $paypal_url = "https://www.sandbox.paypal.com/cgi-bin/webscr";
+} else {
+  $paypal_url = "https://www.paypal.com/cgi-bin/webscr";
+}
+
+$ch = curl_init($paypal_url);
+if ($ch == FALSE) {
+  return FALSE;
+}
+
+curl_setopt($ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
+curl_setopt($ch, CURLOPT_POST, 1);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
+curl_setopt($ch, CURLOPT_POSTFIELDS, $req);
+curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 1);
+curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
+curl_setopt($ch, CURLOPT_FORBID_REUSE, 1);
+
+if($debug == true) {
+  curl_setopt($ch, CURLOPT_HEADER, 1);
+  curl_setopt($ch, CURLINFO_HEADER_OUT, 1);
+}
+
+// CONFIG: Optional proxy configuration
+//curl_setopt($ch, CURLOPT_PROXY, $proxy);
+//curl_setopt($ch, CURLOPT_HTTPPROXYTUNNEL, 1);
+
+// Set TCP timeout to 30 seconds
+curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
+curl_setopt($ch, CURLOPT_HTTPHEADER, array('Connection: Close'));
+
+// CONFIG: Please download 'cacert.pem' from "http://curl.haxx.se/docs/caextract.html" and set the directory path
+// of the certificate as shown below. Ensure the file is readable by the webserver.
+// This is mandatory for some environments.
+
+//$cert = __DIR__ . "./cacert.pem";
+//curl_setopt($ch, CURLOPT_CAINFO, $cert);
+
+$res = curl_exec($ch);
+if (curl_errno($ch) != 0) // cURL error
+  {
+  if($debug == true) {  
+    error_log(date('[Y-m-d H:i e] '). "Can't connect to PayPal to validate IPN message: " . curl_error($ch) . PHP_EOL, 3, $log_file);
+  }
+  curl_close($ch);
+  exit;
+
+} else {
+    // Log the entire HTTP response if $debug is switched on.
+    if($debug == true) {
+      error_log(date('[Y-m-d H:i e] '). "HTTP request of validation request:". curl_getinfo($ch, CURLINFO_HEADER_OUT) ." for IPN payload: $req" . PHP_EOL, 3, $log_file);
+      error_log(date('[Y-m-d H:i e] '). "HTTP response of validation request: $res" . PHP_EOL, 3, $log_file);
+
+      // Split response headers and payload
+      list($headers, $res) = explode("\r\n\r\n", $res, 2);
+    }
+    curl_close($ch);
+}
+
+// Inspect IPN validation result and act accordingly
+
+if (strcmp ($res, "VERIFIED") == 0) {
+  // check whether the payment_status is Completed
+  // check that txn_id has not been previously processed
+  // check that receiver_email is your PayPal email
+  // check that payment_amount/payment_currency are correct
+  // process payment and mark item as paid.
+
+  // assign posted variables to local variables
+  //$item_name = $_POST['item_name'];
+  //$item_number = $_POST['item_number'];
+  //$payment_status = $_POST['payment_status'];
+  //$payment_amount = $_POST['mc_gross'];
+  //$payment_currency = $_POST['mc_currency'];
+  //$txn_id = $_POST['txn_id'];
+  //$receiver_email = $_POST['receiver_email'];
+  //$payer_email = $_POST['payer_email'];
+  
+  if($debug == true) {
+    error_log(date('[Y-m-d H:i e] '). "Verified IPN: $req ". PHP_EOL, 3, $log_file);
+  }
+} else if (strcmp ($res, "INVALID") == 0) {
+  // log for manual investigation
+  // Add business logic here which deals with invalid IPN messages
+  if($debug == true) {
+    error_log(date('[Y-m-d H:i e] '). "Invalid IPN: $req" . PHP_EOL, 3, $log_file);
+  }
+}
+}
+
+
 function getFsx() {
         $app = \Slim\Slim::getInstance();
 // parse raw POST data
@@ -398,6 +529,7 @@ file_put_contents($file, $form);
 print_r($form);
 }
 
+// helper function for getfs - updates existing sub and returns sub lastname
 function updateSubID($subscriber) {
     $existingSub = Subscriber::find($subscriber->prev_subnumber);
     $existingSub->fill($subscriber->toArray());
@@ -413,11 +545,13 @@ function updateSubID($subscriber) {
       if ($existingSub->save()) {
         return $existingSub->sublastname;
       }  else {
-          mail($subscriber->subemail, 'problem in updateSubID function!', $existingSub.'\n'.$subscriber, 'From:reception@4zzz.org.au');
+          mail('damon.black@gmail.com', 'problem in updateSubID function!', $existingSub.'\n'.$subscriber, 'From:reception@4zzz.org.au');
+        return 0;
       }
     }
 }
 
+// current function for processing formsmarts sub
 function getFs() {
     $app = \Slim\Slim::getInstance();
 
@@ -427,10 +561,8 @@ function getFs() {
     $then = date('Y-m-d', strtotime('+1 Year'));
     $form = json_decode($formraw);
 
-    $handle = fopen("/tmp/newfs.log","w");
-    fwrite($handle,var_export($form,true));
-    fclose($handle);
-
+    $file="/tmp/sub.log";
+    file_put_contents($file, var_export($form,true), FILE_APPEND);
 
     $fields = $form->{'fields'};
 
@@ -441,12 +573,6 @@ function getFs() {
     $trimSubtype = explode(' (', $fields[0]->{'field_value'});
     $subtype = Subtype::where('subtypecode', '=', $trimSubtype[0])->first();
     $subscriber->subtypeid = $subtype->subtypeid;
-
-    $handle = fopen("/tmp/sub.log","w");
-    fwrite($handle,$trimSubtype[0]);
-    fwrite($handle,var_export($fields, true));
-    fclose($handle);
-
 
     // Attempts to match on suburb and postcode
     // If no match proceeds to match on postcode only
@@ -522,23 +648,28 @@ function getFs() {
 
     //prev subscription
     if ($fields[13]->{'field_value'}) {
+        
+        $error_msg =  "\nPlease check this sub, it had this subnumber  entered in the form but Last Name did not match: ";
         $subscriber->prev_subnumber = $fields[13]->{'field_value'};
         $existingSub = Subscriber::where('subnumber', '=', $subscriber->prev_subnumber)->first();
         if (($existingSub) && ($existingSub->sublastname == $subscriber->sublastname)) {
             $updatedSub = updateSubID($subscriber);
             if (is_null($updatedSub)) {
-                mail($subscriber->subemail, 'problem!', $existingSub.'-----\n'.$updatedSub, 'From:reception@4zzz.org.au');
+                mail('damon.black@gmail.com', 'problem!', $existingSub.'-----\n'.$updatedSub, 'From:reception@4zzz.org.au');
             } else {
                 mail($subscriber->subemail, 'Welcome back to 4ZZZ!', $message, 'From:reception@4zzz.org.au');
                 return;
         
             }
         } else {
-            $subscriber->subcomment .= "\nPlease check this sub, it had subnumber ".$subscriber->prev_subnumber." entered in the form but Last Name did not match.";
+            $error_msg_addendum = $error_msg.$subscriber->prev_subnumber;
+            $subscriber->subcomment .= $error_msg_addendum;
+            mail("reception@4zzz.org.au", "Subscriber Problem", $error_msg_addendum.". Here are the details of the new subscriber.\n\n".$subscriber, "From:newdb@4zzz.org.au");
         }
     }
 
-
+  try {
+      
    if ($subscriber->save()) {
         mail($subscriber->subemail, 'Welcome to 4ZZZ. You are now a Subscriber!', $message, 'From:reception@4zzz.org.au');
         if($subscriber->subbandname) {
@@ -553,7 +684,18 @@ function getFs() {
             }
         }
     }
+  } catch (Exception $e) {
+    $log_file = '/tmp/error_fs.log';
+    error_log($e->getMessage, 3, $log_file);
+      
+  } 
+    /*else {
+        $message = var_export($form, true);
+        mail('damon.black@gmail.com', 'Error on sub save', $message, 'From:reception@4zzz.org.au');
+      
+    }*/
 }
+
 
 function saveFormsite() {
         $app = \Slim\Slim::getInstance();
@@ -1039,8 +1181,69 @@ function getSubscribers() {
 }
 
 
-// get volunteers with m2m rships...
 function getVolunteers() {
+    $app = \Slim\Slim::getInstance();
+    $req = $app->request();
+    $paramsDirty = $req->getBody();
+    
+    $json_param_obj = json_decode($paramsDirty);
+    if (isset($json_param_obj->subName)) 
+      unset($json_param_obj->subName); 
+    if (isset($json_param_obj->operator)) { 
+      $operator = $json_param_obj->operator;  
+      unset($json_param_obj->operator);
+    }
+
+
+    $params_array = get_object_vars($json_param_obj);
+    $params = array_filter($params_array);
+    
+    $sub = new Subscriber;
+
+    foreach ($params as $key => $value) {
+        if (is_array($value)) {
+            switch ($key) {
+                case 'voldepartments':
+                    $keycheck = 'department_id';
+                    break;
+                case 'skills':
+                    $keycheck = 'skill_id';
+                    break;
+                case 'training':
+                    $keycheck = 'training_id';
+                    break;
+                default:
+                    break;
+            }
+            $sub = $sub->where(function($qu) use ($key, $keycheck, $value) {
+              foreach ($value as $val) {
+                $qu = $qu->orWhereHas($key, function($query) use ($keycheck, $val) {
+                    $query->where($keycheck, '=', $val);
+                });
+              }
+            });  
+        } else {
+            $sub = $sub->where($key, '=', $value); 
+        }
+    }
+    $subscribers = $sub->get();
+    $res = $app->response();
+    $res['Content-Type'] = 'application/json';
+    $res->body($subscribers);
+}
+
+function array_slice_assoc($array,$keys) {
+    return array_intersect_key($array,array_flip($keys));
+}
+
+function createSearchOrString($carry, $item) {
+    $carry .= $item." OR ";
+    return $carry;
+}
+
+
+// get volunteers with m2m rships...
+function getVolunteersOld() {
 	$app = \Slim\Slim::getInstance();
 	$req = $app->request();
 	$paramsDirty = $req->params();
@@ -1058,15 +1261,17 @@ function getVolunteers() {
 		$alphaKey = "sublastname";
 	}
 
-
 	if (!is_int($alphaSearch) && ($alphaKey != 'training_id')){
 
 		$alphaSearch = '%'.$alphaSearch.'%';
 		$query = Subscriber::with('subscription', 'training')->where($alphaKey,'like',$alphaSearch);
 	} else {
-echo $alphaSearch;
                 if ($alphaKey == 'training_id') {
-                  $query = Training::with('subscribers')->where('id','=',$alphaSearch);
+
+$query = Subscriber::whereHas('training', function($q) use ($alphaKey, $alphaSearch) {
+    $q->where($alphaKey, '=', $alphaSearch);
+});
+
                 } else {
 		  $query = Subscriber::with('subscription', 'training')->where($alphaKey,'=',$alphaSearch);
                 }
@@ -1097,6 +1302,7 @@ echo $alphaSearch;
     $res->body($subscribers);
 
 }
+
 function getSubNew() {
 	$app = \Slim\Slim::getInstance();
 	$req = $app->request();
@@ -1502,6 +1708,7 @@ function getSubscriber($id) {
 function getVolunteer($id) {
         $app = \Slim\Slim::getInstance();
         $sub = Subscriber::with('skills', 'volunteer', 'qualifications', 'training', 'voldepartments')->find($id);
+        
         $res = $app->response();
         $res['Content-Type'] = 'application/json';
         $res->body($sub);
@@ -1946,15 +2153,17 @@ function saveVolunteer($id) {
 
     $jsonBody = json_decode($body, true);
     $sub = Subscriber::with('volunteer')->where('subnumber','=',$id)->first();
-
     if (isset($jsonBody['volunteer'])) {
         $volunteer = ($sub->volunteer) ? Volunteer::where('subscriber_id', '=', $id)->first() : new Volunteer();
         $volunteer->subscriber_id = $id;
         $volunteer->fill($jsonBody['volunteer']);
+    
         if ($volunteer->completed_orientation == "") {
             $volunteer->completed_orientation = 0;
         }
-        $volunteer->save();
+      //$volunteer->subscriber()->associate($sub);
+      $volunteer->save();
+
     }
 
 
