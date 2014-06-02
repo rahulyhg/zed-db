@@ -12,5 +12,4 @@ class Newskill extends Illuminate\Database\Eloquent\Model {
 
 }
 
-
 ?>
