@@ -2,15 +2,17 @@
 require '../vendor/autoload.php';
 $twigView = new \Slim\Extras\Views\Twig();
 use Hautelook\Phpass\PasswordHash;
-
 date_default_timezone_set('Australia/Brisbane');
 
+use Illuminate\Database\Capsule\Manager as Capsule;  
+ 
 $app = new \Slim\Slim(array(
 	'debug' => true,
     	'view' => $twigView,
     	'templates.path' => './app/views',
 ));
 
+$capsule = new Capsule; 
 $conn = array(
         'driver'    => 'pgsql',
         'host'      => 'localhost',
@@ -20,8 +22,10 @@ $conn = array(
         'charset' => 'utf8',
         'prefix'    => '',
 );
-
-
+ 
+$capsule->addConnection($conn);
+ 
+$capsule->bootEloquent();
 // Make a new connection
 $app->db = Capsule\Database\Connection::make('default', $conn, true);
 
@@ -30,8 +34,10 @@ use \Slim\Extras\Middleware\HttpBasicAuth;
 $api_prefix = "/api/v1/";
 
 $app->post($api_prefix.'auth/login', 'getLogin');
+$app->post($api_prefix.'subform/paypal', 'IpnListen');
 
 $app->get($api_prefix.'artist/:artist', 'getArtist');
+
 
 $app->get($api_prefix.'artistsuggest/:artist', 'getTypeaheadArtist');
 $app->get($api_prefix.'subsuggest/:name', 'getTypeaheadSub');
@@ -86,9 +92,6 @@ $app->get($api_prefix.'subscribers/band/:name', 'getBandSubscribers');
 $app->get($api_prefix.'subscribers/reports/pledge/:prize', 'getSubsByPrize');
 
 #$app->get($api_prefix.'addcsv', 'addCsv');
-
-
-
 
 $app->get($api_prefix.'themes/', 'getThemes');
 $app->get($api_prefix.'departments/', 'getDepartments');
@@ -147,7 +150,9 @@ $app->post($api_prefix.'programs/', 'addProgram');
 $app->post($api_prefix.'prizes/', 'addPrize');
 $app->post($api_prefix.'pledge/', 'addPledge');
 $app->post($api_prefix.'subform/join', 'saveFormsite');
-#Jotfomr test
+
+$app->post($api_prefix.'subscriber/report/', 'getSubNew');
+$app->post($api_prefix.'volunteerssearch', 'getVolunteers');
 
 $app->delete($api_prefix.'users/:id', 'deleteUser');
 $app->delete($api_prefix.'releases/:id', 'deleteRelease');
@@ -360,7 +365,7 @@ function getJotform() {
 	}
 }
 
-
+// helper function for getfs - updates existing sub and returns sub lastname
 function updateSubID($subscriber) {
     $existingSub = Subscriber::find($subscriber->prev_subnumber);
     $existingSub->fill($subscriber->toArray());
@@ -376,11 +381,13 @@ function updateSubID($subscriber) {
       if ($existingSub->save()) {
         return $existingSub->sublastname;
       }  else {
-          mail($subscriber->subemail, 'problem in updateSubID function!', $existingSub.'\n'.$subscriber, 'From:reception@4zzz.org.au');
+          mail('damon.black@gmail.com', 'problem in updateSubID function!', $existingSub.'\n'.$subscriber, 'From:reception@4zzz.org.au');
+        return 0;
       }
     }
 }
 
+// current function for processing formsmarts sub
 function getFs() {
     $app = \Slim\Slim::getInstance();
 
@@ -390,10 +397,8 @@ function getFs() {
     $then = date('Y-m-d', strtotime('+1 Year'));
     $form = json_decode($formraw);
 
-    $handle = fopen("/tmp/newfs.log","w");
-    fwrite($handle,var_export($form,true));
-    fclose($handle);
-
+    $file="/tmp/sub.log";
+    file_put_contents($file, var_export($form,true), FILE_APPEND);
 
     $fields = $form->{'fields'};
 
@@ -404,12 +409,6 @@ function getFs() {
     $trimSubtype = explode(' (', $fields[0]->{'field_value'});
     $subtype = Subtype::where('subtypecode', '=', $trimSubtype[0])->first();
     $subscriber->subtypeid = $subtype->subtypeid;
-
-    $handle = fopen("/tmp/sub.log","w");
-    fwrite($handle,$trimSubtype[0]);
-    fwrite($handle,var_export($fields, true));
-    fclose($handle);
-
 
     // Attempts to match on suburb and postcode
     // If no match proceeds to match on postcode only
@@ -485,22 +484,27 @@ function getFs() {
 
     //prev subscription
     if ($fields[13]->{'field_value'}) {
+        
+        $error_msg =  "\nPlease check this sub, it had this subnumber  entered in the form but Last Name did not match: ";
         $subscriber->prev_subnumber = $fields[13]->{'field_value'};
         $existingSub = Subscriber::where('subnumber', '=', $subscriber->prev_subnumber)->first();
         if (($existingSub) && ($existingSub->sublastname == $subscriber->sublastname)) {
             $updatedSub = updateSubID($subscriber);
             if (is_null($updatedSub)) {
-                mail($subscriber->subemail, 'problem!', $existingSub.'-----\n'.$updatedSub, 'From:reception@4zzz.org.au');
+                mail('damon.black@gmail.com', 'problem!', $existingSub.'-----\n'.$updatedSub, 'From:reception@4zzz.org.au');
             } else {
                 mail($subscriber->subemail, 'Welcome back to 4ZZZ!', $message, 'From:reception@4zzz.org.au');
                 return;
             }
         } else {
-            $subscriber->subcomment .= "\nPlease check this sub, it had subnumber ".$subscriber->prev_subnumber." entered in the form but Last Name did not match.";
+            $error_msg_addendum = $error_msg.$subscriber->prev_subnumber;
+            $subscriber->subcomment .= $error_msg_addendum;
+            mail("reception@4zzz.org.au", "Subscriber Problem", $error_msg_addendum.". Here are the details of the new subscriber.\n\n".$subscriber, "From:newdb@4zzz.org.au");
         }
     }
 
-
+  try {
+      
    if ($subscriber->save()) {
         mail($subscriber->subemail, 'Welcome to 4ZZZ. You are now a Subscriber!', $message, 'From:reception@4zzz.org.au');
         if($subscriber->subbandname) {
@@ -515,7 +519,18 @@ function getFs() {
             }
         }
     }
+  } catch (Exception $e) {
+    $log_file = '/tmp/error_fs.log';
+    error_log($e->getMessage, 3, $log_file);
+      
+  } 
+    /*else {
+        $message = var_export($form, true);
+        mail('damon.black@gmail.com', 'Error on sub save', $message, 'From:reception@4zzz.org.au');
+      
+    }*/
 }
+
 
 function saveFormsite() {
         $app = \Slim\Slim::getInstance();
@@ -1001,8 +1016,69 @@ function getSubscribers() {
 }
 
 
-// get volunteers with m2m rships...
 function getVolunteers() {
+    $app = \Slim\Slim::getInstance();
+    $req = $app->request();
+    $paramsDirty = $req->getBody();
+    
+    $json_param_obj = json_decode($paramsDirty);
+    if (isset($json_param_obj->subName)) 
+      unset($json_param_obj->subName); 
+    if (isset($json_param_obj->operator)) { 
+      $operator = $json_param_obj->operator;  
+      unset($json_param_obj->operator);
+    }
+
+
+    $params_array = get_object_vars($json_param_obj);
+    $params = array_filter($params_array);
+    
+    $sub = new Subscriber;
+
+    foreach ($params as $key => $value) {
+        if (is_array($value)) {
+            switch ($key) {
+                case 'voldepartments':
+                    $keycheck = 'department_id';
+                    break;
+                case 'skills':
+                    $keycheck = 'skill_id';
+                    break;
+                case 'training':
+                    $keycheck = 'training_id';
+                    break;
+                default:
+                    break;
+            }
+            $sub = $sub->where(function($qu) use ($key, $keycheck, $value) {
+              foreach ($value as $val) {
+                $qu = $qu->orWhereHas($key, function($query) use ($keycheck, $val) {
+                    $query->where($keycheck, '=', $val);
+                });
+              }
+            });  
+        } else {
+            $sub = $sub->where($key, '=', $value); 
+        }
+    }
+    $subscribers = $sub->get();
+    $res = $app->response();
+    $res['Content-Type'] = 'application/json';
+    $res->body($subscribers);
+}
+
+function array_slice_assoc($array,$keys) {
+    return array_intersect_key($array,array_flip($keys));
+}
+
+function createSearchOrString($carry, $item) {
+    $carry .= $item." OR ";
+    return $carry;
+}
+
+
+// get volunteers with m2m rships...
+function getVolunteersOld() {
 	$app = \Slim\Slim::getInstance();
 	$req = $app->request();
 	$paramsDirty = $req->params();
@@ -1020,15 +1096,17 @@ function getVolunteers() {
 		$alphaKey = "sublastname";
 	}
 
-
 	if (!is_int($alphaSearch) && ($alphaKey != 'training_id')){
 
 		$alphaSearch = '%'.$alphaSearch.'%';
 		$query = Subscriber::with('subscription', 'training')->where($alphaKey,'like',$alphaSearch);
 	} else {
-echo $alphaSearch;
                 if ($alphaKey == 'training_id') {
-                  $query = Training::with('subscribers')->where('id','=',$alphaSearch);
+
+$query = Subscriber::whereHas('training', function($q) use ($alphaKey, $alphaSearch) {
+    $q->where($alphaKey, '=', $alphaSearch);
+});
+
                 } else {
 		  $query = Subscriber::with('subscription', 'training')->where($alphaKey,'=',$alphaSearch);
                 }
@@ -1059,6 +1137,7 @@ echo $alphaSearch;
     $res->body($subscribers);
 
 }
+
 function getSubNew() {
 	$app = \Slim\Slim::getInstance();
 	$req = $app->request();
@@ -1464,6 +1543,7 @@ function getSubscriber($id) {
 function getVolunteer($id) {
         $app = \Slim\Slim::getInstance();
         $sub = Subscriber::with('skills', 'volunteer', 'qualifications', 'training', 'voldepartments')->find($id);
+        
         $res = $app->response();
         $res['Content-Type'] = 'application/json';
         $res->body($sub);
@@ -1908,15 +1988,17 @@ function saveVolunteer($id) {
 
     $jsonBody = json_decode($body, true);
     $sub = Subscriber::with('volunteer')->where('subnumber','=',$id)->first();
-
     if (isset($jsonBody['volunteer'])) {
         $volunteer = ($sub->volunteer) ? Volunteer::where('subscriber_id', '=', $id)->first() : new Volunteer();
         $volunteer->subscriber_id = $id;
         $volunteer->fill($jsonBody['volunteer']);
+    
         if ($volunteer->completed_orientation == "") {
             $volunteer->completed_orientation = 0;
         }
-        $volunteer->save();
+      //$volunteer->subscriber()->associate($sub);
+      $volunteer->save();
+
     }
 
 

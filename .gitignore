@@ -11,3 +11,4 @@ scripts/controllers/.fuse*
 app/.fuse*
 *.sql
 *.bak*
+.DS_*
