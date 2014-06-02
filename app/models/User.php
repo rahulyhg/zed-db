@@ -1,7 +1,6 @@
 <?php
 
-class User extends Illuminate\Database\Eloquent\Model
-{
+class User extends Illuminate\Database\Eloquent\Model {
     protected $table = 'users';
     protected $primaryKey = "id";
     protected $key = "id";
@@ -9,10 +8,9 @@ class User extends Illuminate\Database\Eloquent\Model
 	public $timestamps = false;
 
 
-public function role() {
+	public function role() {
         return $this->belongsTo('Role', 'role_id');
     }
-
 }
 
 ?>

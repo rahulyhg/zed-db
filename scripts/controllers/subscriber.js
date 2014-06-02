@@ -69,42 +69,41 @@ app.controller('SubscriberCtrl', function($rootScope, $scope, $http, $location, 
     $scope.search = function() {
 
         if ($scope.subscriberSearchForm.$dirty === true) {
-           
-                // add operator to sub search
-                Object.defineProperty($scope.subscriberSearchFormData, 'operator', {
-                    value: 'AND',
-                    writable: true,
-                    enumerable: true,
-                    configurable: true
-                });
+            // add operator to sub search
+            Object.defineProperty($scope.subscriberSearchFormData, 'operator', {
+                value: 'AND',
+                writable: true,
+                enumerable: true,
+                configurable: true
+            });
 
 
-                //split and flip full name from typeahead
-                if ($scope.subscriberSearchFormData.subName) {
-                    var re = /,\s*/;
-                    if ($scope.subscriberSearchFormData.subName.search(re) !== -1) {
-                        var nameList = $scope.subscriberSearchFormData.subName.split(re);
-                        nameList.reverse()
+            //split and flip full name from typeahead
+            if ($scope.subscriberSearchFormData.subName) {
+                var re = /,\s*/;
+                if ($scope.subscriberSearchFormData.subName.search(re) !== -1) {
+                    var nameList = $scope.subscriberSearchFormData.subName.split(re);
+                    nameList.reverse()
+                    $scope.subscriberSearchFormData.subfirstname = nameList[0];
+                    $scope.subscriberSearchFormData.sublastname = nameList[1];
+                } else {
+                    // no typeahed, check for space? 2 names : 1 name
+                    var subre = /\s/;
+                    if ($scope.subscriberSearchFormData.subName.search(subre) !== -1) {
+
+                        var nameList = $scope.subscriberSearchFormData.subName.split(subre);
                         $scope.subscriberSearchFormData.subfirstname = nameList[0];
                         $scope.subscriberSearchFormData.sublastname = nameList[1];
+                        $scope.subscriberSearchFormData.operator = 'AND';
+
                     } else {
-                        // no typeahed, check for space? 2 names : 1 name
-                        var subre = /\s/;
-                        if ($scope.subscriberSearchFormData.subName.search(subre) !== -1) {
-
-                            var nameList = $scope.subscriberSearchFormData.subName.split(subre);
-                            $scope.subscriberSearchFormData.subfirstname = nameList[0];
-                            $scope.subscriberSearchFormData.sublastname = nameList[1];
-                            $scope.subscriberSearchFormData.operator = 'AND';
-
-                        } else {
-                            $scope.subscriberSearchFormData.subfirstname = $scope.subscriberSearchFormData.subName;
-                            $scope.subscriberSearchFormData.sublastname = $scope.subscriberSearchFormData.subName;
-                            $scope.subscriberSearchFormData.operator = 'OR';
-                        }
+                        $scope.subscriberSearchFormData.subfirstname = $scope.subscriberSearchFormData.subName;
+                        $scope.subscriberSearchFormData.sublastname = $scope.subscriberSearchFormData.subName;
+                        $scope.subscriberSearchFormData.operator = 'OR';
                     }
                 }
-            
+            }
+
 
             var params = $scope.subscriberSearchFormData;
 
@@ -118,7 +117,6 @@ app.controller('SubscriberCtrl', function($rootScope, $scope, $http, $location, 
                 $rootScope.subscriberParams = $scope.subscriberSearchFormData;
 
             });
-
 
         } else {
             console.log('no search shit!');

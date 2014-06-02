@@ -1,7 +1,6 @@
 <?php
 
-class Subclear extends Illuminate\Database\Eloquent\Model
-{
+class Subclear extends Illuminate\Database\Eloquent\Model {
     protected $table = 'tbl_subclearing';
     protected $primaryKey = "id";
     protected $key = "id";
@@ -28,8 +27,6 @@ class Subclear extends Illuminate\Database\Eloquent\Model
     public function subscription() {
         return $this->belongsTo('Subscription', 'subtypeid');
     }
-
 }
-
 
 ?>

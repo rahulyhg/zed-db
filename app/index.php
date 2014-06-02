@@ -27,7 +27,9 @@ $capsule->addConnection($conn);
  
 $capsule->bootEloquent();
 // Make a new connection
-//$app->db = Capsule\Datab$conn)nnection::make('default', $conn, true);
+$app->db = Capsule\Database\Connection::make('default', $conn, true);
+
+use \Slim\Extras\Middleware\HttpBasicAuth;
 
 $api_prefix = "/api/v1/";
 
@@ -79,11 +81,7 @@ $app->get($api_prefix.'contact/report', 'getContacts');
 $app->get($api_prefix.'subscribers/:id', 'getSubscriber');
 $app->get($api_prefix.'volunteers/:id', 'getVolunteer');
 //$app->get($api_prefix.'subscriber/report', 'getSubNew');
-$app->post($api_prefix.'testfs/', 'getFs');
 
-
-$app->post($api_prefix.'subscriber/report/', 'getSubNew');
-$app->post($api_prefix.'volunteerssearch', 'getVolunteers');
 
 $app->get($api_prefix.'releases/:id', 'getRelease');
 $app->get($api_prefix.'contacts/:id', 'getContact');
@@ -94,63 +92,6 @@ $app->get($api_prefix.'subscribers/band/:name', 'getBandSubscribers');
 $app->get($api_prefix.'subscribers/reports/pledge/:prize', 'getSubsByPrize');
 
 #$app->get($api_prefix.'addcsv', 'addCsv');
-
-function addCsv(){
-$app = \Slim\Slim::getInstance();
-
-$csvFile = new Keboola\Csv\CsvFile(__DIR__ . '/pc.csv');
-	foreach($csvFile as $row) {
-		$suburb = new Suburb();
-		$suburb->postcode = $row[0];
-		$suburb->state = $row[2];
-		$suburb->suburb = $row[1];
-		$suburb->save();
-		echo  $row[1];
-	}
-}
-
-$app->get($api_prefix.'convertskills', 'convertSkills');
-
-function convertSkills() {
-    $app = \Slim\Slim::getInstance();
-    $subs = Subscriber::where('subskill', '>', 0)->get();
-
-    // foreach ($subs as $sub) {
-    //     $skk = +$sub->subskill;
-    //     if ($skk > 0) {
-    //         $skill = Skill::where('skillid', '=', $skk)->first();
-    //         if ($skill) {
-    //             $ns = Newskill::where('skill', '=', $skill->skilldescription)->first();
-    //             echo "sub: ".$sub->subnumber." ".$ns->skillid."<br>";
-    //         }
-    //     }
-        
-    // }
-
-    foreach ($subs as $sub) {
-        if ($sub->subskill) {
-            $skill = Skill::where('skillid', '=', $sub->subskill)->first();
-            if ($skill) {
-                $ns = Newskill::where('skill', '=', $skill->skilldescription)->first();
-                $foo = [$ns->id];
-                echo "sub: ".$sub->subnumber." ".$ns->id."<br/>";
-                $sub->skills()->sync($foo);
-            }
-        }
-        
-    }
-
-    // foreach ($cts as $ct) {
-    //     if ($ct->dept_sun) {
-    //         $d = Department::where('department_no', '=', $ct->dept_sun)->get();
-    //         $cc = Contactcategory::where('category', '=', $d[0]->department_nm)->get();
-    //         $foo = [$cc[0]->id];
-    //         echo "ctc: ".$ct->contact_no." ".$cc[0]->id."<br/>";
-    //         $ct->contactcategories()->sync($foo);
-    //     }
-    // }
-}
-
 
 $app->get($api_prefix.'themes/', 'getThemes');
 $app->get($api_prefix.'departments/', 'getDepartments');
@@ -189,6 +130,8 @@ $app->put($api_prefix.'prizes/:id', 'savePrize');
 $app->put($api_prefix.'pledge/:id', 'savePledge');
 $app->put($api_prefix.'pledge/clearing/:subno', 'updatePledgeClearing');
 $app->put($api_prefix.'band/:id', 'saveBand');
+$app->post($api_prefix.'testfs/', 'getFs');
+$app->post($api_prefix.'subscriber/report/', 'getSubNew');
 
 $app->post($api_prefix.'users/', 'addUser');
 $app->post($api_prefix.'releases/', 'addRelease');
@@ -207,6 +150,9 @@ $app->post($api_prefix.'programs/', 'addProgram');
 $app->post($api_prefix.'prizes/', 'addPrize');
 $app->post($api_prefix.'pledge/', 'addPledge');
 $app->post($api_prefix.'subform/join', 'saveFormsite');
+
+$app->post($api_prefix.'subscriber/report/', 'getSubNew');
+$app->post($api_prefix.'volunteerssearch', 'getVolunteers');
 
 $app->delete($api_prefix.'users/:id', 'deleteUser');
 $app->delete($api_prefix.'releases/:id', 'deleteRelease');
@@ -267,6 +213,38 @@ $app->get($api_prefix.'newhuh/:user/:pass', 'createP');
 
 $app->get($api_prefix.'copycats', 'copyCats');
 
+function addCsv(){
+$app = \Slim\Slim::getInstance();
+
+$csvFile = new Keboola\Csv\CsvFile(__DIR__ . '/pc.csv');
+    foreach($csvFile as $row) {
+        $suburb = new Suburb();
+        $suburb->postcode = $row[0];
+        $suburb->state = $row[2];
+        $suburb->suburb = $row[1];
+        $suburb->save();
+        echo  $row[1];
+    }
+}
+
+$app->get($api_prefix.'convertskills', 'convertSkills');
+
+function convertSkills() {
+    $app = \Slim\Slim::getInstance();
+    $subs = Subscriber::where('subskill', '>', 0)->get();
+
+    foreach ($subs as $sub) {
+        if ($sub->subskill) {
+            $skill = Skill::where('skillid', '=', $sub->subskill)->first();
+            if ($skill) {
+                $ns = Newskill::where('skill', '=', $skill->skilldescription)->first();
+                $foo = [$ns->id];
+                echo "sub: ".$sub->subnumber." ".$ns->id."<br/>";
+                $sub->skills()->sync($foo);
+            }
+        }
+    }
+}
 
 function createP($r, $pass) {
     $app = \Slim\Slim::getInstance();
@@ -387,148 +365,6 @@ function getJotform() {
 	}
 }
 
-// function for ipnlistener - currently unused
-function IpnListen() {
-        $app = \Slim\Slim::getInstance();
-// CONFIG: Enable $debug mode. This means we'll log requests into 'ipn.log' in the same directory.
-// Especially useful if you encounter network errors or other intermittent problems with IPN (validation).
-// Set this to 0 once you go live or don't require logging.
-$debug=1;
-// Set to 0 once you're ready to go live
-$use_sandbox=1;
-$log_file="/tmp/ipn.log";
-
-// Read POST data
-// reading posted data directly from $_POST causes serialization
-// issues with array data in POST. Reading raw POST data from input stream instead.
-$raw_post_data = file_get_contents('php://input');
-$raw_post_array = explode('&', $raw_post_data);
-$myPost = array();
-foreach ($raw_post_array as $keyval) {
-  $keyval = explode ('=', $keyval);
-  if (count($keyval) == 2)
-    $myPost[$keyval[0]] = urldecode($keyval[1]);
-}
-// read the post from PayPal system and add 'cmd'
-$req = 'cmd=_notify-validate';
-if(function_exists('get_magic_quotes_gpc')) {
-  $get_magic_quotes_exists = true;
-}
-foreach ($myPost as $key => $value) {
-  if($get_magic_quotes_exists == true && get_magic_quotes_gpc() == 1) {
-    $value = urlencode(stripslashes($value));
-  } else {
-    $value = urlencode($value);
-  }
-  $req .= "&$key=$value";
-}
-// Post IPN data back to PayPal to validate the IPN data is genuine
-// Without this step anyone can fake IPN data
-
-if($use_sandbox == true) {
-  $paypal_url = "https://www.sandbox.paypal.com/cgi-bin/webscr";
-} else {
-  $paypal_url = "https://www.paypal.com/cgi-bin/webscr";
-}
-
-$ch = curl_init($paypal_url);
-if ($ch == FALSE) {
-  return FALSE;
-}
-
-curl_setopt($ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
-curl_setopt($ch, CURLOPT_POST, 1);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
-curl_setopt($ch, CURLOPT_POSTFIELDS, $req);
-curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 1);
-curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
-curl_setopt($ch, CURLOPT_FORBID_REUSE, 1);
-
-if($debug == true) {
-  curl_setopt($ch, CURLOPT_HEADER, 1);
-  curl_setopt($ch, CURLINFO_HEADER_OUT, 1);
-}
-
-// CONFIG: Optional proxy configuration
-//curl_setopt($ch, CURLOPT_PROXY, $proxy);
-//curl_setopt($ch, CURLOPT_HTTPPROXYTUNNEL, 1);
-
-// Set TCP timeout to 30 seconds
-curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
-curl_setopt($ch, CURLOPT_HTTPHEADER, array('Connection: Close'));
-
-// CONFIG: Please download 'cacert.pem' from "http://curl.haxx.se/docs/caextract.html" and set the directory path
-// of the certificate as shown below. Ensure the file is readable by the webserver.
-// This is mandatory for some environments.
-
-//$cert = __DIR__ . "./cacert.pem";
-//curl_setopt($ch, CURLOPT_CAINFO, $cert);
-
-$res = curl_exec($ch);
-if (curl_errno($ch) != 0) // cURL error
-  {
-  if($debug == true) {  
-    error_log(date('[Y-m-d H:i e] '). "Can't connect to PayPal to validate IPN message: " . curl_error($ch) . PHP_EOL, 3, $log_file);
-  }
-  curl_close($ch);
-  exit;
-
-} else {
-    // Log the entire HTTP response if $debug is switched on.
-    if($debug == true) {
-      error_log(date('[Y-m-d H:i e] '). "HTTP request of validation request:". curl_getinfo($ch, CURLINFO_HEADER_OUT) ." for IPN payload: $req" . PHP_EOL, 3, $log_file);
-      error_log(date('[Y-m-d H:i e] '). "HTTP response of validation request: $res" . PHP_EOL, 3, $log_file);
-
-      // Split response headers and payload
-      list($headers, $res) = explode("\r\n\r\n", $res, 2);
-    }
-    curl_close($ch);
-}
-
-// Inspect IPN validation result and act accordingly
-
-if (strcmp ($res, "VERIFIED") == 0) {
-  // check whether the payment_status is Completed
-  // check that txn_id has not been previously processed
-  // check that receiver_email is your PayPal email
-  // check that payment_amount/payment_currency are correct
-  // process payment and mark item as paid.
-
-  // assign posted variables to local variables
-  //$item_name = $_POST['item_name'];
-  //$item_number = $_POST['item_number'];
-  //$payment_status = $_POST['payment_status'];
-  //$payment_amount = $_POST['mc_gross'];
-  //$payment_currency = $_POST['mc_currency'];
-  //$txn_id = $_POST['txn_id'];
-  //$receiver_email = $_POST['receiver_email'];
-  //$payer_email = $_POST['payer_email'];
-  
-  if($debug == true) {
-    error_log(date('[Y-m-d H:i e] '). "Verified IPN: $req ". PHP_EOL, 3, $log_file);
-  }
-} else if (strcmp ($res, "INVALID") == 0) {
-  // log for manual investigation
-  // Add business logic here which deals with invalid IPN messages
-  if($debug == true) {
-    error_log(date('[Y-m-d H:i e] '). "Invalid IPN: $req" . PHP_EOL, 3, $log_file);
-  }
-}
-}
-
-
-function getFsx() {
-        $app = \Slim\Slim::getInstance();
-// parse raw POST data
-#$form = json_decode(file_get_contents("php://input"));
-$form = file_get_contents("php://input");
-
-$file = '/tmp/fs.log';
-file_put_contents($file, $form);
-
-print_r($form);
-}
-
 // helper function for getfs - updates existing sub and returns sub lastname
 function updateSubID($subscriber) {
     $existingSub = Subscriber::find($subscriber->prev_subnumber);
@@ -537,7 +373,7 @@ function updateSubID($subscriber) {
     $existingSub->fl_volunteer = (is_null($existingSub->fl_volunteer)) ? 0 : $existingSub->fl_volunteer;
     $existingSub->fl_volunteer = ($existingSub->fl_volunteer === false) ? 0 : 1;
     $existingSub->fl_volunteer = ($existingSub->fl_volunteer === true) ? 1 : 0;
-    
+
     $existingSub->fl_announcer = (is_null($existingSub->fl_announcer)) ? 0 : $existingSub->fl_announcer;
     $existingSub->fl_announcer = ($existingSub->fl_announcer === false) ? 0 : 1;
     $existingSub->fl_announcer = ($existingSub->fl_announcer === true) ? 1 : 0;
@@ -659,7 +495,6 @@ function getFs() {
             } else {
                 mail($subscriber->subemail, 'Welcome back to 4ZZZ!', $message, 'From:reception@4zzz.org.au');
                 return;
-        
             }
         } else {
             $error_msg_addendum = $error_msg.$subscriber->prev_subnumber;

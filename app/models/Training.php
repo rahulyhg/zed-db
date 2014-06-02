@@ -9,7 +9,6 @@ class Training extends Illuminate\Database\Eloquent\Model {
 	public function subscribers() {
 		return $this->belongsToMany('Subscriber', 'training_subscribers', 'training_id', 'subscriber_id');
 	}
-
 }
 
 ?>

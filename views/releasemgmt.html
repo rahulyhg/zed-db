@@ -1,27 +1,19 @@
-
 <div class="container-fluid">
-
-    <h2>Manage</h2>
-    <div class="row-fluid">  
-      <div class="span12">
-            
-        <tabset>
-          <tab heading="Genres">
-              <input type="text" ng-model="$parent.genre_desc"  placeholder="New Genre"/>
-              <button type="submit" class="btn btn-primary" ng-click="addGenre()">Add Genre</button>    
-              <div class="gridStyle" ng-grid="gridGenresOptions"></div>
-          </tab>
-          <tab heading="Themes">
-              <input type="text" ng-model="$parent.theme_desc"  placeholder="New Theme"/>
-              <button type="submit" class="btn btn-primary" ng-click="addTheme()">Add Theme</button>
-              <div class="gridStyle" ng-grid="gridThemesOptions"></div>       
-          </tab>
-        </tabset>
-                  
-      </div>
-    </div> <!-- end row  -->    
-    
-     
-            
-</div>   
-
+  <h2>Manage</h2>
+  <div class="row-fluid">
+    <div class="span12">
+      <tabset>
+      <tab heading="Genres">
+      <input type="text" ng-model="$parent.genre_desc"  placeholder="New Genre"/>
+      <button type="submit" class="btn btn-primary" ng-click="addGenre()">Add Genre</button>
+      <div class="gridStyle" ng-grid="gridGenresOptions"></div>
+      </tab>
+      <tab heading="Themes">
+      <input type="text" ng-model="$parent.theme_desc"  placeholder="New Theme"/>
+      <button type="submit" class="btn btn-primary" ng-click="addTheme()">Add Theme</button>
+      <div class="gridStyle" ng-grid="gridThemesOptions"></div>
+      </tab>
+      </tabset>
+    </div>
+    </div> <!-- end row  -->
+</div>

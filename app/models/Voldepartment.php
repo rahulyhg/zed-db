@@ -9,7 +9,6 @@ class Voldepartment extends Illuminate\Database\Eloquent\Model {
 	public function subscribers() {
 		return $this->belongsToMany('Subscriber', 'vol_departments_subscribers', 'department_id', 'subscriber_id');
 	}
-
 }
 
 ?>

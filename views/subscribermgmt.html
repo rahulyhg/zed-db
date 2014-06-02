@@ -8,8 +8,8 @@
     <p>We&#39;ve found these subs with the same name, click the link to check their details. If you click &#39;Add Sub&#39; this user will be added as a new subscriber. Click &#39;Cancel&#39; to go back.</p>
     <div class="modal-footer">
         <button type="button" class="btn" ng-click="hide()">Cancel</button>
-        <button class="btn btn-primary btn-danger" ng-click="mergeSub(logc[0]);hide()">Merge Subs</button> 
-        <button class="btn btn-primary btn-danger" ng-click="confirmSub();hide()">Add Sub</button> 
+        <button class="btn btn-primary btn-danger" ng-click="mergeSub(logc[0]);hide()">Merge Subs</button>
+        <button class="btn btn-primary btn-danger" ng-click="confirmSub();hide()">Add Sub</button>
     </div>
 </div>
 </script>
@@ -18,14 +18,13 @@
 <div class="container-fluid">
 
     <h2>Manage</h2>
-    <div class="row-fluid">  
+    <div class="row-fluid">
         <div class="span12 form-horizontal">
-            
           <tabset>
             <tab heading="Skills">
                 <input type="text" ng-model="$parent.skilldescription"  placeholder="New Skill"/>
                 <button type="submit" class="btn btn-primary" ng-click="addSkill()">Add Skill</button>
-                <div class="gridStyle" ng-grid="gridSubskillOptions"></div>       
+                <div class="gridStyle" ng-grid="gridSubskillOptions"></div>
             </tab>
             <tab heading="Subtypes">
                 <input type="text" ng-model="$parent.subtypecode"  placeholder="New Sub Type"/>
@@ -53,16 +52,9 @@
                 <div class="gridStyle" ng-grid="gridOnlineSubsOptions"></div>
             </tab>
           </tabset>
-            
-            
-     
-            
         </div>
-    </div> <!-- end row  -->    
-    
-     
-            
-</div>   
+    </div> <!-- end row  -->
+</div>
 <style type="text/css">
     .gridStyle {
     border: 1px solid #d4d4d4;

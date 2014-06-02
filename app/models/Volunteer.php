@@ -8,7 +8,6 @@ class Volunteer extends Illuminate\Database\Eloquent\Model {
     public function subscriber() {
         return $this->belongsTo('Subscriber', 'subno');
     }
-
 }
 
 ?>

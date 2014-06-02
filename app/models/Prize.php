@@ -10,12 +10,9 @@ class Prize extends Illuminate\Database\Eloquent\Model {
         return $this->belongsToMany('Subtype', 'prize_subtype', 'prize_id', 'subtype_id');
     }
 
-
     public function prizetype() {
         return $this->belongsTo('Prizetype', 'prizetypeid');
     }
-
-
 }
 
 ?>

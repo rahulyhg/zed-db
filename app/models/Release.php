@@ -9,26 +9,22 @@ class Release extends Illuminate\Database\Eloquent\Model
 	public $timestamps = true;
 
 
-public function subscriber()
-	{
+	public function subscriber() {
 		return $this->belongsTo('Subscriber', 'subbandname');
 	}
-public function submusicianname()
-	{
+
+	public function submusicianname() {
 		return $this->belongsTo('Subscriber', 'submusicianname');
 	}
-    
-public function artist()
-	{
+
+	public function artist() {
 		return $this->belongsTo('Artist');
 	}
 
-
- public function scopeDefaultSearch($query)
-    {
+ 	public function scopeDefaultSearch($query) {
         return $query->select('artist', 'title', 'release_year');
     }
 
-
 }
+
 ?>

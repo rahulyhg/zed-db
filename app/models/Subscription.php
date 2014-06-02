@@ -6,7 +6,6 @@ class Subscription extends Illuminate\Database\Eloquent\Model {
     protected $key = "subtypeid";
 	public $timestamps = false;
 
-
 }
 
 ?>

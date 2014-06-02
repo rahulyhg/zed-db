@@ -1,7 +1,6 @@
 <?php
 
-class Subtype extends Illuminate\Database\Eloquent\Model
-{
+class Subtype extends Illuminate\Database\Eloquent\Model {
 	protected $table = 'tbl_subtype';
 	protected $primaryKey = "subtypeid";
 	protected $key = "subtypeid";

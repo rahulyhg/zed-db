@@ -84,37 +84,35 @@ app.controller('UserCtrl', function ($rootScope, $scope, $http, $location, UserS
 
     };
 
+    $scope.search = function() {
 
-        $scope.search = function() {
+        if ($scope.contactSearchForm.$dirty === true) {
 
-                if ($scope.contactSearchForm.$dirty === true) {
+            var params = $scope.contactSearchFormData;
+            // search with qstring - return LIST of results from resource
+            $scope.contacts = ContactService.query(params, function(){
 
-                    var params = $scope.contactSearchFormData;
-                    // search with qstring - return LIST of results from resource
-                    $scope.contacts = ContactService.query(params, function(){
+            //set order of display
+            $scope.predicate = 'createddate';
+            $rootScope.contactParams = params;
+            });
 
-                    //set order of display
-                    $scope.predicate = 'createddate';
-                    $rootScope.contactParams = params;
-                    });
+        } else {
+            console.log('no search!');
+        }
+    };
 
-            } else {
-                console.log('no search shit!');
-            }
-        };
+     $scope.clearForm = function() {
+        $scope.contactSearchFormData = {};
+        $scope.contactSearchFormData.interest_sun = [];
+        $scope.contactSearchForm.$setPristine();
+        delete $rootScope.contactParams;
+        $scope.contacts = {};
+    };
 
+    //add new
+    $scope.add = function () {
+        $location.path('/contacts/new/contact');
+    };
 
-         $scope.clearForm = function() {
-            $scope.contactSearchFormData = {};
-            $scope.contactSearchFormData.interest_sun = [];
-            $scope.contactSearchForm.$setPristine();
-            delete $rootScope.contactParams;
-            $scope.contacts = {};
-        };
-
-        //add new
-        $scope.add = function () {
-            $location.path('/contacts/new/contact');
-        };
-
-    });
+});

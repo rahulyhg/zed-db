@@ -19,63 +19,6 @@
 				</div>
 			</div>
 
-			
-            <!-- 
-			new search
-            <div class="well well-large" style="margin-top:20px;padding:0 10px;">
-                <div class="control-group controls-row" style="padding:10px 0;">
-                    <input class="input-medium" type="search" name="release_year" ng-model="subscriberSearchFormData.subemail" placeholder="Email" />
-                    <select ui-select2 ng-model="subscriberSearchFormData.subtypeid" class="input-large" multiple placeholder="Subtype">
-                        <option ng-repeat="s in subtypes" value="{{s.subtypeid}}">{{s.subtypecode}}</option>
-                    </select>
-                    <select ui-select2 ng-model="subscriberSearchFormData.programid" class="input-large" multiple placeholder="Program">
-                        <option ng-repeat="p in programs" value="{{p.programid}}">{{p.programname}}</option>
-                    </select>
-                </div>
-                <div style="margin-top:20px;padding:0 10px;">
-                    <input type="text" class="input-medium" name="suburbName" ng-model="suburb" typeahead-min-length="3" typeahead-on-select='onSuburbChange($item, $model, $label)' typeahead="s.suburb for s in suburbsuggest($viewValue)" ng-uppercase-input placeholder="Suburb" />
-                    <input type="text" class="input-small" ng-model="subscriberSearchFormData.postcode" name="postCode" placeholder="Post Code" />
-                </div>
-                <div style="margin-top:20px;padding:0 10px;">
-
-                    <label>Expired Date</label>
-                    <div class="control-group input-append">
-                        <input type="text" ng-model="subscriberSearchFormData.edate_start" ng-change="convertDate();" class="input-small" bs-datepicker data-date-format="dd/mm/yyyy" placeholder="Expires After" data-date-today-highlight="true" data-date-today-btn="linked" />
-                        <button type="button" class="btn lowcal" data-toggle="datepicker"><i class="icon-calendar"></i>
-                        </button>
-                    </div>
-
-                    <div class="control-group input-append">
-                        <input type="text" ng-model="subscriberSearchFormData.edate_end" class="input-small" bs-datepicker placeholder="Expires Before" data-date-format="dd/mm/yyyy" data-date-today-highlight="true" data-date-today-btn="linked" />
-                        <button type="button" class="btn lowcal" data-toggle="datepicker"><i class="icon-calendar"></i>
-                        </button>
-                    </div>
-
-                    <span style="padding-left:30px;">
-                        <label>Paid Date</label>
-                        <div class="control-group input-append">
-                            <input type="text" ng-model="subscriberSearchFormData.pdate_start" ng-change="convertDate();" class="input-small" bs-datepicker data-date-format="dd/mm/yyyy" placeholder="Paid Start" data-date-today-highlight="true" data-date-today-btn="linked" />
-                            <button type="button" class="btn lowcal" data-toggle="datepicker"><i class="icon-calendar"></i>
-                            </button>
-                        </div>
-                        <div class="control-group input-append">
-                            <input type="text" ng-model="subscriberSearchFormData.pdate_end" class="input-small" bs-datepicker placeholder="Paid End" data-date-format="dd/mm/yyyy" data-date-today-highlight="true" data-date-today-btn="linked" />
-                            <button type="button" class="btn lowcal" data-toggle="datepicker"><i class="icon-calendar"></i>
-                            </button>
-                        </div>
-                    </span>
-
-                    <div style="padding-top:10px;">
-                        <label class="checkbox inline">
-                            <input type="checkbox" ng-model="subscriberSearchFormData.fl_volunteer">Volunteer?</label>
-                        <label class="checkbox inline">
-                            <input type="checkbox" ng-model="subscriberSearchFormData.fl_announcer">Announcer?</label>
-                    </div>
-                </div>
-
-            </div> -->
-
-
             <!-- end well -->
         </div>
         <div>
@@ -87,38 +30,6 @@
     </form>
 </div>
 <div class="row-fluid">
-    <!-- <div ng-show="subscribers.$resolved && subscribers.length != 0" class="search__box">
-		<h5 style="padding-left: 5px;">{{subscribers.length}} subscribers found.</h5>
-
-		<table class="table table-striped">
-			<tr>
-				<th><a href="" ng-click="predicate = 'sublastname'; reverse=!reverse">Name</a>
-				</th>
-				<th><a href="" ng-click="predicate = 'sublastname'; reverse=!reverse">Business Name</a>
-				</th>
-				<th><a href="" ng-click="predicate = 'sublastname'; reverse=!reverse">Band Name</a>
-				</th>
-				<th><a href="" ng-click="predicate = 'sublastname'; reverse=!reverse">Pet Name</a>
-				</th>
-				<th><a href="" ng-click="predicate = 'subnumber'; reverse=!reverse">Sub Number</a>
-				</th>
-				<th><a href="" ng-click="predicate = 'subscription.subtypecode'; reverse=!reverse">Sub Type</a>
-				</th>
-				<th><a href="" ng-click="predicate = 'createddate'; reverse=!reverse">Date Joined</a>
-				</th>
-			</tr>
-			<tr ng-repeat="sub in subscribers  | orderBy:predicate:reverse">
-				<td><a href="/subscribers/{{sub.subnumber}}">{{sub.subfirstname}} {{sub.sublastname}}</a>
-				</td>
-				<td>{{sub.subbusinessname}}</td>
-				<td>{{sub.subbandname}}</td>
-				<td>{{sub.petname}}</td>
-				<td>{{sub.subnumber}}</td>
-				<td>{{sub.subscription.subtypecode}}</td>
-				<td>{{sub.createddate}}</td>
-			</tr>
-		</table>
-	</div>-->
     <div class="row-fluid search__box" ng-show="subscribers.$resolved && subscribers.length != 0">
         <h5 style="padding-left: 5px;">{{subscribers.length}} subscribers found.</h5>
         <div ng-grid="gridSubs"></div>

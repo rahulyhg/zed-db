@@ -445,46 +445,4 @@ app.controller('SubscriberreportCtrl', function($rootScope, $scope, $http, $time
             $scope.draw = truesubs[r];
         });
     }
-
-    $scope.helpfs = function() {
-        $http.post(apiSrc + '/helpfs/', {
-            'id': 58239
-        }).then(function(response) {
-            console.log(response.data)
-        })
-    }
-
-    //experimantal - kendo chart
-    $scope.pie = ({
-
-        title: {
-            text: "Active Subs"
-        },
-        dataSource: {
-            data: $scope.counts
-        },
-        seriesDefaults: {
-            type: "column",
-            labels: {
-                visible: true,
-                background: "transparent"
-            }
-        },
-        series: [{
-            field: "subtypecount",
-
-        }],
-        categoryAxis: {
-            field: "subtype",
-            majorGridLines: {
-                visible: false
-            },
-            line: {
-                visible: false
-            }
-        }
-
-    });
-
-
 });

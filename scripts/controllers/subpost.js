@@ -2,9 +2,6 @@
 
 app.controller('SubscriberpostCtrl', function($rootScope, $scope, $http, $location, $filter, $stateParams, SubService, SkillsService, OnlineSubsService, ProgramsService, PrizesService, SubsBandService, SubtypesService, GenresService, limitToFilter, $dialog) {
 
-    //$scope.subscriberSearchFormData={};
-
-
     $scope.days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
 

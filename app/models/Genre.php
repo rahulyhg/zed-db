@@ -8,7 +8,6 @@ class Genre extends Illuminate\Database\Eloquent\Model {
 
 }
 
-
 ?>
 
 

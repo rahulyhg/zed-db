@@ -1,9 +1,8 @@
 <style type="text/css">
 	body {
-	  -webkit-print-color-adjust:exact;
-	  width:100%;
+	-webkit-print-color-adjust:exact;
+	width:100%;
 	}
-	
 	tr {
 		vertical-align: top;
 		line-height: 14px;
@@ -25,29 +24,26 @@
 		padding-left: 10px;
 		background-image: (app/images/1x1.gif)
 	}
-
 	@media print {
 		table {
 			width:100%;
 		}
-        .hd_r {
-                border-radius: 10px;
-                background-color: #000 !important;
-                color: #fff;
-                font-size: 9px;
-                padding-left: 10px;
-                -webkit-print-color-adjust: exact;
-        }
-        .hideb {
-        	display: none;
-        	padding-bottom:40px;
-        }
-}
+		.hd_r {
+		border-radius: 10px;
+		background-color: #000 !important;
+		color: #fff;
+		font-size: 9px;
+		padding-left: 10px;
+		-webkit-print-color-adjust: exact;
+		}
+		.hideb {
+			display: none;
+			padding-bottom:40px;
+		}
+	}
 </style>
-
-
 <div class="hideb"><a href="/subscriber/report" class="btn">Back</a> <button ng-click="onPrint();" class="btn">Print</button></div>
-<div> 
+<div>
 	<table style="width:100%;valign:top;border-collapse:separate;border-spacing:0 5px;" cellpadding="5px">
 		<tr style="text-align:left;">
 			<th>First Name</th><th>Last Name</th>
@@ -60,6 +56,4 @@
 		<td>{{sub.expirydate}}</td><td>{{sub.subemail}}</td></tr>
 		<tr><td colspan="3">&nbsp;</td></tr>
 	</table>
-
-
- </div>
+</div>

@@ -34,29 +34,7 @@
 
     </form>
 </div>
-<!-- <div class="row-fluid">
-    <div ng-show="contacts.$resolved && contacts.length != 0" class="search__box">
-        <h5 style="padding-left: 5px;">{{contacts.length}} contacts found.</h5>
-        <table class="table table-striped">
-            <tr>
 
-                <th><a href="" ng-click="predicate = 'org_nm'; reverse=!reverse">Organisation</a>
-                </th>
-                <th><a href="" ng-click="predicate = 'contact_nm'; reverse=!reverse">Contact</a>
-                </th>
-                <th><a href="" ng-click="predicate = 'email'; reverse=!reverse">Email</a><i class="icon-arrow-down"></i>
-                </th>
-            </tr>
-            <tr ng-repeat="contact in contacts  | orderBy:predicate:reverse">
-
-                <td><a href="/contacts/{{contact.contact_no}}">{{contact.org_nm}}</a>
-                </td>
-                <td>{{contact.contact_nm}}</td>
-                <td>{{contact.email}}</td>
-            </tr>
-        </table>
-    </div>
-</div> -->
 <div ng-show="rTracker.active()">
     <img src="/images/spinner_48.gif" />
 </div>
