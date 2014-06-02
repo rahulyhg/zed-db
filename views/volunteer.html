@@ -16,8 +16,14 @@
 					<input class="input-small search-query" type="search" name="submobile" ng-model="volunteerSearchFormData.submobile" placeholder="Mobile" />
 					<input class="input-medium search-query" type="search" name="subbusinessname" ng-model="volunteerSearchFormData.subbusinessname" placeholder="Business" ng-uppercase-input />
 					<input class="input-medium search-query" type="search" name="subbandname" ng-model="volunteerSearchFormData.subbandname" placeholder="Band" ng-uppercase-input />
-		    <select ui-select2 ng-model="volunteerSearchFormData.training_id" name="subtraining" class="input-large" multiple placeholder="Training">
+		    <select ui-select2 ng-model="volunteerSearchFormData.training" name="subtraining" class="input-large" multiple placeholder="Training">
                         <option ng-repeat="t in training" value="{{t.id}}">{{t.training}}</option>
+                    </select>
+		    <select ui-select2 ng-model="volunteerSearchFormData.voldepartments" name="subdepartment" class="input-large" multiple placeholder="Departments">
+                        <option ng-repeat="d in departments" value="{{d.id}}">{{d.department}}</option>
+                    </select>
+		    <select ui-select2 ng-model="volunteerSearchFormData.skills" name="subskill" class="input-large" multiple placeholder="Skills">
+                        <option ng-repeat="s in skills" value="{{s.id}}">{{s.skill}}</option>
                     </select>
 				</div>
 			</div>
