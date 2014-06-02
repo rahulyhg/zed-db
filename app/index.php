@@ -27,9 +27,6 @@ $app->db = Capsule\Database\Connection::make('default', $conn, true);
 
 use \Slim\Extras\Middleware\HttpBasicAuth;
 
-
-
-
 $api_prefix = "/api/v1/";
 
 $app->post($api_prefix.'auth/login', 'getLogin');
@@ -78,10 +75,7 @@ $app->get($api_prefix.'contact/report', 'getContacts');
 $app->get($api_prefix.'subscribers/:id', 'getSubscriber');
 $app->get($api_prefix.'volunteers/:id', 'getVolunteer');
 //$app->get($api_prefix.'subscriber/report', 'getSubNew');
-$app->post($api_prefix.'testfs/', 'getFs');
 
-
-$app->post($api_prefix.'subscriber/report/', 'getSubNew');
 
 $app->get($api_prefix.'releases/:id', 'getRelease');
 $app->get($api_prefix.'contacts/:id', 'getContact');
@@ -93,61 +87,7 @@ $app->get($api_prefix.'subscribers/reports/pledge/:prize', 'getSubsByPrize');
 
 #$app->get($api_prefix.'addcsv', 'addCsv');
 
-function addCsv(){
-$app = \Slim\Slim::getInstance();
 
-$csvFile = new Keboola\Csv\CsvFile(__DIR__ . '/pc.csv');
-	foreach($csvFile as $row) {
-		$suburb = new Suburb();
-		$suburb->postcode = $row[0];
-		$suburb->state = $row[2];
-		$suburb->suburb = $row[1];
-		$suburb->save();
-		echo  $row[1];
-	}
-}
-
-$app->get($api_prefix.'convertskills', 'convertSkills');
-
-function convertSkills() {
-    $app = \Slim\Slim::getInstance();
-    $subs = Subscriber::where('subskill', '>', 0)->get();
-
-    // foreach ($subs as $sub) {
-    //     $skk = +$sub->subskill;
-    //     if ($skk > 0) {
-    //         $skill = Skill::where('skillid', '=', $skk)->first();
-    //         if ($skill) {
-    //             $ns = Newskill::where('skill', '=', $skill->skilldescription)->first();
-    //             echo "sub: ".$sub->subnumber." ".$ns->skillid."<br>";
-    //         }
-    //     }
-        
-    // }
-
-    foreach ($subs as $sub) {
-        if ($sub->subskill) {
-            $skill = Skill::where('skillid', '=', $sub->subskill)->first();
-            if ($skill) {
-                $ns = Newskill::where('skill', '=', $skill->skilldescription)->first();
-                $foo = [$ns->id];
-                echo "sub: ".$sub->subnumber." ".$ns->id."<br/>";
-                $sub->skills()->sync($foo);
-            }
-        }
-        
-    }
-
-    // foreach ($cts as $ct) {
-    //     if ($ct->dept_sun) {
-    //         $d = Department::where('department_no', '=', $ct->dept_sun)->get();
-    //         $cc = Contactcategory::where('category', '=', $d[0]->department_nm)->get();
-    //         $foo = [$cc[0]->id];
-    //         echo "ctc: ".$ct->contact_no." ".$cc[0]->id."<br/>";
-    //         $ct->contactcategories()->sync($foo);
-    //     }
-    // }
-}
 
 
 $app->get($api_prefix.'themes/', 'getThemes');
@@ -187,6 +127,8 @@ $app->put($api_prefix.'prizes/:id', 'savePrize');
 $app->put($api_prefix.'pledge/:id', 'savePledge');
 $app->put($api_prefix.'pledge/clearing/:subno', 'updatePledgeClearing');
 $app->put($api_prefix.'band/:id', 'saveBand');
+$app->post($api_prefix.'testfs/', 'getFs');
+$app->post($api_prefix.'subscriber/report/', 'getSubNew');
 
 $app->post($api_prefix.'users/', 'addUser');
 $app->post($api_prefix.'releases/', 'addRelease');
@@ -266,6 +208,38 @@ $app->get($api_prefix.'newhuh/:user/:pass', 'createP');
 
 $app->get($api_prefix.'copycats', 'copyCats');
 
+function addCsv(){
+$app = \Slim\Slim::getInstance();
+
+$csvFile = new Keboola\Csv\CsvFile(__DIR__ . '/pc.csv');
+    foreach($csvFile as $row) {
+        $suburb = new Suburb();
+        $suburb->postcode = $row[0];
+        $suburb->state = $row[2];
+        $suburb->suburb = $row[1];
+        $suburb->save();
+        echo  $row[1];
+    }
+}
+
+$app->get($api_prefix.'convertskills', 'convertSkills');
+
+function convertSkills() {
+    $app = \Slim\Slim::getInstance();
+    $subs = Subscriber::where('subskill', '>', 0)->get();
+
+    foreach ($subs as $sub) {
+        if ($sub->subskill) {
+            $skill = Skill::where('skillid', '=', $sub->subskill)->first();
+            if ($skill) {
+                $ns = Newskill::where('skill', '=', $skill->skilldescription)->first();
+                $foo = [$ns->id];
+                echo "sub: ".$sub->subnumber." ".$ns->id."<br/>";
+                $sub->skills()->sync($foo);
+            }
+        }
+    }
+}
 
 function createP($r, $pass) {
     $app = \Slim\Slim::getInstance();
@@ -386,17 +360,6 @@ function getJotform() {
 	}
 }
 
-function getFsx() {
-        $app = \Slim\Slim::getInstance();
-// parse raw POST data
-#$form = json_decode(file_get_contents("php://input"));
-$form = file_get_contents("php://input");
-
-$file = '/tmp/fs.log';
-file_put_contents($file, $form);
-
-print_r($form);
-}
 
 function updateSubID($subscriber) {
     $existingSub = Subscriber::find($subscriber->prev_subnumber);
@@ -405,7 +368,7 @@ function updateSubID($subscriber) {
     $existingSub->fl_volunteer = (is_null($existingSub->fl_volunteer)) ? 0 : $existingSub->fl_volunteer;
     $existingSub->fl_volunteer = ($existingSub->fl_volunteer === false) ? 0 : 1;
     $existingSub->fl_volunteer = ($existingSub->fl_volunteer === true) ? 1 : 0;
-    
+
     $existingSub->fl_announcer = (is_null($existingSub->fl_announcer)) ? 0 : $existingSub->fl_announcer;
     $existingSub->fl_announcer = ($existingSub->fl_announcer === false) ? 0 : 1;
     $existingSub->fl_announcer = ($existingSub->fl_announcer === true) ? 1 : 0;
@@ -531,7 +494,6 @@ function getFs() {
             } else {
                 mail($subscriber->subemail, 'Welcome back to 4ZZZ!', $message, 'From:reception@4zzz.org.au');
                 return;
-        
             }
         } else {
             $subscriber->subcomment .= "\nPlease check this sub, it had subnumber ".$subscriber->prev_subnumber." entered in the form but Last Name did not match.";
