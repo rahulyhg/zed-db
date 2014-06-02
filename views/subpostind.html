@@ -1,41 +1,41 @@
 <style type="text/css">
-body {
-    -webkit-print-color-adjust:exact;
-}
-.tbl_blk {
-    color: #fff;
-    background-color: #000;
-    background-image: (images/1x1.gif)
-}
-.hd_r {
-    border-radius: 10px;
-    background-color: #000;
-    color: #fff;
-    font-size: 9px;
-    padding-left: 10px;
-}
-@media print {
-    ul, li {
-        color: #000 !important;
+    body {
+        -webkit-print-color-adjust:exact;
+    }
+    .tbl_blk {
+        color: #fff;
+        background-color: #000;
+        background-image: (images/1x1.gif)
     }
     .hd_r {
         border-radius: 10px;
-        background-color: #000 !important;
-        color: #FFF !important;
+        background-color: #000;
+        color: #fff;
         font-size: 9px;
         padding-left: 10px;
-        -webkit-print-color-adjust: exact;
     }
-    .hd_r ul, li {
-        color: #FFF !important;
+    @media print {
+        ul, li {
+            color: #000 !important;
+        }
+        .hd_r {
+            border-radius: 10px;
+            background-color: #000 !important;
+            color: #FFF !important;
+            font-size: 9px;
+            padding-left: 10px;
+            -webkit-print-color-adjust: exact;
+        }
+        .hd_r ul, li {
+            color: #FFF !important;
+        }
+        .navbar {
+            display: none;
+        }
+        .hide_b {
+            display: none;
+        }
     }
-    .navbar {
-        display: none;
-    }
-    .hide_b {
-        display: none;
-    }
-}
 </style>
 
 <div class="row">

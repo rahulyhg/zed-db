@@ -11,7 +11,6 @@ app.controller('VolunteermgmtCtrl', function($rootScope, $scope, $http, $locatio
 
     var qualCell = '<input ng-class="\'colt\' + col.index" ng-model="row.entity[col.field]" ng-input="COL_FIELD" ng-on-blur="updateQualification(col, row);" />';
 
-
     $scope.gridQualOptions = {
         data: 'qualifications',
         enableCellSelection: true,
@@ -52,7 +51,7 @@ app.controller('VolunteermgmtCtrl', function($rootScope, $scope, $http, $locatio
     };
 
     var trainCell = '<input ng-class="\'colt\' + col.index" ng-model="row.entity[col.field]" ng-input="COL_FIELD" ng-on-blur="updateTraining(col, row);" />';
-    
+
     $scope.gridTrainingOptions = {
         data: 'training',
         enableCellSelection: true,
@@ -143,7 +142,6 @@ app.controller('VolunteermgmtCtrl', function($rootScope, $scope, $http, $locatio
             cssClass: 'btn-primary btn-danger'
         }];
 
-
         $dialog.messageBox(title, msg, btns)
             .open()
             .then(function(result) {
@@ -155,7 +153,6 @@ app.controller('VolunteermgmtCtrl', function($rootScope, $scope, $http, $locatio
                     });
                 }
             });
-
     };
 
     $scope.deleteDepartment = function(col, row) {

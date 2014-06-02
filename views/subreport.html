@@ -19,7 +19,6 @@
                 <div style="margin-top:20px;padding:0 10px;">
                     <input type="text" class="input-medium" name="suburbName" ng-model="suburb" typeahead-min-length="3" typeahead-on-select='onSuburbChange($item, $model, $label)' typeahead="s.suburb for s in suburbsuggest($viewValue)" ng-uppercase-input placeholder="Suburb" />
                     <input type="text" class="input-small" ng-model="subscriberSearchFormData.postcode" name="postCode" placeholder="Post Code" />
-                    
                 </div>
                 <div style="margin-top:20px;padding:0 10px;">
 
@@ -99,8 +98,6 @@
 
         </form>
     </div>
-
-
     <div ng-switch="clicked" ng-hide="rTracker.active()">
         <div style="margin-bottom:10px;" ng-switch-when="Grid">
             <strong>
@@ -180,14 +177,14 @@
 
 
     <style type="text/css">
-    .gridStyle {
-        border: 1px solid #d4d4d4;
-        width: 100%;
-        height: 400px;
-    }
-    @media print {
-        #searchbox, .navbar {
-            display:none;
+        .gridStyle {
+            border: 1px solid #d4d4d4;
+            width: 100%;
+            height: 400px;
         }
-    }
+        @media print {
+            #searchbox, .navbar {
+                display:none;
+            }
+        }
     </style>

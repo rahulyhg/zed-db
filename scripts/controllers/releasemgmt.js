@@ -2,13 +2,11 @@
 
 app.controller('ReleasemgmtCtrl', function ($rootScope, $scope, $http, $location, ThemesService, GenresNewService, limitToFilter, $dialog) {
 
-        //$scope.subscriberSearchFormData={};
-
         $scope.themes = ThemesService.query();
         $scope.genres = GenresNewService.query();
 
         var eCell ="<input ng-class=\"'colt' + col.index\" ng-model=\"row.entity[col.field]\" ng-input=\"COL_FIELD\" ng-on-blur=\"updateSkills(col, row);\" />";
-       var checkboxCellTemplate='<div class="ngSelectionCell"><input tabindex="-1" class="ngSelectionCheckbox" type="checkbox" ng-model="row.entity[col.field]" ng-checked="row.entity[col.field]" /></div>';
+        var checkboxCellTemplate='<div class="ngSelectionCell"><input tabindex="-1" class="ngSelectionCheckbox" type="checkbox" ng-model="row.entity[col.field]" ng-checked="row.entity[col.field]" /></div>';
 
         $scope.gridThemesOptions = {
             data: 'themes',

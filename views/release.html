@@ -19,11 +19,6 @@
 				<div class="control-group controls-row" style="padding:10px 0;">
 					<ul class="inline">
 					<li>
-							<!-- <div class="control-group input-append">
-							<input type="text" ng-model="releaseSearchFormData.entered_dt" class="input-small" bs-datepicker data-date-format="dd/mm/yyyy" placeholder="Created After" data-date-today-highlight="true" data-date-today-btn="linked" />
-							<button type="button" class="btn lowcal" data-toggle="datepicker"><i class="icon-calendar"></i>
-							</button>
-							</div> -->
 							<div class="control-group input-append">
 								<input type="text" class="form-control" data-date-format="yyyy/MM/dd" datepicker-popup="yyyy/MM/dd" class="input-small" placeholder="Created Start Date" is-open="opened" ng-model="releaseSearchFormData.entered_dt" show-button-bar="true" show-weeks="false" />
 								<button type="button" class="btn lowcal" ng-click="open($event)" data-toggle="datepicker"><i class="icon-calendar"></i>
@@ -68,10 +63,10 @@
 						<li>
 							<input class="input-medium search-query" style="z-index:1000;" type="search" name="album_origin" ng-model="releaseSearchFormData.album_origin" placeholder="Country" typeahead="suggestion.album_origin for suggestion in country($viewValue)" typeahead-min-length="3" ng-uppercase-input2 />
 						</li>
-						
+
 					</ul>
 				</div>
-				
+
 				<div class="control-group controls-row">
 					<ul class="inline unstyled">
 						<li>
@@ -83,14 +78,6 @@
 									</select>
 								</div>
 							</div>
-							<!-- <div class="control-group">
-								<label class="control-label">Genre 2</label>
-								<div class="controls">
-									<select ui-select2 ng-model="releaseSearchFormData.cont_subgenre" class="input-large" multiple>
-										<option ng-repeat="g in genres" value="{{g.genre_id}}">{{g.genre_desc}}</option>
-									</select>
-								</div>
-							</div> -->
 						</li>
 						<li>
 							<label class="control-label inline" style="margin-right:5px;">Log Format</label>
@@ -116,25 +103,6 @@
 <div ng-show="rTracker.active()">
 	<img src="/images/spinner_48.gif" />
 </div>
-<!-- <div ng-show="releases.$resolved && releases.length != 0" class="search__box">
-	<h5 style="padding-left:5px;">{{releases.length}} items found.</h5>
-	<table class="table table-striped">
-		<tr>
-			<th><a href="" ng-click="predicate = 'artist_nm'; reverse=!reverse">Artist</a></th>
-			<th><a href="" ng-click="predicate = 'title'; reverse=!reverse">Title</a></th>
-			<th><a href="" ng-click="predicate = 'library_no'; reverse=!reverse">Record #</a></th>
-			<th><a href="" ng-click="predicate = 'release_year'; reverse=!reverse">Year</a></th>
-			<th><a href="" ng-click="predicate = 'entered_dt'; reverse=!reverse">Created</a></th>
-		</tr>
-		<tr ng-repeat="release in releases  | orderBy:predicate:reverse">
-			<td>{{release.artist_nm}}</td>
-			<td><a href="/releases/{{release.library_no}}">{{release.title}}</a></td>
-			<td>{{release.library_no}}</td>
-			<td>{{release.release_year}}</td>
-			<td>{{release.entered_dt}}</td>
-		</tr>
-	</table>
-</div> -->	
 <div ng-hide="rTracker.active()">
 	<div class="row-fluid search__box" ng-show="releases.length > 0">
 

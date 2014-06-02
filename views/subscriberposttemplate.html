@@ -7,16 +7,14 @@
 		background-color: #000;
 		background-image: (images/1x1.gif)
 	}
-	
 	.hd_r {
 		border-radius: 10px;
 		background-color: #000;
 		color: #fff;
 		font-size: 9px;
 		padding-left: 10px;
-		
-	}
 
+	}
 	@media print {
         .hd_r {
                 border-radius: 10px;
@@ -35,13 +33,13 @@
         .hide_b {
         	display: none;
         }
-}
+	}
 </style>
 
-<div class="row"> 
+<div class="row">
 <div style="padding-bottom:40px;" class="hide_b"><a href="/subscriber/report" class="btn">Back</a> <button ng-click="onPrint();" class="btn">Print</button></div>
 	<div style="width:600px;margin:0 auto;">
-		
+
 		<div style="margin-bottom:10px;border-bottom:1px solid #444;page-break-inside: avoid;" ng-repeat="sub in subs">
 			<div class="hd_r">
 				<img style="padding:10px;" src="http://www.4zzzfm.org.au/sites/default/files/zed_logo.png"  width="100px;">
@@ -50,7 +48,7 @@
                         <li>264 Barry Pde </li>
                         <li>PO Box 509 Fortitude Valley</li>
                         <li>Ph: (07) 3252 1555</li>
-                        <li>info@4zzz.org.au</li>  
+                        <li>info@4zzz.org.au</li>
                 </ul>
                 <ul class="unstyled inline">
                         <li>ABN: 62 009 950 958</li>
@@ -58,7 +56,7 @@
                         <li>Brisbane Australia 4006</li>
                         <li>Fax: (07) 3252 1950</li>
                         <li>www.4zzzfm.org.au</li>
-                </ul>                  
+                </ul>
 			</div>
 			<div style="text-align:center;"><strong>Creative Broadcasters Ltd</strong><br/>
 			Trading as &quot;4ZZZ FM&quot;<br/>
@@ -72,7 +70,7 @@
 				<tr><td width="400px;"><strong>Received From:</strong> {{sub.subfirstname}} {{sub.sublastname}}</td><td style="text-align:left;"><strong>Subnumber:</strong> {{sub.subnumber}}</td></tr>
 				<tr><td>{{sub.subaddress1}} <br/>{{sub.suburb.suburb}} <br/> {{sub.suburb.state}} <br/> {{sub.suburb.postcode}}</td>
 				<td style="text-align:left;"><strong>Expiry Date:</strong> {{sub.expirydate | date}}</td></tr>
-				
+
 				<tr><td>
 					<div ng-show="(sub.subscription.subtypecode == 'Passionate') && (sub.pledge.pledgeid > 0)">Passionate pack</div>
 					<div ng-show="sub.pledge">
@@ -85,13 +83,13 @@
 						</table>
 					</div>
 					  {{sub.subbusinessname}} {{sub.submusicianname}} {{subartistname}}
-					
- 					
+
+
 				</td><td></td></tr>
 				<tr class="tbl_blk"><td>Item</td><td>Posted</td></tr>
 
 				<tr><td style="text-align:right;">{{sub.subscription.subtypecode}}</td><td style="text-align:right;"> {{sub.subscription.subtypevalue | currency}}</td></tr>
-				
+
 				<tr><td style="text-align:right;">Donation</td><td style="text-align:right;"> {{sub.donation | currency}}</td></tr>
 				<tr><td style="text-align:right;">Postage</td><td style="text-align:right;"> {{sub.postage | currency}}</td></tr>
 				<tr><td style="text-align:right;">GST Included</td><td style="text-align:right;"> {{sub.subscription.subtypevalue/11 | currency}}</td></tr>
@@ -103,7 +101,7 @@
 			<p style="text-align:center;">DONATIONS OF $2.00 OR MORE ARE TAX DEDUCTIBLE.<br/>
 			SUBSCRIPTIONS ARE NOT TAX DEDUCTIBLE.</p>
 			</div>
-		
+
 	</div>
 
 </div>
